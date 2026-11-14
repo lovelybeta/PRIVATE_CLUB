@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CUMSHOT — карточки</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f7f7f2">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CUMSHOT">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
@@ -11,7 +19,7 @@
 :root{
   --black:#000; --white:#fff; --paper:#f7f7f2;
   --lilac:#cfc4d8; --grey:#d4d4d0; --wine:#6b2a25;
-  --r-again:#d8b6b0; --r-hard:#dccfb8; --r-good:#cfc4d8; --r-easy:#bccdc2;
+  --r-again:#f0d0cb; --r-hard:#f3e3b5; --r-good:#ddd4eb; --r-easy:#d0e4d7;
   --serif:"Instrument Serif",Georgia,serif;
   --sans:"Inter Tight",Helvetica,Arial,sans-serif;
 }
@@ -38,7 +46,7 @@ section[hidden]{display:none}
 
 /* загрузка и офлайн */
 #loader,#offline{display:none;text-align:center;padding:120px 16px}
-#loader{font-family:var(--serif);font-style:italic;font-size:46px}
+#loader{font-family:var(--serif);font-style:italic;font-size:clamp(28px,4.2vw,46px);line-height:1.2}
 body.loading #loader{display:block;animation:pulse 1.4s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.3}}
 body.offline #offline{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:0 16px}
@@ -69,7 +77,7 @@ body.loading section,body.offline section{display:none!important}
 .face .t{font-family:var(--serif);font-size:clamp(32px,5.5vw,56px);line-height:1.08}
 .face .ipa{margin-top:12px;font-size:20px;opacity:.65;letter-spacing:.02em}
 .face .ipa:empty{display:none}
-.face .note{margin-top:22px;max-width:540px;font-size:15px;line-height:1.5;padding:12px 18px;border-radius:14px;background:var(--lilac);color:var(--black);text-align:left;white-space:pre-line}
+.face .note{margin-top:22px;max-width:540px;font-size:15px;line-height:1.5;padding:14px 18px;border-radius:14px;background:var(--lilac);color:var(--black);text-align:left;white-space:pre-line}
 .face .tag{position:absolute;top:20px;left:24px;font-size:13px;opacity:.5}
 .face .hint{position:absolute;bottom:18px;font-size:13px;opacity:.45}
 .rates{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:100%;max-width:760px}
@@ -103,19 +111,19 @@ body.loading section,body.offline section{display:none!important}
 .cell{padding:16px 22px;display:flex;flex-direction:column;gap:8px}
 .cell.e{background:var(--black);color:var(--white)}
 .cell label{font-size:12px;opacity:.5}
-.cell textarea{width:100%;resize:none;border:0;background:transparent;outline:0;font-family:var(--serif);font-size:25px;line-height:1.15;overflow:hidden}
+.cell textarea{display:block;width:100%;resize:none;border:0;border-radius:0;padding:0;margin:0;text-indent:0;-webkit-appearance:none;appearance:none;background:transparent;outline:0;font-family:var(--serif);font-size:25px;line-height:1.15;overflow:hidden}
 .cell textarea::placeholder{opacity:.3}
-.cell .n{font-family:var(--sans);font-size:14px;line-height:1.4;background:var(--lilac);color:var(--black);border-radius:10px;padding:8px 12px;min-height:40px}
+.cell .n{font-family:var(--sans);font-size:14px;line-height:1.4;background:var(--lilac);color:var(--black);border-radius:14px;padding:14px 16px;min-height:0}
 .cell.e .n::placeholder{color:#555}
 .cell textarea.p{font-family:var(--sans);font-size:15px;opacity:.7}
 .ro{font-family:var(--serif);font-size:25px;line-height:1.15;white-space:pre-wrap}
 .ro.p{font-family:var(--sans);font-size:15px;opacity:.7}
-.ro.n{font-family:var(--sans);font-size:14px;line-height:1.4;background:var(--lilac);color:var(--black);border-radius:10px;padding:8px 12px}
+.ro.n{font-family:var(--sans);font-size:14px;line-height:1.4;background:var(--lilac);color:var(--black);border-radius:14px;padding:14px 16px}
 .side{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:6px;padding:10px;background:var(--paper)}
 .side button{height:34px;min-width:34px;border-radius:999px;font-size:15px;border:1px solid var(--grey);background:var(--white);padding:0 12px;white-space:nowrap}
 .side button:hover{background:var(--wine);color:var(--white);border-color:var(--wine)}
 .side .arch{font-size:13px;font-weight:500}
-.side .back{background:var(--lilac);border-color:var(--lilac);font-weight:600;height:44px;padding:0 18px}
+.side .back{background:var(--lilac);border-color:var(--lilac);color:#000;font-weight:600;height:44px;padding:0 18px}
 .side .back:hover{background:var(--black);border-color:var(--black)}
 .empty{padding:48px;text-align:center;border:1px dashed var(--grey);border-radius:20px;background:var(--white)}
 .sub{margin:8px 0 20px;opacity:.6;font-size:14px}
@@ -132,7 +140,10 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 @media(max-width:680px){
   .face{padding:32px 24px}
   .row{grid-template-columns:1fr}
-  .side{flex-direction:row;justify-content:flex-end;flex-wrap:wrap}
+  .side{flex-direction:row;justify-content:flex-end;flex-wrap:wrap;background:var(--black);padding:0 22px 16px}
+  .side button{background:#1a1a1a;border-color:#3a3a3a;color:#fff}
+  .side .back{background:var(--lilac);border-color:var(--lilac);color:#000}
+  #loader{font-size:22px;padding:90px 28px}
   .logo{width:260px}
   .logo .f{font-size:34px}
   .logo .b{font-size:16px}
@@ -154,8 +165,8 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 </header>
 
 <main>
-  <div class="robar" id="roBar">Офлайн · режим чтения: слова из сохранённой копии, изменения не сохраняются. Когда появится интернет, сайт синхронизируется сам.</div>
-  <div id="loader">Connection...</div>
+  <div class="robar" id="roBar">Офлайн · режим чтения: изменения не сохраняются. Когда появится интернет, сайт синхронизируется.</div>
+  <div id="loader">You look lovely! Let me connect you...</div>
   <div id="offline">
     <p>Oops! You're offline. Get online for a second and the magic will happen.</p>
     <button class="pill solid" id="retry">Retry</button>
@@ -602,7 +613,7 @@ function setLang(l){
 $('langRu').onclick=()=>setLang('ru');$('langEn').onclick=()=>setLang('en');
 $('shuffle').onclick=()=>{
   if(revealed){toast('Сначала перейди к следующей карточке');return}
-  rebuild(true);toast('Перемешано');
+  rebuild(true);
 };
 $('restart').onclick=()=>{rebuild(false)};
 document.addEventListener('keydown',e=>{
@@ -635,7 +646,7 @@ function renderList(){
     r.innerHTML=
       '<div class="cell"><label>Русский</label><textarea rows="1" data-k="ru" placeholder="Слово по-русски"></textarea></div>'+
       '<div class="cell e"><label>English</label><textarea rows="1" data-k="en" placeholder="Translation"></textarea><textarea class="p" rows="1" data-k="ipa" placeholder="[транскрипция]"></textarea>'+
-      '<textarea class="n" rows="1" data-k="note" placeholder="Заметка / примеры / варианты перевода (необязательно)"></textarea></div>'+
+      '<textarea class="n" rows="1" data-k="note" placeholder="Заметка / примеры"></textarea></div>'+
       '<div class="side"><button class="arch" data-a="arch">В архив</button><button data-a="dup" title="Дублировать">⧉</button><button data-a="del" title="Удалить">✕</button></div>';
     r.querySelectorAll('textarea').forEach(t=>{
       t.value=c[t.dataset.k]||'';t.readOnly=readOnly;
@@ -756,10 +767,13 @@ function refreshViews(){
 }
 async function start(silent){
   if(!silent)document.body.className='loading';
+  const t0=Date.now();
+  const hold=async()=>{if(silent)return;const w=2000-(Date.now()-t0);if(w>0)await new Promise(r=>setTimeout(r,w))};
   try{
     await setupDb();
     await migrateOld();
     await poll(true);
+    await hold();
     readOnly=false;clearInterval(retryTimer);
     document.body.className='';
     clearInterval(pollTimer);pollTimer=setInterval(safePoll,8000);
@@ -767,6 +781,7 @@ async function start(silent){
   }catch(e){
     if(silent)return; // тихая попытка не удалась — остаёмся в режиме чтения
     const bk=await idbGet();
+    await hold();
     if(bk&&bk.length){
       readOnly=true;clearInterval(pollTimer);
       cards=bk.map(blank);lastSig='';
