@@ -2,7 +2,7 @@
    - index.html: Network First (всегда свежая версия, при Ctrl+F5 тоже), без сети — копия из кэша.
    - Шрифты и стили Google Fonts: сохраняются целиком при установке и потом отдаются из кэша.
    - Запросы к базе Turso сюда не попадают: слова на случай офлайна хранятся в IndexedDB внутри index.html. */
-const CACHE = 'cumshot-shell-v3';
+const CACHE = 'cumshot-shell-v4';
 const PAGE = './index.html';
 const FONTS_CSS = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap';
 const ASSETS = ['./manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon-48.png'];
@@ -74,7 +74,7 @@ self.addEventListener('fetch', (event) => {
     if (isPage) { event.respondWith(networkFirstPage(req)); return; }
     // манифест и иконки: из кэша сразу, в фоне обновляем
     if (/\/(manifest\.json|[^/]+\.png)$/.test(url.pathname)) {
-      event.respondWith(caches.open(CACHE).then((cache) => cache.match(req.url).then((hit) => {
+      event.respondWith(caches.open(CACHE).then((cache) => cache.match(req.url, { ignoreSearch: true }).then((hit) => {
         const net = fetch(req).then((res) => { if (res.ok) cache.put(req.url, res.clone()); return res; }).catch(() => hit);
         return hit || net;
       })));
