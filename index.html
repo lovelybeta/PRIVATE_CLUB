@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --black:#000; --ink:#161616; --white:#fff; --paper:#f7f7f2;
+  --black:#000; --white:#fff; --paper:#f7f7f2;
   --lilac:#cfc4d8; --grey:#d4d4d0; --wine:#6b2a25;
   --serif:"Instrument Serif",Georgia,serif;
   --sans:"Inter Tight",Helvetica,Arial,sans-serif;
@@ -22,10 +22,10 @@ button{cursor:pointer;border:0;background:none}
 :focus-visible{outline:2px solid var(--wine);outline-offset:3px}
 
 header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px clamp(16px,4vw,48px);flex-wrap:wrap}
-.logo{position:relative;width:250px;height:44px;cursor:pointer}
+.logo{position:relative;width:300px;height:44px;cursor:pointer}
 .logo span{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;transition:opacity .25s ease,transform .25s ease}
 .logo .f{font-family:var(--serif);font-style:italic;font-size:40px;letter-spacing:.01em;opacity:1}
-.logo .b{font-weight:600;font-size:20px;letter-spacing:.06em;opacity:0;transform:translateY(8px);transition-delay:0s}
+.logo .b{font-weight:600;font-size:18px;letter-spacing:.06em;opacity:0;transform:translateY(8px)}
 .logo:hover .f,.logo.flip .f{opacity:0;transform:translateY(-8px)}
 .logo:hover .b,.logo.flip .b{opacity:1;transform:none;transition-delay:.2s}
 nav{display:flex;gap:4px;background:var(--grey);padding:4px;border-radius:999px}
@@ -37,17 +37,22 @@ section[hidden]{display:none}
 
 /* quiz */
 .quiz{display:flex;flex-direction:column;align-items:center;gap:20px}
+.seg{display:flex;gap:4px;background:var(--grey);padding:4px;border-radius:999px}
+.seg button{padding:8px 18px;border-radius:999px;font-weight:500;transition:background .2s,color .2s}
+.seg button[aria-pressed=true]{background:var(--black);color:var(--white)}
 .bar{width:100%;max-width:760px;height:3px;background:var(--grey);border-radius:3px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--black);width:0;transition:width .3s}
 .scene{perspective:1400px;width:100%;max-width:760px;height:min(440px,58vh);min-height:300px}
 .card{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.5,.1,.2,1);cursor:pointer;border-radius:24px}
 .card.open{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;border-radius:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 56px;text-align:center;overflow:auto}
-.ru{background:var(--white);color:var(--black);border:1px solid var(--grey)}
-.en{background:var(--black);color:var(--white);transform:rotateY(180deg)}
-.face .t{font-family:var(--serif);font-size:clamp(34px,6vw,60px);line-height:1.08}
+.face.light{background:var(--white);color:var(--black);border:1px solid var(--grey)}
+.face.dark{background:var(--black);color:var(--white)}
+.face.back{transform:rotateY(180deg)}
+.face .t{font-family:var(--serif);font-size:clamp(32px,5.5vw,56px);line-height:1.08}
 .face .ipa{margin-top:12px;font-size:20px;opacity:.65;letter-spacing:.02em}
-.face .note{margin-top:22px;max-width:520px;font-size:15px;line-height:1.5;padding:12px 18px;border-radius:14px;background:var(--lilac);color:var(--black);text-align:left;white-space:pre-line}
+.face .ipa:empty{display:none}
+.face .note{margin-top:22px;max-width:540px;font-size:15px;line-height:1.5;padding:12px 18px;border-radius:14px;background:var(--lilac);color:var(--black);text-align:left;white-space:pre-line}
 .face .tag{position:absolute;top:20px;left:24px;font-size:13px;opacity:.5}
 .face .hint{position:absolute;bottom:18px;font-size:13px;opacity:.45}
 .ctrl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
@@ -59,14 +64,14 @@ section[hidden]{display:none}
 .pill:hover{background:var(--black);color:var(--white)}
 .pill.solid{background:var(--black);color:var(--white)}
 .pill.solid:hover{background:var(--wine);border-color:var(--wine)}
-.pill.danger:hover{background:var(--wine);border-color:var(--wine)}
 
 /* list */
 .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 24px}
 .tools .grow{flex:1}
+.sync{font-size:13px;opacity:.6;white-space:nowrap}
 .search{flex:1;min-width:180px;max-width:320px;padding:10px 18px;border-radius:999px;border:1px solid var(--grey);background:var(--white)}
 .list{display:grid;gap:12px}
-.row{display:grid;grid-template-columns:1fr 1fr auto;gap:0;border-radius:20px;overflow:hidden;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
+.row{display:grid;grid-template-columns:1fr 1fr auto;border-radius:20px;overflow:hidden;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
 .row:focus-within{border-color:var(--black)}
 .cell{padding:16px 22px;display:flex;flex-direction:column;gap:8px}
 .cell.e{background:var(--black);color:var(--white)}
@@ -81,7 +86,6 @@ section[hidden]{display:none}
 .side button:hover{background:var(--wine);color:var(--white);border-color:var(--wine)}
 .empty{padding:48px;text-align:center;border:1px dashed var(--grey);border-radius:20px;background:var(--white)}
 
-/* dialog */
 dialog{border:0;border-radius:24px;padding:28px;width:min(560px,92vw);background:var(--white);box-shadow:0 20px 80px rgba(0,0,0,.35)}
 dialog::backdrop{background:rgba(0,0,0,.55)}
 dialog h2{font-family:var(--serif);font-weight:400;font-size:32px;margin-bottom:8px}
@@ -95,14 +99,16 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
   .face{padding:32px 24px}
   .row{grid-template-columns:1fr}
   .side{flex-direction:row;justify-content:flex-end}
+  .logo{width:260px}
   .logo .f{font-size:34px}
+  .logo .b{font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo" id="logo" title="CUMSHOT / BEST WOMEN EVER"><span class="f">CUMSHOT</span><span class="b">BEST WOMEN EVER</span></div>
+  <div class="logo" id="logo" title="CUMSHOT / PRIVATE ENGLISH CLUB"><span class="f">CUMSHOT</span><span class="b">PRIVATE ENGLISH CLUB</span></div>
   <nav role="tablist">
     <button role="tab" id="tab-quiz" aria-selected="true">Карточки</button>
     <button role="tab" id="tab-list" aria-selected="false">Все слова</button>
@@ -111,11 +117,15 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 
 <main>
   <section id="quiz" class="quiz">
+    <div class="seg" role="group" aria-label="С какой стороны начинать">
+      <button id="langRu" aria-pressed="true">Сначала RU</button>
+      <button id="langEn" aria-pressed="false">Сначала EN</button>
+    </div>
     <div class="bar"><i id="bar"></i></div>
     <div class="scene">
       <div class="card" id="card" tabindex="0" role="button" aria-label="Перевернуть карточку">
-        <div class="face ru"><span class="tag">RU</span><div class="t" id="ruText"></div><span class="hint">нажми, чтобы увидеть перевод</span></div>
-        <div class="face en"><span class="tag">EN</span><div class="t" id="enText"></div><div class="ipa" id="ipaText"></div><div class="note" id="noteText" hidden></div></div>
+        <div class="face light" id="front"><span class="tag" id="frontTag"></span><div class="t" id="frontText"></div><div class="ipa" id="frontIpa"></div><span class="hint">нажми, чтобы открыть</span></div>
+        <div class="face dark back" id="back"><span class="tag" id="backTag"></span><div class="t" id="backText"></div><div class="ipa" id="backIpa"></div><div class="note" id="noteText" hidden></div></div>
       </div>
     </div>
     <div class="ctrl">
@@ -125,18 +135,18 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
     </div>
     <div class="ctrl">
       <button class="pill" id="shuffle">Перемешать</button>
-      <button class="pill" id="restart">Сначала</button>
+      <button class="pill" id="restart">Заново</button>
     </div>
   </section>
 
   <section id="listView" hidden>
     <div class="tools">
       <input class="search" id="search" type="search" placeholder="Поиск по словам">
+      <span class="sync" id="sync"></span>
       <span class="grow"></span>
       <button class="pill solid" id="add">+ Карточка</button>
       <button class="pill" id="imp">Импорт</button>
       <button class="pill" id="exp">Экспорт</button>
-      <button class="pill danger" id="reset">Сбросить</button>
     </div>
     <div class="list" id="list"></div>
   </section>
@@ -154,7 +164,14 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='cumshot-cards-v2';
+/* ===== Доступ к базе Turso ===== */
+const DB_HOST='https://cards-lovelybeta.aws-eu-north-1.turso.io';
+const DB_TOKEN='eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3OTQ2Njk1OTAsImlkIjoiMDFhMWRhOWYtNjcwMS03Y2M1LTgyMTktYTBmYmYxMzIzZWJiIiwia2lkIjoidnFsbHlldWtBa2dxZDgtUWtYY0lONUhkQjNrVjR4eVBHci1RZ1NmcnhsQSIsInJpZCI6ImIzNjM3ZTk1LWNlMTQtNDJhNS05ODIwLWEwMjBmOTdjYzViZSJ9.ScXBRkkihT9GNrwg_7QpVAPkBx5MS0MrEo85AI5I91oQl9Maei6rtXoGeyJZ9tX20aNIdJEskB_Mo_ZDtbo3Aw';
+
+const CACHE_KEY='cumshot-turso-cache';
+const MIG_KEY='cumshot-turso-migrated';
+const LANG_KEY='cumshot-lang';
+
 const DEFAULT_CARDS=[
 {ru:"читать по очереди",en:"read by turns",ipa:"[riːd baɪ tɜːnz]",note:""},
 {ru:"ссылка, изгнание",en:"exile",ipa:"[ˈeksaɪl]",note:"(forced to live away from home)\n- He lived in exile for many years.\n- He felt exiled from his own family.\n- Many exiles never returned to their homeland."},
@@ -216,100 +233,310 @@ const DEFAULT_CARDS=[
 {ru:"искренне",en:"sincerely, genuinely",ipa:"[sɪnˈsɪəli], [ˈdʒenjuɪnli]",note:"sincerely — искренне (и в конце письма: Sincerely yours).\ngenuinely — по-настоящему, неподдельно.\nЕщё: truly, heartfelt — от всего сердца."},
 {ru:"Сделаю что ты просишь меня и заплачу тебе за это",en:"Whatever you ask me to do and pay you to do it",ipa:"",note:"Естественный перевод русской фразы: I'll do what you ask me to, and I'll pay you for it.\nВ твоём варианте английская часть — обрывок: «всё, о чём ты просишь и (за что) платишь»."},
 {ru:"переговоры (сотрудничество)",en:"negotiations",ipa:"[nɪˌɡəʊʃiˈeɪʃnz]",note:"Варианты по контексту:\n- talks — переговоры (неформально/дипломатия)\n- cooperation [kəʊˌɒpəˈreɪʃn] — сотрудничество\n- collaboration [kəˌlæbəˈreɪʃn] — совместная работа\n- partnership — партнёрство"},
-{ru:"богомол",en:"mantis",ipa:"[ˈmæntɪs]",note:""}
+{ru:"богомол",en:"mantis",ipa:"[ˈmæntɪs]",note:""},
+{ru:"осведомлённый (ты знаешь, что..)",en:"aware",ipa:"[əˈweə]",note:"Are you aware that...\n«I am well aware of my responsibilities to the outside world,» Olivetti replied, «and it makes this situation no more grave.»\ngrave [ɡreɪv] — могила, а ещё: тяжёлый, серьёзный, тяжкий."},
+{ru:"фокусник",en:"magician",ipa:"[məˈdʒɪʃn]",note:""},
+{ru:"Меня каждый раз сносит / я каждый раз в восторге",en:"I'm blown away every time.",ipa:"[aɪm bləʊn əˈweɪ ˈevri taɪm]",note:""},
+{ru:"жжение в очке",en:"burning sensation in the anus",ipa:"[ˈbɜːnɪŋ senˈseɪʃn ɪn ði ˈeɪnəs]",note:""},
+{ru:"нетерплячка",en:"impatience",ipa:"[ɪmˈpeɪʃns]",note:""},
+{ru:"на данном этапе",en:"at this point",ipa:"[æt ðɪs pɔɪnt]",note:"Ещё вариант: at this stage."},
+{ru:"такими темпами",en:"at this rate",ipa:"[æt ðɪs reɪt]",note:""},
+{ru:"Я не знаю, как я успею это сделать сегодня.",en:"I don't know how I'll manage to do it today.",ipa:"",note:"— Я не знаю, как я это впихну в сегодняшний день.\n— I don't know how I'm going to fit it in today.\n\nAt this rate, I don't know how I'll get it done today.\n— Такими темпами я не знаю, как уже успею это сделать сегодня."},
+{ru:"Я не успел / не дошли руки",en:"I didn't get around to it",ipa:"[aɪ ˈdɪdnt get əˈraʊnd tuː ɪt]",note:"I ran out of time — у меня закончилось время."},
+{ru:"зрачок",en:"pupil",ipa:"[ˈpjuːpl]",note:"Ещё pupil — ученик, школьник."}
 ];
-let cards=load(), order=[], idx=0, q='';
 
-function load(){try{const s=localStorage.getItem(KEY);if(s){const a=JSON.parse(s);if(Array.isArray(a))return a}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_CARDS))}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(cards))}catch(e){}}
+let cards=[], order=[], idx=0, q='', lastSig='', lang='ru';
 const $=id=>document.getElementById(id);
-function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2000)}
+
+/* ===== Работа с Turso через HTTP ===== */
+function arg(a){
+  if(a===null||a===undefined)return {type:'null'};
+  if(typeof a==='number')return {type:'float',value:a};
+  if(typeof a==='object')return {type:'integer',value:String(a.i)};
+  return {type:'text',value:String(a)};
+}
+async function run(stmts){
+  const reqs=stmts.map(s=>({type:'execute',stmt:{sql:s[0],args:(s[1]||[]).map(arg)}}));
+  reqs.push({type:'close'});
+  const r=await fetch(DB_HOST+'/v2/pipeline',{method:'POST',headers:{'Authorization':'Bearer '+DB_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({requests:reqs})});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const j=await r.json();
+  return j.results.slice(0,stmts.length).map(x=>{
+    if(x.type!=='ok')throw new Error(JSON.stringify(x.error||x));
+    return x.response.result;
+  });
+}
+const cell=v=>!v||v.type==='null'?'':(v.type==='integer'||v.type==='float')?Number(v.value):v.value;
+const INS='INSERT INTO words(russian,english,transcription,example,position) VALUES(?,?,?,?,?)';
+const SEL='SELECT id,russian,english,transcription,example,position FROM words ORDER BY position,id';
+const insArgs=c=>[c.ru||'',c.en||'',c.ipa||'',c.note||'',c.pos||0];
+
+async function setupDb(){
+  const r=await run([
+    ['CREATE TABLE IF NOT EXISTS words(id INTEGER PRIMARY KEY AUTOINCREMENT, russian TEXT NOT NULL DEFAULT \'\', english TEXT NOT NULL DEFAULT \'\', transcription TEXT NOT NULL DEFAULT \'\', example TEXT NOT NULL DEFAULT \'\', position REAL NOT NULL DEFAULT 0, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)'],
+    ['CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT)'],
+    ["INSERT OR IGNORE INTO meta(key,value) VALUES('seeded','1')"]
+  ]);
+  if(r[2].affected_row_count===1){ // база пустая — первый запуск
+    const all=DEFAULT_CARDS.map((c,i)=>[INS,insArgs({...c,pos:i*10})]);
+    for(let i=0;i<all.length;i+=25)await run(all.slice(i,i+25));
+  }
+}
+
+/* ===== Состояние и сохранение ===== */
+function fromRow(r){return {id:cell(r[0]),ru:cell(r[1]),en:cell(r[2]),ipa:cell(r[3]),note:cell(r[4]),pos:cell(r[5])}}
+function cacheLocal(){try{localStorage.setItem(CACHE_KEY,JSON.stringify(cards.filter(c=>c.id!=null).map(({id,ru,en,ipa,note,pos})=>({id,ru,en,ipa,note,pos}))))}catch(e){}}
+function loadCache(){try{const a=JSON.parse(localStorage.getItem(CACHE_KEY));if(Array.isArray(a)&&a.length)return a}catch(e){}return null}
+function setStatus(s){
+  const e=$('sync');
+  e.textContent=s==='ok'?'● общий список · синхронизировано':s==='err'?'● нет связи с базой — повторю попытку':'● сохраняю…';
+}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}
 function resetOrder(){order=cards.map((_,i)=>i);idx=0}
 
-/* quiz */
+function queueSave(c,delay=700){
+  c._dirty=true;clearTimeout(c._t);setStatus('wait');
+  c._t=setTimeout(()=>flush(c),delay);
+}
+async function flush(c){
+  if(c._busy){c._again=true;return}
+  if(c.id==null&&!((c.ru||'')+(c.en||'')).trim())return; // пустую карточку не сохраняем
+  c._busy=true;c._dirty=false;c._t=null;
+  try{
+    if(c.id==null){
+      const r=await run([[INS,insArgs(c)]]);
+      c.id=Number(r[0].last_insert_rowid);
+    }else{
+      await run([['UPDATE words SET russian=?,english=?,transcription=?,example=?,position=? WHERE id=?',[...insArgs(c),{i:c.id}]]]);
+    }
+    if(c._deleted){await run([['DELETE FROM words WHERE id=?',[{i:c.id}]]])}
+    setStatus('ok');cacheLocal();
+  }catch(e){
+    c._dirty=true;setStatus('err');c._t=setTimeout(()=>flush(c),5000);
+  }
+  c._busy=false;
+  if(c._again){c._again=false;flush(c)}
+}
+async function removeCard(c){
+  clearTimeout(c._t);c._deleted=true;
+  if(c.id==null){return} // ещё не сохранена; если сохранение идёт — удалится после него
+  try{await run([['DELETE FROM words WHERE id=?',[{i:c.id}]]]);setStatus('ok');cacheLocal()}
+  catch(e){setStatus('err');toast('Не удалось удалить: нет связи')}
+}
+
+/* ===== Загрузка из базы ===== */
+async function poll(){
+  const ae=document.activeElement;
+  if(ae&&ae.tagName==='TEXTAREA'&&$('list').contains(ae))return; // не мешаем, пока человек печатает
+  try{
+    const res=await run([[SEL]]);
+    const rows=res[0].rows.map(fromRow);
+    const local={};cards.forEach(c=>{if(c.id!=null)local[c.id]=c});
+    const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._dirty||l._t))?l:r});
+    const fresh=cards.filter(c=>c.id==null&&!c._deleted&&!c._ghost); // новые, ещё не сохранённые
+    const list=fresh.concat(next);
+    const sig=JSON.stringify(list.map(c=>[c.id,c.ru,c.en,c.ipa,c.note,c.pos]));
+    setStatus('ok');
+    if(sig===lastSig)return;
+    lastSig=sig;
+    const curId=order.length&&cards[order[idx]]?cards[order[idx]].id:null;
+    cards=list;cacheLocal();resetOrder();
+    if(curId!=null){const p=cards.findIndex(c=>c.id===curId);if(p>=0)idx=p}
+    render();
+    if(!$('listView').hidden)renderList();
+  }catch(e){setStatus('err')}
+}
+
+/* слова, которые раньше добавляли на этом устройстве, переносим в общую базу */
+async function migrateOld(){
+  if(localStorage.getItem(MIG_KEY))return;
+  try{
+    let old=[];
+    ['cumshot-cards-v2','cumshot-cards-v3'].forEach(k=>{try{const a=JSON.parse(localStorage.getItem(k));if(Array.isArray(a))old=old.concat(a)}catch(e){}});
+    const res=await run([[SEL]]);
+    const rows=res[0].rows.map(fromRow);
+    const key=c=>((c.ru||'')+'|'+(c.en||'')).toLowerCase().trim();
+    const have=new Set(rows.map(key));
+    let pos=rows.reduce((m,c)=>Math.max(m,c.pos||0),0);
+    const add=[];
+    old.forEach(c=>{
+      if(!c||!(c.ru||'').trim())return;
+      const k=key(c);if(have.has(k))return;have.add(k);
+      pos+=10;add.push([INS,insArgs({ru:c.ru,en:c.en,ipa:c.ipa||'',note:c.note||'',pos})]);
+    });
+    for(let i=0;i<add.length;i+=25)await run(add.slice(i,i+25));
+    localStorage.setItem(MIG_KEY,'1');
+  }catch(e){}
+}
+
+/* ===== Квиз ===== */
 function render(){
   const card=$('card');
-  if(!cards.length){$('ruText').textContent='Список пуст';$('enText').textContent='';$('count').textContent='0 / 0';$('bar').style.width='0';return}
+  if(!cards.length){
+    $('frontText').textContent='Список пуст';$('frontIpa').textContent='';$('backText').textContent='';$('backIpa').textContent='';$('noteText').hidden=true;
+    $('count').textContent='0 / 0';$('bar').style.width='0';$('prev').disabled=$('next').disabled=true;return;
+  }
   if(idx>=order.length)idx=order.length-1;
   const c=cards[order[idx]];
-  $('ruText').textContent=c.ru||'—';
-  $('enText').textContent=c.en||'—';$('ipaText').textContent=c.ipa||'';
+  const ruFirst=lang==='ru';
+  $('front').className='face '+(ruFirst?'light':'dark');
+  $('back').className='face back '+(ruFirst?'dark':'light');
+  $('frontTag').textContent=ruFirst?'RU':'EN';
+  $('backTag').textContent=ruFirst?'EN':'RU';
+  $('frontText').textContent=(ruFirst?c.ru:c.en)||'—';
+  $('frontIpa').textContent=ruFirst?'':(c.ipa||'');
+  $('backText').textContent=(ruFirst?c.en:c.ru)||'—';
+  $('backIpa').textContent=ruFirst?(c.ipa||''):'';
   const n=$('noteText');n.hidden=!c.note;n.textContent=c.note||'';
   $('count').textContent=(idx+1)+' / '+order.length;
   $('bar').style.width=((idx+1)/order.length*100)+'%';
   $('prev').disabled=idx===0;$('next').disabled=idx===order.length-1;
 }
-function go(d){const n=idx+d;if(n<0||n>=order.length)return;const card=$('card');
-  if(card.classList.contains('open')){card.classList.remove('open');setTimeout(()=>{idx=n;render()},250)}else{idx=n;render()}}
+function go(d){
+  const n=idx+d;if(n<0||n>=order.length)return;
+  const card=$('card');
+  if(card.classList.contains('open')){card.classList.remove('open');setTimeout(()=>{idx=n;render()},250)}
+  else{idx=n;render()}
+}
+function setLang(l){
+  lang=l;try{localStorage.setItem(LANG_KEY,l)}catch(e){}
+  $('langRu').setAttribute('aria-pressed',l==='ru');$('langEn').setAttribute('aria-pressed',l==='en');
+  const card=$('card');
+  if(card.classList.contains('open')){card.classList.remove('open');setTimeout(render,250)}else render();
+}
+$('langRu').onclick=()=>setLang('ru');$('langEn').onclick=()=>setLang('en');
 $('card').onclick=()=>$('card').classList.toggle('open');
 $('card').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('card').classList.toggle('open')}};
 $('prev').onclick=()=>go(-1);$('next').onclick=()=>go(1);
-$('shuffle').onclick=()=>{for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}idx=0;$('card').classList.remove('open');render();toast('Перемешано')};
+$('shuffle').onclick=()=>{
+  for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+  idx=0;$('card').classList.remove('open');render();toast('Перемешано');
+};
 $('restart').onclick=()=>{resetOrder();$('card').classList.remove('open');render()};
 document.addEventListener('keydown',e=>{
-  if(!$('quiz').hidden && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)){
+  if(!$('quiz').hidden&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){
     if(e.key==='ArrowRight')go(1);
     if(e.key==='ArrowLeft')go(-1);
     if(e.key===' '&&document.activeElement.id!=='card'){e.preventDefault();$('card').classList.toggle('open')}
   }
 });
 
-/* list */
+/* ===== Список «Все слова» ===== */
 function fit(t){t.style.height='auto';t.style.height=t.scrollHeight+'px'}
 function renderList(){
   const L=$('list');L.innerHTML='';
   const f=q.trim().toLowerCase();
-  const shown=cards.map((c,i)=>[c,i]).filter(([c])=>!f||(c.ru+' '+c.en+' '+(c.ipa||'')+' '+c.note).toLowerCase().includes(f));
+  const shown=cards.filter(c=>!f||((c.ru||'')+' '+(c.en||'')+' '+(c.ipa||'')+' '+(c.note||'')).toLowerCase().includes(f));
   if(!shown.length){L.innerHTML='<div class="empty">'+(cards.length?'Ничего не найдено':'Пока нет карточек. Нажми «+ Карточка» или «Импорт».')+'</div>';return}
-  shown.forEach(([c,i])=>{
+  shown.forEach(c=>{
     const r=document.createElement('div');r.className='row';
     r.innerHTML=
       '<div class="cell"><label>Русский</label><textarea rows="1" data-k="ru" placeholder="Слово по-русски"></textarea></div>'+
       '<div class="cell e"><label>English</label><textarea rows="1" data-k="en" placeholder="Translation"></textarea><textarea class="p" rows="1" data-k="ipa" placeholder="[транскрипция]"></textarea>'+
-      '<textarea class="n" rows="1" data-k="note" placeholder="Заметка / варианты перевода (необязательно)"></textarea></div>'+
+      '<textarea class="n" rows="1" data-k="note" placeholder="Заметка / примеры / варианты перевода (необязательно)"></textarea></div>'+
       '<div class="side"><button data-a="dup" title="Дублировать">⧉</button><button data-a="del" title="Удалить">✕</button></div>';
     r.querySelectorAll('textarea').forEach(t=>{
       t.value=c[t.dataset.k]||'';
-      t.addEventListener('input',()=>{c[t.dataset.k]=t.value;fit(t);save()});
+      t.addEventListener('input',()=>{c[t.dataset.k]=t.value;fit(t);queueSave(c)});
     });
-    r.querySelector('[data-a=del]').onclick=()=>{if(confirm('Удалить карточку?')){cards.splice(i,1);save();resetOrder();renderList();render()}};
-    r.querySelector('[data-a=dup]').onclick=()=>{cards.splice(i+1,0,{...c});save();resetOrder();renderList();render()};
+    r.querySelector('[data-a=del]').onclick=()=>{
+      if(confirm('Удалить карточку? Она пропадёт у всех.')){
+        cards=cards.filter(x=>x!==c);lastSig='';removeCard(c);resetOrder();renderList();render();
+      }
+    };
+    r.querySelector('[data-a=dup]').onclick=()=>{
+      const d={id:null,ru:c.ru,en:c.en,ipa:c.ipa,note:c.note,pos:(c.pos||0)+0.5};
+      const i=cards.indexOf(c);cards.splice(i+1,0,d);lastSig='';
+      queueSave(d,0);resetOrder();renderList();render();
+    };
     L.appendChild(r);
   });
   L.querySelectorAll('textarea').forEach(fit);
 }
 $('search').oninput=e=>{q=e.target.value;renderList()};
-$('add').onclick=()=>{cards.unshift({ru:'',en:'',ipa:'',note:''});q='';$('search').value='';save();resetOrder();renderList();render();const t=$('list').querySelector('textarea');t&&t.focus()};
-$('reset').onclick=()=>{if(confirm('Вернуть исходный список? Твои правки в этом браузере пропадут.')){cards=JSON.parse(JSON.stringify(DEFAULT_CARDS));save();resetOrder();renderList();render()}};
+$('add').onclick=()=>{
+  const minPos=cards.reduce((m,c)=>Math.min(m,c.pos||0),0);
+  const c={id:null,ru:'',en:'',ipa:'',note:'',pos:minPos-10};
+  cards.unshift(c);q='';$('search').value='';lastSig='';
+  resetOrder();renderList();render();
+  const t=$('list').querySelector('textarea');t&&t.focus();
+};
 
-/* import / export */
+/* ===== Импорт / экспорт ===== */
 let mode='';
-function openDlg(m){mode=m;const d=$('dlg');
-  if(m==='imp'){$('dlgTitle').textContent='Импорт';$('dlgHelp').textContent='Вставь список: одна карточка на строку, «русский [Tab] english [Tab] заметка». Это формат экспорта Quizlet (Export → Copy text, между термином и определением — Tab). Транскрипция в [скобках] после английского слова подхватится сама. Заметка необязательна.';$('dlgText').value='';$('dlgOk').textContent='Добавить';$('dlgOk').hidden=false}
-  else{$('dlgTitle').textContent='Экспорт';$('dlgHelp').textContent='Скопируй текст и сохрани. Чтобы поделиться своим списком, отправь этот текст — его можно вставить через «Импорт».';$('dlgText').value=cards.map(c=>[c.ru,c.en+(c.ipa?' '+c.ipa:''),(c.note||'').replace(/\n/g,' / ')].join('\t')).join('\n');$('dlgOk').textContent='Скопировать'}
-  d.showModal()}
+function openDlg(m){
+  mode=m;
+  if(m==='imp'){
+    $('dlgTitle').textContent='Импорт';
+    $('dlgHelp').textContent='Вставь список: одна карточка на строку, «русский [Tab] english [Tab] заметка». Это формат экспорта Quizlet (Export → Copy text). Транскрипция в [скобках] после английского слова подхватится сама. Заметка необязательна. Слова сразу появятся у всех.';
+    $('dlgText').value='';$('dlgOk').textContent='Добавить';
+  }else{
+    $('dlgTitle').textContent='Экспорт';
+    $('dlgHelp').textContent='Скопируй текст и сохрани как резервную копию. Его можно вставить обратно через «Импорт».';
+    $('dlgText').value=cards.map(c=>[c.ru,(c.en||'')+(c.ipa?' '+c.ipa:''),(c.note||'').replace(/\n/g,' / ')].join('\t')).join('\n');
+    $('dlgOk').textContent='Скопировать';
+  }
+  $('dlg').showModal();
+}
 $('imp').onclick=()=>openDlg('imp');$('exp').onclick=()=>openDlg('exp');
 $('dlgCancel').onclick=()=>$('dlg').close();
-$('dlgOk').onclick=()=>{
+$('dlgOk').onclick=async()=>{
   if(mode==='imp'){
+    let pos=cards.reduce((m,c)=>Math.max(m,c.pos||0),0);
     const add=$('dlgText').value.split('\n').map(l=>l.split('\t')).filter(p=>p[0]&&p[0].trim()&&p[1]!==undefined)
-      .map(p=>({ru:p[0].trim(),en:(p[1]||'').replace(/\s*(\[[^\]]*\])\s*$/,'').trim(),ipa:((p[1]||'').match(/(\[[^\]]*\])\s*$/)||['',''])[1],note:(p[2]||'').trim().replace(/ \/ /g,'\n')}));
+      .map(p=>({id:null,ru:p[0].trim(),en:(p[1]||'').replace(/\s*(\[[^\]]*\])\s*$/,'').trim(),ipa:((p[1]||'').match(/(\[[^\]]*\])\s*$/)||['',''])[1],note:(p[2]||'').trim().replace(/ \/ /g,'\n'),pos:(pos+=10)}));
     if(!add.length){toast('Не нашёл строк с Tab между словами');return}
-    cards=cards.concat(add);save();resetOrder();renderList();render();$('dlg').close();toast('Добавлено: '+add.length);
+    $('dlgOk').disabled=true;setStatus('wait');
+    try{
+      for(let i=0;i<add.length;i+=25){
+        const part=add.slice(i,i+25);
+        const res=await run(part.map(c=>[INS,insArgs(c)]));
+        part.forEach((c,k)=>c.id=Number(res[k].last_insert_rowid));
+      }
+      cards=cards.concat(add);lastSig='';cacheLocal();resetOrder();renderList();render();
+      $('dlg').close();toast('Добавлено: '+add.length);setStatus('ok');
+    }catch(e){setStatus('err');toast('Не получилось: нет связи с базой')}
+    $('dlgOk').disabled=false;
   }else{
-    const t=$('dlgText');t.select();try{navigator.clipboard.writeText(t.value);}catch(e){document.execCommand('copy')}toast('Скопировано');
+    const t=$('dlgText');t.select();
+    try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}
+    toast('Скопировано');
   }
 };
 
-/* tabs */
-function tab(n){const quiz=n==='quiz';
+/* ===== Вкладки и логотип ===== */
+function tab(n){
+  const quiz=n==='quiz';
   $('quiz').hidden=!quiz;$('listView').hidden=quiz;
   $('tab-quiz').setAttribute('aria-selected',quiz);$('tab-list').setAttribute('aria-selected',!quiz);
-  if(quiz){resetOrder();render()}else renderList()}
+  if(quiz){resetOrder();render()}else renderList();
+}
 $('tab-quiz').onclick=()=>tab('quiz');$('tab-list').onclick=()=>tab('list');
-$('logo').onclick=()=>$('logo').classList.toggle('flip');
+$('logo').onclick=()=>{
+  const l=$('logo');l.classList.add('flip');
+  clearTimeout(l._t);l._t=setTimeout(()=>l.classList.remove('flip'),2500);
+  if(!$('listView').hidden)tab('quiz');
+};
 
-resetOrder();render();
+/* ===== Старт ===== */
+(async function start(){
+  try{const s=localStorage.getItem(LANG_KEY);if(s==='en'||s==='ru')lang=s}catch(e){}
+  $('langRu').setAttribute('aria-pressed',lang==='ru');$('langEn').setAttribute('aria-pressed',lang==='en');
+  const cached=loadCache();
+  cards=cached||DEFAULT_CARDS.map((c,i)=>({id:null,...c,pos:i*10,_ghost:true}));
+    resetOrder();render();
+  try{
+    setStatus('wait');
+    await setupDb();
+    await migrateOld();
+    lastSig='';cards=cards.filter(c=>c.id!=null);
+    await poll();
+  }catch(e){setStatus('err')}
+  setInterval(poll,8000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll()});
+  window.addEventListener('focus',poll);
+})();
 </script>
 </body>
 </html>
