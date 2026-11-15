@@ -8,7 +8,7 @@
 if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}
 document.documentElement.setAttribute('data-theme',t)})();
 </script>
-<title>CUMSHOT — карточки</title>
+<title>Copure — карточки</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" id="themeColor" content="#f7f7f2">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=2">
@@ -16,7 +16,7 @@ document.documentElement.setAttribute('data-theme',t)})();
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="CUMSHOT">
+<meta name="apple-mobile-web-app-title" content="Copure">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,6 +80,20 @@ body.readonly .robar{display:block}
 body.readonly .side,body.readonly #add,body.readonly #imp,body.readonly .rate.archive{display:none}
 body.readonly .rates{grid-template-columns:repeat(4,1fr)}
 body.loading section,body.offline section{display:none!important}
+
+/* вход */
+#auth{display:none;justify-content:center;padding:56px 0 24px}
+body.auth #auth{display:flex}
+body.auth section,body.auth nav,body.auth .logout{display:none!important}
+.authcard{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:40px 32px;border-radius:24px;background:var(--white);border:1px solid var(--grey);text-align:center}
+.authcard h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(34px,6vw,46px);line-height:1.1}
+.authcard .authsub{font-size:14px;opacity:.6;margin-top:-6px}
+.authcard .seg{align-self:center}
+.field{width:100%;padding:12px 20px;border-radius:999px;border:1px solid var(--grey);background:var(--paper);text-align:left;outline:0;transition:border-color .2s}
+.field:focus{border-color:var(--black)}
+.field::placeholder{opacity:.4}
+.autherr{min-height:20px;font-size:14px;color:var(--wine)}
+.authcard .pill:disabled{opacity:.5;cursor:default}
 
 /* quiz */
 .quiz{display:flex;flex-direction:column;align-items:center;gap:18px}
@@ -180,13 +194,14 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
   nav button{padding:8px 12px}
 }
 @media(max-width:680px){
-  header{display:grid;grid-template-columns:1fr auto;grid-template-areas:"logo theme" "nav nav";gap:10px 12px;padding:14px 16px 4px}
+  header{display:grid;grid-template-columns:1fr auto auto;grid-template-areas:"logo theme logout" "nav nav nav";gap:10px 12px;padding:14px 16px 4px}
   nav{grid-area:nav;display:flex}
   nav button{flex:1;padding:9px 6px;font-size:15px}
   .logo{grid-area:logo;width:190px;height:30px;margin:0}
   .logo .f{font-size:28px}
   .logo .b{font-size:13px}
   .theme{grid-area:theme;width:34px;height:34px}
+  .logout{grid-area:logout}
   main{padding:4px 16px 20px}
   .quiz,.stage{gap:16px}
   .scene{height:clamp(210px,calc(100vh - 385px),400px);height:clamp(210px,calc(100dvh - 385px),400px);min-height:0}
@@ -201,13 +216,14 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
   .pill{padding:8px 16px}
   .seg button{padding:7px 20px}
   .done{padding:50px 20px}
+  .authcard{padding:32px 20px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body class="loading">
 <header>
-  <div class="logo" id="logo" title="CUMSHOT / PRIVATE ENGLISH CLUB"><span class="f">CUMSHOT</span><span class="b">PRIVATE ENGLISH CLUB</span></div>
+  <div class="logo" id="logo" title="Copure / beta"><span class="f">Copure</span><span class="b">beta</span></div>
   <nav role="tablist">
     <button role="tab" id="tab-quiz" aria-selected="true">Карточки</button>
     <button role="tab" id="tab-list" aria-selected="false">Все слова</button>
@@ -217,6 +233,9 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
     <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   </button>
+  <button class="theme logout" id="logout" aria-label="Выйти" title="Выйти">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+  </button>
 </header>
 
 <main>
@@ -225,6 +244,21 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
   <div id="offline">
     <p>Oops! You're offline. Get online for a second and the magic will happen.</p>
     <button class="pill solid" id="retry">Retry</button>
+  </div>
+
+  <div id="auth">
+    <form class="authcard" id="authForm" novalidate>
+      <h2 id="authTitle">Hi, love</h2>
+      <p class="authsub" id="authSub">Войди, чтобы открыть карточки</p>
+      <div class="seg" role="group" aria-label="Вход или регистрация">
+        <button type="button" id="mLogin" aria-pressed="true">Вход</button>
+        <button type="button" id="mReg" aria-pressed="false">Регистрация</button>
+      </div>
+      <input class="field" id="aUser" type="text" placeholder="Логин" aria-label="Логин" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="32">
+      <input class="field" id="aPass" type="password" placeholder="Пароль" aria-label="Пароль" autocomplete="current-password">
+      <div class="autherr" id="authErr" role="alert"></div>
+      <button class="pill solid" id="authBtn" type="submit">Войти</button>
+    </form>
   </div>
 
   <section id="quiz" class="quiz">
@@ -291,84 +325,10 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 <div class="toast" id="toast"></div>
 
 <script>
-const DB_HOST='https://cards-lovelybeta.aws-eu-north-1.turso.io';
-const DB_TOKEN='eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3OTQ2Njk1OTAsImlkIjoiMDFhMWRhOWYtNjcwMS03Y2M1LTgyMTktYTBmYmYxMzIzZWJiIiwia2lkIjoidnFsbHlldWtBa2dxZDgtUWtYY0lONUhkQjNrVjR4eVBHci1RZ1NmcnhsQSIsInJpZCI6ImIzNjM3ZTk1LWNlMTQtNDJhNS05ODIwLWEwMjBmOTdjYzViZSJ9.ScXBRkkihT9GNrwg_7QpVAPkBx5MS0MrEo85AI5I91oQl9Maei6rtXoGeyJZ9tX20aNIdJEskB_Mo_ZDtbo3Aw';
-const MIG_KEY='cumshot-turso-migrated';
-const LANG_KEY='cumshot-lang';
-
-const DEFAULT_CARDS=[
-{ru:"читать по очереди",en:"read by turns",ipa:"[riːd baɪ tɜːnz]",note:""},
-{ru:"ссылка, изгнание",en:"exile",ipa:"[ˈeksaɪl]",note:"(forced to live away from home)\n- He lived in exile for many years.\n- He felt exiled from his own family.\n- Many exiles never returned to their homeland."},
-{ru:"сесть на шпагат",en:"to do the splits",ipa:"[tuː duː ðə splɪts]",note:"to sit on the twine\n- Performing all of the above methods, you quickly understand how to sit on the twine for 10 days at home.\nВ живом английском обычно говорят именно «do the splits»."},
-{ru:"выгодно (для себя)",en:"beneficial",ipa:"[ˌbenɪˈfɪʃl]",note:"Варианты по контексту:\n- to one's advantage [əd'vɑːntɪdʒ] — выгодно мне, в мою пользу\n- profitable ['prɒfɪtəbl] — приносит деньги, прибыльно\n- worth it [wɜːθ ɪt] — оно того стоит\n- It pays off — это окупится"},
-{ru:"обиженный",en:"offended",ipa:"[əˈfendɪd]",note:""},
-{ru:"обидеться",en:"to take offence, to get offended",ipa:"[tuː teɪk əˈfens], [tuː get əˈfendɪd]",note:"- He tries not to offend anyone, so it is usually like.\n- I do not offend, but others may take offense."},
-{ru:"грызть, кусать, глотать, жевать, обгрызать, обгладывать",en:"gnaw",ipa:"[nɔː]",note:"If it's VERY chewy, you might only be able to «gnaw» at it."},
-{ru:"онемение, оцепенение",en:"numbness",ipa:"[ˈnʌmnəs]",note:""},
-{ru:"оговорка, предостережение, разъяснение, условие",en:"caveat",ipa:"[ˈkeɪviæt]",note:""},
-{ru:"недооцененный",en:"underestimated",ipa:"[ˌʌndərˈestɪmeɪtɪd]",note:""},
-{ru:"оценить, прикинуть",en:"to estimate",ipa:"[tuː ˈestɪmeɪt]",note:"Как существительное — [ˈestɪmət]: оценка, смета."},
-{ru:"назло",en:"out of spite; to spite (s.o.)",ipa:"[aʊt əv spaɪt]",note:""},
-{ru:"несмотря на, вопреки",en:"despite / in spite of",ipa:"[dɪˈspaɪt]",note:"Ошибка из исходника: «despite of» неверно. Правильно: despite + noun ИЛИ in spite of + noun."},
-{ru:"холостяк; бакалавр",en:"bachelor",ipa:"[ˈbætʃələ]",note:""},
-{ru:"камень преткновения, загвоздка, препятствие",en:"the sticking point",ipa:"[ðə ˈstɪkɪŋ pɔɪnt]",note:""},
-{ru:"бросить курить",en:"quit smoking",ipa:"[kwɪt ˈsməʊkɪŋ]",note:""},
-{ru:"Я резко бросил",en:"I went cold turkey",ipa:"[aɪ went kəʊld ˈtɜːki]",note:""},
-{ru:"наводить справки",en:"make inquiries",ipa:"[meɪk ɪnˈkwaɪəriz]",note:""},
-{ru:"стратегический ход",en:"chess move",ipa:"[tʃes muːv]",note:"Ещё вариант: strategic move [strəˈtiːdʒɪk muːv]."},
-{ru:"суетиться, наводить шумиху/суету",en:"make a fuss",ipa:"[meɪk ə fʌs]",note:""},
-{ru:"тесто",en:"dough",ipa:"[dəʊ]",note:""},
-{ru:"потолок",en:"ceiling",ipa:"[ˈsiːlɪŋ]",note:""},
-{ru:"подвал",en:"cellar",ipa:"[ˈselə]",note:""},
-{ru:"качаться, раскачиваться; колебание, размах",en:"swing (swung, swung)",ipa:"[swɪŋ] [swʌŋ]",note:"I'm sick of these mood swings"},
-{ru:"качели",en:"swing, seesaw",ipa:"[swɪŋ], [ˈsiːsɔː]",note:""},
-{ru:"взглянуть украдкой, глянуть",en:"to peek",ipa:"[tuː piːk]",note:""},
-{ru:"усиление (типа «ещё тот», «настоящий», «чёртовски сильный»)",en:"heck of",ipa:"[hek əv]",note:"It's been one heck of a seesaw, hasn't it?\n= В последнее время сплошные качели, не правда ли?"},
-{ru:"Глянь / Взгляни",en:"Take a peek",ipa:"[teɪk ə piːk]",note:""},
-{ru:"процеживать через сито",en:"to strain through a sieve",ipa:"[tuː streɪn θruː ə sɪv]",note:""},
-{ru:"я ещё не успел",en:"I haven't had a chance yet",ipa:"[aɪ ˈhævnt hæd ə tʃɑːns jet]",note:""},
-{ru:"схема",en:"scheme, map",ipa:"[skiːm], [mæp]",note:"scheme — схема, план (иногда: махинация); map — схема-карта, план местности."},
-{ru:"яичный желток",en:"egg yolk",ipa:"[eɡ jəʊk]",note:""},
-{ru:"бусы; чётки",en:"beads",ipa:"[biːdz]",note:""},
-{ru:"шампиньон",en:"champignon; field mushroom",ipa:"[ˈʃæmpɪnjɒn]; [fiːld ˈmʌʃruːm]",note:""},
-{ru:"суета",en:"bustle, fuss",ipa:"[ˈbʌsl], [fʌs]",note:""},
-{ru:"канцелярия (ручки, карандаши, линейки, ..)",en:"stationery",ipa:"[ˈsteɪʃənri]",note:"Не путать: stationary [ˈsteɪʃənri] — неподвижный (произносится так же!).\nДругие варианты: office supplies — офисные принадлежности; writing supplies — всё для письма."},
-{ru:"цапля",en:"heron",ipa:"[ˈherən]",note:""},
-{ru:"избирательный",en:"selective",ipa:"[sɪˈlektɪv]",note:"Про выборы — electoral [ɪˈlektərəl]."},
-{ru:"заботливый",en:"caring",ipa:"[ˈkeərɪŋ]",note:""},
-{ru:"ставка (готов поспорить, что)",en:"bet",ipa:"[bet]",note:""},
-{ru:"борьба",en:"struggle",ipa:"[ˈstrʌɡl]",note:""},
-{ru:"последовательный",en:"consistent",ipa:"[kənˈsɪstənt]",note:""},
-{ru:"исследовать, изучать",en:"to explore",ipa:"[tuː ɪkˈsplɔː]",note:""},
-{ru:"аниме",en:"anime",ipa:"[ˈænɪmeɪ]",note:"Японская анимация. Произносится «а-ни-мей», а не «а-ни-ме»."},
-{ru:"заключение, вывод",en:"conclusion",ipa:"[kənˈkluːʒn]",note:"- in conclusion — в заключение\n- draw / reach a conclusion — сделать вывод\n- jump to conclusions — делать поспешные выводы\nЕщё: summary — краткий итог; finding — вывод исследования."},
-{ru:"несправедливость",en:"injustice; unfairness",ipa:"[ɪnˈdʒʌstɪs]; [ʌnˈfeənəs]",note:"injustice — серьёзная, социальная/правовая несправедливость.\nunfairness — бытовая («это нечестно»)."},
-{ru:"в ближайшее время",en:"in the nearest future",ipa:"[ɪn ðə ˈnɪərɪst ˈfjuːtʃə]",note:"Чаще говорят: in the near future, soon, shortly."},
-{ru:"эхо",en:"echo",ipa:"[ˈekəʊ]",note:""},
-{ru:"напряжение",en:"tension",ipa:"[ˈtenʃn]",note:"Электрическое напряжение — voltage [ˈvəʊltɪdʒ]; нервное — stress [stres]."},
-{ru:"жаждущий (я жажду его получить)",en:"eager",ipa:"[ˈiːɡə]",note:"I'm eager to get it.\nВарианты по контексту:\n- thirsty [ˈθɜːsti] — буквально «хочу пить», в переносном смысле — жадный до чего-то\n- craving [ˈkreɪvɪŋ] — сильная тяга\n- dying to — умираю, как хочу: I'm dying to get it"},
-{ru:"оправдывать",en:"to justify",ipa:"[tuː ˈdʒʌstɪfaɪ]",note:""},
-{ru:"организовывать (пространство, дела, событие)",en:"to organize",ipa:"[tuː ˈɔːɡənaɪz]",note:"Варианты по контексту:\n- to arrange [əˈreɪndʒ] — договориться, устроить (встречу, поездку)\n- to set up — организовать, наладить (событие, систему)\n- to tidy up — навести порядок (пространство)\n- to plan — спланировать"},
-{ru:"измученный, обессиленный",en:"exhausted",ipa:"[ɪɡˈzɔːstɪd]",note:""},
-{ru:"восприятие (ситуации, твоих слов)",en:"perception",ipa:"[pəˈsepʃn]",note:"Варианты по контексту:\n- how it's perceived / the way you see it — как это воспринимается\n- take on (something) — взгляд, трактовка\n- interpretation [ɪnˌtɜːprɪˈteɪʃn] — истолкование слов"},
-{ru:"крепость",en:"fortress",ipa:"[ˈfɔːtrɪs]",note:""},
-{ru:"серьезно",en:"seriously",ipa:"[ˈsɪəriəsli]",note:"Варианты по контексту:\n- Seriously? — Серьёзно?! (удивление)\n- Are you serious? — Ты серьёзно?\n- I'm serious — я не шучу\n- No kidding — без шуток"},
-{ru:"плов",en:"pilaf",ipa:"[pɪˈlæf]",note:""},
-{ru:"искренне",en:"sincerely, genuinely",ipa:"[sɪnˈsɪəli], [ˈdʒenjuɪnli]",note:"sincerely — искренне (и в конце письма: Sincerely yours).\ngenuinely — по-настоящему, неподдельно.\nЕщё: truly, heartfelt — от всего сердца."},
-{ru:"Сделаю что ты просишь меня и заплачу тебе за это",en:"Whatever you ask me to do and pay you to do it",ipa:"",note:"Естественный перевод русской фразы: I'll do what you ask me to, and I'll pay you for it.\nВ твоём варианте английская часть — обрывок: «всё, о чём ты просишь и (за что) платишь»."},
-{ru:"переговоры (сотрудничество)",en:"negotiations",ipa:"[nɪˌɡəʊʃiˈeɪʃnz]",note:"Варианты по контексту:\n- talks — переговоры (неформально/дипломатия)\n- cooperation [kəʊˌɒpəˈreɪʃn] — сотрудничество\n- collaboration [kəˌlæbəˈreɪʃn] — совместная работа\n- partnership — партнёрство"},
-{ru:"богомол",en:"mantis",ipa:"[ˈmæntɪs]",note:""},
-{ru:"осведомлённый (ты знаешь, что..)",en:"aware",ipa:"[əˈweə]",note:"Are you aware that...\n«I am well aware of my responsibilities to the outside world,» Olivetti replied, «and it makes this situation no more grave.»\ngrave [ɡreɪv] — могила, а ещё: тяжёлый, серьёзный, тяжкий."},
-{ru:"фокусник",en:"magician",ipa:"[məˈdʒɪʃn]",note:""},
-{ru:"Меня каждый раз сносит / я каждый раз в восторге",en:"I'm blown away every time.",ipa:"[aɪm bləʊn əˈweɪ ˈevri taɪm]",note:""},
-{ru:"жжение в очке",en:"burning sensation in the anus",ipa:"[ˈbɜːnɪŋ senˈseɪʃn ɪn ði ˈeɪnəs]",note:""},
-{ru:"нетерплячка",en:"impatience",ipa:"[ɪmˈpeɪʃns]",note:""},
-{ru:"на данном этапе",en:"at this point",ipa:"[æt ðɪs pɔɪnt]",note:"Ещё вариант: at this stage."},
-{ru:"такими темпами",en:"at this rate",ipa:"[æt ðɪs reɪt]",note:""},
-{ru:"Я не знаю, как я успею это сделать сегодня.",en:"I don't know how I'll manage to do it today.",ipa:"",note:"— Я не знаю, как я это впихну в сегодняшний день.\n— I don't know how I'm going to fit it in today.\n\nAt this rate, I don't know how I'll get it done today.\n— Такими темпами я не знаю, как уже успею это сделать сегодня."},
-{ru:"Я не успел / не дошли руки",en:"I didn't get around to it",ipa:"[aɪ ˈdɪdnt get əˈraʊnd tuː ɪt]",note:"I ran out of time — у меня закончилось время."},
-{ru:"зрачок",en:"pupil",ipa:"[ˈpjuːpl]",note:"Ещё pupil — ученик, школьник."}
-];
+const WORKER_URL = 'https://test.lizabeta.workers.dev';
+const GROUP_ID = 'group-catcha';   // слова общей группы, которые показываем
+const TOKEN_KEY = 'catcha-token';  // JWT в localStorage
+const LANG_KEY = 'cumshot-lang';
 
 /* ===== Алгоритм интервального повторения (Anki, SM-2 v2) ===== */
 const DAY=86400000, MIN=60000;
@@ -432,8 +392,8 @@ function fmtIn(ms){
   return (d/365).toFixed(1)+'y';
 }
 
-/* ===== Резервная копия слов в IndexedDB (используется ТОЛЬКО когда нет связи с базой) ===== */
-function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('cumshot-backup',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+/* ===== Резервная копия слов в IndexedDB (используется ТОЛЬКО когда нет связи с сервером) ===== */
+function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('catcha-backup',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function idbGet(){
   try{const db=await idbOpen();return await new Promise((res,rej)=>{const t=db.transaction('kv').objectStore('kv').get('cards');t.onsuccess=()=>res(t.result||null);t.onerror=()=>rej(t.error)})}
   catch(e){return null}
@@ -455,61 +415,49 @@ function scheduleBackup(){
 let readOnly=false, retryTimer=null, bkTimer=null, advancing=false;
 let cards=[], curId=null, queue=[], revealed=false, sessionTotal=0, lastSig='', lang='ru', q='', pollTimer=null;
 const $=id=>document.getElementById(id);
-const SRS_KEYS=['interval','repetitions','ease_factor','due_date','status'];
 
-/* ===== Turso по HTTP ===== */
-function arg(a){
-  if(a===null||a===undefined)return {type:'null'};
-  if(typeof a==='number')return {type:'float',value:a};
-  if(typeof a==='object')return {type:'integer',value:String(a.i)};
-  return {type:'text',value:String(a)};
-}
-async function run(stmts){
-  const reqs=stmts.map(s=>({type:'execute',stmt:{sql:s[0],args:(s[1]||[]).map(arg)}}));
-  reqs.push({type:'close'});
+/* ===== Токен и запросы к Worker ===== */
+const getToken=()=>{try{return localStorage.getItem(TOKEN_KEY)}catch(e){return null}};
+const setToken=t=>{try{if(t)localStorage.setItem(TOKEN_KEY,t);else localStorage.removeItem(TOKEN_KEY)}catch(e){}};
+
+class ApiError extends Error{constructor(status,msg){super(msg);this.status=status}}
+
+async function api(path,opt={}){
+  const headers={};
+  const token=getToken();
+  if(opt.body!==undefined)headers['Content-Type']='application/json';
+  if(token&&!opt.public)headers['Authorization']='Bearer '+token;
   const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),15000);
   let r;
-  try{r=await fetch(DB_HOST+'/v2/pipeline',{method:'POST',headers:{'Authorization':'Bearer '+DB_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({requests:reqs}),signal:ctl.signal})}
-  finally{clearTimeout(tm)}
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  const j=await r.json();
-  return j.results.slice(0,stmts.length).map(x=>{
-    if(x.type!=='ok')throw new Error(JSON.stringify(x.error||x));
-    return x.response.result;
-  });
+  try{
+    r=await fetch(WORKER_URL+path,{method:opt.method||'GET',headers,body:opt.body!==undefined?JSON.stringify(opt.body):undefined,signal:ctl.signal});
+  }finally{clearTimeout(tm)}
+  let data=null;try{data=await r.json()}catch(e){}
+  if(!r.ok){
+    if(r.status===401&&!opt.public)onUnauthorized(); // токен недействителен или сессии сброшены
+    throw new ApiError(r.status,(data&&data.error)||('Ошибка сервера ('+r.status+')'));
+  }
+  return data;
 }
-const cell=v=>!v||v.type==='null'?'':(v.type==='integer'||v.type==='float')?Number(v.value):v.value;
-const INS='INSERT INTO words(russian,english,transcription,example,position) VALUES(?,?,?,?,?)';
-const SEL='SELECT id,russian,english,transcription,example,position,interval,repetitions,ease_factor,due_date,status FROM words ORDER BY position,id';
-const UPD_T='UPDATE words SET russian=?,english=?,transcription=?,example=?,position=? WHERE id=?';
-const UPD_S='UPDATE words SET interval=?,repetitions=?,ease_factor=?,due_date=?,status=? WHERE id=?';
-const txtArgs=c=>[c.ru||'',c.en||'',c.ipa||'',c.note||'',c.pos||0];
-const srsArgs=c=>[c.interval||0,c.repetitions||0,c.ease_factor||START_EASE,c.due_date||0,c.status||'new'];
-const blank=o=>({id:null,ru:'',en:'',ipa:'',note:'',pos:0,interval:0,repetitions:0,ease_factor:START_EASE,due_date:0,status:'new',...o});
-const fromRow=r=>blank({id:cell(r[0]),ru:cell(r[1]),en:cell(r[2]),ipa:cell(r[3]),note:cell(r[4]),pos:cell(r[5]),interval:cell(r[6])||0,repetitions:cell(r[7])||0,ease_factor:cell(r[8])||START_EASE,due_date:cell(r[9])||0,status:cell(r[10])||'new'});
 
-async function setupDb(){
-  const r=await run([
-    ["CREATE TABLE IF NOT EXISTS words(id INTEGER PRIMARY KEY AUTOINCREMENT, russian TEXT NOT NULL DEFAULT '', english TEXT NOT NULL DEFAULT '', transcription TEXT NOT NULL DEFAULT '', example TEXT NOT NULL DEFAULT '', position REAL NOT NULL DEFAULT 0, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, interval INTEGER NOT NULL DEFAULT 0, repetitions INTEGER NOT NULL DEFAULT 0, ease_factor REAL NOT NULL DEFAULT 2.5, due_date INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT 'new')"],
-    ['CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT)'],
-    ["INSERT OR IGNORE INTO meta(key,value) VALUES('seeded','1')"],
-    ['PRAGMA table_info(words)']
-  ]);
-  // если таблица была создана раньше — добавляем недостающие поля алгоритма
-  const have=new Set(r[3].rows.map(x=>cell(x[1])));
-  const add={interval:'INTEGER NOT NULL DEFAULT 0',repetitions:'INTEGER NOT NULL DEFAULT 0',ease_factor:'REAL NOT NULL DEFAULT 2.5',due_date:'INTEGER NOT NULL DEFAULT 0',status:"TEXT NOT NULL DEFAULT 'new'"};
-  for(const k of Object.keys(add)){
-    if(!have.has(k)){try{await run([['ALTER TABLE words ADD COLUMN '+k+' '+add[k]]])}catch(e){}}
+/* ===== Слова: преобразование данных сервера ===== */
+const blank=o=>({id:null,ru:'',en:'',ipa:'',note:'',pos:0,interval:0,repetitions:0,ease_factor:START_EASE,due_date:0,status:'new',...o});
+function parseDue(v){
+  if(typeof v==='number')return v;
+  if(typeof v==='string'&&v){
+    if(/^\d+(\.\d+)?$/.test(v))return Number(v);
+    const t=Date.parse(v);return isNaN(t)?0:t;
   }
-  if(r[2].affected_row_count===1){ // первый запуск — заливаем стартовый список
-    const all=DEFAULT_CARDS.map((c,i)=>[INS,txtArgs({...c,pos:i*10})]);
-    for(let i=0;i<all.length;i+=25)await run(all.slice(i,i+25));
-  }
+  return 0;
 }
+const fromWord=(w,i)=>blank({id:w.id,ru:w.ru||'',en:w.en||'',ipa:w.ipa||'',note:w.note||'',pos:i*10,interval:Number(w.interval)||0,repetitions:Number(w.repetitions)||0,ease_factor:Number(w.ease_factor)||START_EASE,due_date:parseDue(w.due_date),status:w.status||'new'});
+const textBody=c=>({ru:c.ru||'',en:c.en||'',ipa:c.ipa||'',note:c.note||''});
+const srsBody=c=>({interval:c.interval||0,repetitions:c.repetitions||0,ease_factor:c.ease_factor||START_EASE,due_date:c.due_date||0,status:c.status||'new'});
+const hasBoth=c=>!!((c.ru||'').trim()&&(c.en||'').trim());
 
 /* ===== Сохранение ===== */
 function setStatus(s){
-  $('sync').textContent=s==='ok'?'● общий список · синхронизировано':s==='err'?'● нет связи с базой — повторю попытку':'● сохраняю…';
+  $('sync').textContent=s==='ok'?'● общий список · синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='part'?'● карточка сохранится, когда заполнены оба слова':'● сохраняю…';
 }
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}
 function queueSave(c,delay=700,srs=false){
@@ -520,24 +468,31 @@ function queueSave(c,delay=700,srs=false){
 }
 async function flush(c){
   if(c._busy){c._again=true;return}
-  if(c.id==null&&!((c.ru||'')+(c.en||'')).trim())return;
+  if(c._deleted)return;
+  if(c.id==null&&!hasBoth(c)){c._dirty=true;setStatus('part');return} // сервер ждёт и русский, и английский
   const needT=c._dirty,needS=c._sdirty;
   c._busy=true;c._dirty=false;c._sdirty=false;c._t=null;
   try{
     if(c.id==null){
-      const r=await run([[INS,txtArgs(c)]]);
-      c.id=Number(r[0].last_insert_rowid);
+      // POST /words — новое слово (вместе с текущим состоянием SM-2)
+      const r=await api('/words',{method:'POST',body:{group_id:GROUP_ID,...textBody(c),...srsBody(c)}});
+      c.id=r.word.id;
     }else{
-      const st=[];
-      if(needT)st.push([UPD_T,[...txtArgs(c),{i:c.id}]]);
-      if(needS)st.push([UPD_S,[...srsArgs(c),{i:c.id}]]);
-      if(st.length)await run(st);
+      // PUT /words — обновлённый текст и/или прогресс SM-2
+      const body={id:c.id};
+      if(needT)Object.assign(body,textBody(c));
+      if(needS)Object.assign(body,srsBody(c));
+      if(needT||needS)await api('/words',{method:'PUT',body});
     }
-    if(c._deleted)await run([['DELETE FROM words WHERE id=?',[{i:c.id}]]]);
+    if(c._deleted)await api('/words?id='+encodeURIComponent(c.id),{method:'DELETE'});
     setStatus('ok');scheduleBackup();
   }catch(e){
-    c._dirty=c._dirty||needT;c._sdirty=c._sdirty||needS;
-    setStatus('err');c._t=setTimeout(()=>flush(c),5000);
+    if(e instanceof ApiError&&e.status>=400&&e.status<500&&e.status!==401&&e.status!==429){
+      setStatus('err');toast(e.message); // сервер отказал — повтор не поможет
+    }else if(!(e instanceof ApiError&&e.status===401)){
+      c._dirty=c._dirty||needT;c._sdirty=c._sdirty||needS;
+      setStatus('err');c._t=setTimeout(()=>flush(c),5000);
+    }
   }
   c._busy=false;
   if(c._again){c._again=false;flush(c)}
@@ -545,16 +500,16 @@ async function flush(c){
 async function removeCard(c){
   clearTimeout(c._t);c._deleted=true;
   if(c.id==null)return;
-  try{await run([['DELETE FROM words WHERE id=?',[{i:c.id}]]]);setStatus('ok')}
-  catch(e){setStatus('err');toast('Не удалось удалить: нет связи')}
+  try{await api('/words?id='+encodeURIComponent(c.id),{method:'DELETE'});setStatus('ok');scheduleBackup()}
+  catch(e){if(e.status===401)return;setStatus('err');toast('Не удалось удалить: нет связи')}
 }
 
-/* ===== Загрузка из базы ===== */
+/* ===== Загрузка с сервера: GET /data ===== */
 async function poll(first){
   const ae=document.activeElement;
   if(!first&&ae&&ae.tagName==='TEXTAREA'&&$('list').contains(ae))return;
-  const res=await run([[SEL]]);
-  const rows=res[0].rows.map(fromRow);
+  const data=await api('/data');
+  const rows=(data.words||[]).filter(w=>w.group_id===GROUP_ID).map((w,i)=>fromWord(w,i));
   const local={};cards.forEach(c=>{if(c.id!=null)local[c.id]=c});
   const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._dirty||l._sdirty||l._t))?l:r});
   const fresh=cards.filter(c=>c.id==null&&!c._deleted);
@@ -568,28 +523,7 @@ async function poll(first){
   if(!$('listView').hidden)renderList();
   if(!$('archView').hidden)renderArchive();
 }
-async function safePoll(){if(readOnly)return;try{await poll(false);if(curId==null&&!revealed&&cards.some(isDue)&&!$('quiz').hidden)rebuild()}catch(e){setStatus('err')}}
-
-/* слова, которые раньше добавляли на этом устройстве (старый localStorage), один раз переносим в базу */
-async function migrateOld(){
-  try{localStorage.removeItem('cumshot-turso-cache')}catch(e){}
-  if(localStorage.getItem(MIG_KEY))return;
-  let old=[];
-  ['cumshot-cards-v2','cumshot-cards-v3'].forEach(k=>{try{const a=JSON.parse(localStorage.getItem(k));if(Array.isArray(a))old=old.concat(a)}catch(e){}});
-  const res=await run([[SEL]]);
-  const rows=res[0].rows.map(fromRow);
-  const key=c=>((c.ru||'')+'|'+(c.en||'')).toLowerCase().trim();
-  const have=new Set(rows.map(key));
-  let pos=rows.reduce((m,c)=>Math.max(m,c.pos||0),0);
-  const add=[];
-  old.forEach(c=>{
-    if(!c||!(c.ru||'').trim())return;
-    const k=key(c);if(have.has(k))return;have.add(k);
-    pos+=10;add.push([INS,txtArgs({ru:c.ru,en:c.en,ipa:c.ipa||'',note:c.note||'',pos})]);
-  });
-  for(let i=0;i<add.length;i+=25)await run(add.slice(i,i+25));
-  localStorage.setItem(MIG_KEY,'1');
-}
+async function safePoll(){if(readOnly)return;try{await poll(false);if(curId==null&&!revealed&&cards.some(isDue)&&!$('quiz').hidden)rebuild()}catch(e){if(!(e&&e.status===401))setStatus('err')}}
 
 /* ===== Квиз ===== */
 const byId=id=>cards.find(c=>c.id===id);
@@ -653,7 +587,7 @@ function rate(r){
   else Object.assign(c,c._pre); // повторная оценка: сначала откатываем предыдущую
   queue=queue.filter(id=>id!==c.id);
   applyAnkiSM2(c,r,Date.now());
-  queueSave(c,0,true);
+  queueSave(c,0,true); // → PUT /words с новыми interval, repetitions, ease_factor, due_date, status
   if(r!=='archive'&&c.status!=='archive'&&c.due_date-Date.now()<=LEARN_AHEAD)queue.push(c.id);
   c._pick=r;
   revealed=true;$('card').classList.add('open');
@@ -723,7 +657,7 @@ function renderList(){
     r.querySelector('[data-a=arch]').onclick=()=>archiveCard(c);
     r.querySelector('[data-a=del]').onclick=()=>{
       if(confirm('Удалить карточку? Она пропадёт у всех.')){
-        cards=cards.filter(x=>x!==c);lastSig='';removeCard(c);
+        cards=cards.filter(x=>x!==c);lastSig='';removeCard(c); // → DELETE /words
         queue=queue.filter(id=>id!==c.id);
         if(curId===c.id&&!revealed)advance();
         renderList();
@@ -769,6 +703,7 @@ function renderArchive(){
 
 /* ===== Импорт / экспорт ===== */
 let mode='';
+const lineOf=c=>[c.ru,(c.en||'')+(c.ipa?' '+c.ipa:''),(c.note||'').replace(/\n/g,' / ')].join('\t');
 function openDlg(m){
   mode=m;
   if(m==='imp'){
@@ -778,7 +713,7 @@ function openDlg(m){
   }else{
     $('dlgTitle').textContent='Экспорт';
     $('dlgHelp').textContent='Скопируй текст и сохрани как резервную копию (в неё входят и слова из архива). Его можно вставить обратно через «Импорт». Прогресс повторений в копию не входит.';
-    $('dlgText').value=cards.map(c=>[c.ru,(c.en||'')+(c.ipa?' '+c.ipa:''),(c.note||'').replace(/\n/g,' / ')].join('\t')).join('\n');
+    $('dlgText').value=cards.map(lineOf).join('\n');
     $('dlgOk').textContent='Скопировать';
   }
   $('dlg').showModal();
@@ -789,20 +724,37 @@ $('dlgOk').onclick=async()=>{
   if(mode==='imp'){
     let pos=cards.reduce((m,c)=>Math.max(m,c.pos||0),0);
     const add=$('dlgText').value.split('\n').map(l=>l.split('\t')).filter(p=>p[0]&&p[0].trim()&&p[1]!==undefined)
-      .map(p=>blank({ru:p[0].trim(),en:(p[1]||'').replace(/\s*(\[[^\]]*\])\s*$/,'').trim(),ipa:((p[1]||'').match(/(\[[^\]]*\])\s*$/)||['',''])[1],note:(p[2]||'').trim().replace(/ \/ /g,'\n'),pos:(pos+=10)}));
+      .map(p=>blank({ru:p[0].trim(),en:(p[1]||'').replace(/\s*(\[[^\]]*\])\s*$/,'').trim(),ipa:((p[1]||'').match(/(\[[^\]]*\])\s*$/)||['',''])[1],note:(p[2]||'').trim().replace(/ \/ /g,'\n'),pos:(pos+=10)}))
+      .filter(c=>c.en);
     if(!add.length){toast('Не нашёл строк с Tab между словами');return}
     $('dlgOk').disabled=true;setStatus('wait');
-    try{
-      for(let i=0;i<add.length;i+=25){
-        const part=add.slice(i,i+25);
-        const res=await run(part.map(c=>[INS,txtArgs(c)]));
-        part.forEach((c,k)=>c.id=Number(res[k].last_insert_rowid));
-      }
-      cards=cards.concat(add);lastSig='';renderList();
-      if(curId==null&&!revealed)rebuild();
-      $('dlg').close();toast('Добавлено: '+add.length);setStatus('ok');
-    }catch(e){setStatus('err');toast('Не получилось: нет связи с базой')}
-    $('dlgOk').disabled=false;
+    let ok=0;const failed=[];
+    // POST /words по одному слову, по 5 запросов параллельно
+    for(let i=0;i<add.length;i+=5){
+      if(!getToken())break; // сессия закончилась посреди импорта
+      const part=add.slice(i,i+5);
+      const res=await Promise.allSettled(part.map(c=>api('/words',{method:'POST',body:{group_id:GROUP_ID,...textBody(c),...srsBody(c)}})));
+      res.forEach((r,k)=>{
+        if(r.status==='fulfilled'){
+          part[k].id=r.value.word.id;
+          if(!cards.some(x=>x.id===part[k].id))cards.push(part[k]);
+          ok++;
+        }else failed.push(part[k]);
+      });
+      $('dlgOk').textContent='Добавляю… '+Math.min(i+5,add.length)+'/'+add.length;
+    }
+    $('dlgOk').disabled=false;$('dlgOk').textContent='Добавить';
+    if(!getToken())return; // onUnauthorized уже показал экран входа
+    lastSig='';renderList();
+    if(curId==null&&!revealed)rebuild();
+    if(ok)scheduleBackup();
+    if(failed.length){
+      // в окне остаются только строки, которые не загрузились — можно нажать «Добавить» ещё раз
+      $('dlgText').value=failed.map(lineOf).join('\n');
+      setStatus('err');toast('Добавлено: '+ok+', не получилось: '+failed.length);
+    }else{
+      $('dlg').close();toast('Добавлено: '+ok);setStatus('ok');
+    }
   }else{
     const t=$('dlgText');t.select();
     try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}
@@ -824,6 +776,7 @@ $('tab-quiz').onclick=()=>tab('quiz');$('tab-list').onclick=()=>tab('list');$('t
 $('logo').onclick=()=>{
   const l=$('logo');l.classList.add('flip');
   clearTimeout(l._t);l._t=setTimeout(()=>l.classList.remove('flip'),2500);
+  if(!getToken()||document.body.className==='auth')return;
   if($('quiz').hidden)tab('quiz');
 };
 
@@ -842,6 +795,61 @@ try{
   });
 }catch(e){}
 
+/* ===== Вход и регистрация ===== */
+let authMode='login';
+function setAuthMode(m){
+  authMode=m;
+  $('mLogin').setAttribute('aria-pressed',m==='login');$('mReg').setAttribute('aria-pressed',m==='reg');
+  $('authTitle').textContent=m==='login'?'Hi, love':'Nice to meet you';
+  $('authSub').textContent=m==='login'?'Войди, чтобы открыть карточки':'Придумай логин и пароль (от 6 символов)';
+  $('authBtn').textContent=m==='login'?'Войти':'Создать аккаунт';
+  $('aPass').setAttribute('autocomplete',m==='login'?'current-password':'new-password');
+  $('authErr').textContent='';
+}
+$('mLogin').onclick=()=>setAuthMode('login');
+$('mReg').onclick=()=>setAuthMode('reg');
+
+function resetState(){
+  cards.forEach(c=>{clearTimeout(c._t);c._deleted=true}); // чтобы отложенные сохранения не ушли без токена
+  cards=[];curId=null;queue=[];revealed=false;lastSig='';sessionTotal=0;
+  clearTimeout(bkTimer);
+  try{$('dlg').close()}catch(e){}
+}
+function showAuth(msg){
+  clearInterval(pollTimer);clearInterval(retryTimer);readOnly=false;
+  document.body.className='auth';
+  setAuthMode('login');
+  $('authErr').textContent=msg||'';
+  $('aPass').value='';
+  try{if(matchMedia('(hover:hover)').matches)setTimeout(()=>$('aUser').focus(),50)}catch(e){}
+}
+function onUnauthorized(){
+  if(document.body.className==='auth')return;
+  setToken(null);resetState();idbSet([]);
+  showAuth('Сессия закончилась — войди заново');
+}
+$('authForm').onsubmit=async e=>{
+  e.preventDefault();
+  const username=$('aUser').value.trim(),password=$('aPass').value;
+  if(!username||!password){$('authErr').textContent='Введи логин и пароль';return}
+  $('authBtn').disabled=true;$('authErr').textContent='';
+  try{
+    const r=await api(authMode==='login'?'/login':'/register',{method:'POST',body:{username,password},public:true});
+    setToken(r.token);
+    resetState();
+    $('aPass').value='';
+    start(); // сразу делаем GET /data
+  }catch(err){
+    $('authErr').textContent=err instanceof ApiError?err.message:'Нет связи с сервером. Проверь интернет и попробуй ещё раз';
+  }
+  $('authBtn').disabled=false;
+};
+$('logout').onclick=()=>{
+  if(!confirm('Выйти из аккаунта?'))return;
+  setToken(null);resetState();idbSet([]);
+  showAuth();
+};
+
 /* ===== Старт ===== */
 function refreshViews(){
   if(!$('listView').hidden)renderList();
@@ -849,22 +857,24 @@ function refreshViews(){
   renderQuiz();
 }
 async function start(silent){
+  if(!getToken()){showAuth();return}   // нет токена — форма входа
   if(!silent)document.body.className='loading';
   const t0=Date.now();
   const hold=async()=>{if(silent)return;const w=1500-(Date.now()-t0);if(w>0)await new Promise(r=>setTimeout(r,w))};
   try{
-    await setupDb();
-    await migrateOld();
-    await poll(true);
+    await poll(true);                  // GET /data
     await hold();
+    if(!getToken())return;             // за это время сессия сбросилась
     readOnly=false;clearInterval(retryTimer);
     document.body.className='';
-    clearInterval(pollTimer);pollTimer=setInterval(safePoll,8000);
+    clearInterval(pollTimer);pollTimer=setInterval(safePoll,15000);
     refreshViews();
   }catch(e){
+    if(e&&e.status===401)return;       // onUnauthorized уже показал форму входа
     if(silent)return; // тихая попытка не удалась — остаёмся в режиме чтения
     const bk=await idbGet();
     await hold();
+    if(!getToken())return;
     if(bk&&bk.length){
       readOnly=true;clearInterval(pollTimer);
       cards=bk.map(blank);lastSig='';
