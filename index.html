@@ -340,17 +340,26 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 .logo .f{position:relative;text-transform:uppercase;letter-spacing:.09em;font-size:34px}
 .logo .b{left:0;right:0;justify-content:center;text-transform:uppercase}
 /* --- быстрое добавление карточек --- */
-.qa{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;padding:18px;border-radius:20px;background:var(--white);border:1px solid var(--grey)}
-.qa[hidden],.qa-extra[hidden],.scope-head[hidden]{display:none}
-.qa-row,.qa-extra{display:flex;gap:10px;flex-wrap:wrap}
-.qa-row .field,.qa-extra .field{flex:1;min-width:150px}
-.qa-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px;font-size:13px}
-#qaTarget{opacity:.6}
-.linkbtn{font-size:13px;text-decoration:underline;text-underline-offset:3px;opacity:.7;transition:opacity .2s}
-.linkbtn:hover{opacity:1}
 .scope-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 22px}
 .scope-head h2{flex:1;min-width:0;font-family:var(--serif);font-weight:400;font-size:clamp(30px,5vw,46px);line-height:1;overflow-wrap:anywhere}
 #scopeList{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+
+.qa{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.qa[hidden],.scope-head[hidden]{display:none}
+.qa-card{display:grid;grid-template-columns:1fr 1fr auto;border-radius:20px;overflow:hidden;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
+.qa-card:focus-within{border-color:var(--black)}
+.qa-cell{display:flex;flex-direction:column;gap:8px;padding:18px 22px;min-width:0}
+.qa-cell.e{background:var(--black);color:var(--white)}
+.qa-cell label{font-size:12px;opacity:.5}
+.qa-cell textarea,.qa-note{width:100%;resize:none;border:0;background:transparent;outline:0;overflow:hidden;color:inherit}
+.qa-cell textarea{font-family:var(--serif);font-size:25px;line-height:1.15;min-height:29px}
+.qa-cell textarea.p{font-family:var(--sans);font-size:15px;line-height:1.4;min-height:21px;opacity:.75}
+.qa-cell textarea::placeholder{opacity:.3}
+.qa-side{display:flex;align-items:center;justify-content:center;padding:14px 18px;background:var(--paper)}
+.qa-note{padding:12px 18px;min-height:44px;border-radius:14px;background:var(--lilac);color:var(--on-lilac);font-size:14px;line-height:1.4}
+.qa-note::placeholder{color:inherit;opacity:.55}
+.qa-meta{display:flex;justify-content:space-between;gap:6px 16px;flex-wrap:wrap;padding:0 6px;font-size:13px;opacity:.55}
+@media(max-width:680px){.qa-card{grid-template-columns:1fr}.qa-side{justify-content:flex-end}}
 </style>
 </head>
 <body class="loading">
@@ -464,16 +473,13 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
       <button class="pill solid" id="scopeLearn" type="button">Учить</button>
     </div>
     <form class="qa" id="qaForm" autocomplete="off" novalidate>
-      <div class="qa-row">
-        <input class="field" id="qaRu" placeholder="Слово по-русски" aria-label="Русский">
-        <input class="field" id="qaEn" placeholder="Перевод (English)" aria-label="English">
-        <button class="pill solid" id="qaBtn" type="submit">Добавить</button>
+      <div class="qa-card">
+        <div class="qa-cell"><label for="qaRu">Русский</label><textarea id="qaRu" rows="1" placeholder="слово или фраза"></textarea></div>
+        <div class="qa-cell e"><label for="qaEn">English</label><textarea id="qaEn" rows="1" placeholder="перевод"></textarea><textarea class="p" id="qaIpa" rows="1" placeholder="[транскрипция]" aria-label="Транскрипция"></textarea></div>
+        <div class="qa-side"><button class="pill solid" id="qaBtn" type="submit">Добавить</button></div>
       </div>
-      <div class="qa-extra" id="qaExtra" hidden>
-        <input class="field" id="qaIpa" placeholder="Транскрипция" aria-label="Транскрипция">
-        <input class="field" id="qaNote" placeholder="Заметка" aria-label="Заметка">
-      </div>
-      <div class="qa-meta"><span id="qaTarget"></span><button class="linkbtn" id="qaMore" type="button">Транскрипция и заметка</button></div>
+      <textarea class="qa-note" id="qaNote" rows="1" placeholder="Заметка: пример, нюанс (необязательно)" aria-label="Заметка"></textarea>
+      <div class="qa-meta"><span id="qaTarget"></span><span>Enter — добавить · Shift+Enter — новая строка</span></div>
     </form>
     <div id="cardsOverview">
       <div class="grid" id="gridLists"></div>
@@ -877,7 +883,13 @@ function renderCards(){
 $('scopeSearch').oninput=renderCards;
 $('scopeBack').onclick=()=>{scope=null;renderHub();window.scrollTo(0,0)};
 $('scopeLearn').onclick=()=>scope&&openSource(scope.type,scope.id);
-$('qaMore').onclick=()=>{const x=$('qaExtra');x.hidden=!x.hidden};
+const errText=e=>/либо list_id/.test((e&&e.message)||'')?'Сервер ещё старой версии: задеплойте новый worker.js в Cloudflare':(e&&e.message)||'Не удалось добавить';
+const grow=t=>{t.style.height='auto';t.style.height=t.scrollHeight+'px'};
+['qaRu','qaEn','qaIpa','qaNote'].forEach(k=>$(k).addEventListener('input',e=>grow(e.target)));
+$('qaForm').addEventListener('keydown',e=>{ // Enter — дальше/добавить, Shift+Enter — новая строка
+  if(e.key!=='Enter'||e.shiftKey||e.isComposing)return;
+  e.preventDefault();$('qaForm').requestSubmit();
+});
 $('qaForm').onsubmit=async e=>{ // Enter в «русском» переходит к переводу, Enter в переводе — добавляет
   e.preventDefault();
   if(readOnly){toast('Офлайн: изменения недоступны');return}
@@ -890,9 +902,9 @@ $('qaForm').onsubmit=async e=>{ // Enter в «русском» переходи�
   try{
     const r=await api('/words',{method:'POST',body});
     cards.push(fromWord(r.word,cards.length));scheduleBackup();renderHub();
-    ['qaRu','qaEn','qaIpa','qaNote'].forEach(k=>$(k).value='');
+    ['qaRu','qaEn','qaIpa','qaNote'].forEach(k=>{$(k).value='';grow($(k))});
     $('qaRu').focus();
-  }catch(err){if(!(err&&err.status===401))toast((err&&err.message)||'Не удалось добавить',5000)}
+  }catch(err){if(!(err&&err.status===401))toast(errText(err),6000)}
   $('qaBtn').disabled=false;
 };
 
@@ -1005,7 +1017,7 @@ function openSource(type,id){setSource(type,id);tab('quiz')}
 function doneText(){
   let t='На сегодня всё!',p='Новые карточки появятся, когда подойдёт их срок.';
   if(!src){t='Выбери, что учить';p='Выбери список или группу сверху.'}
-  else if(!cards.some(inSrc)){t='Здесь пока пусто';p='В этом наборе ещё нет слов.'}
+  else if(!cards.some(inSrc)){t='Здесь пока пусто:';p='добавь свою первую карточку'}
   $('doneT').textContent=t;$('doneP').textContent=p;
 }
 
@@ -1064,7 +1076,7 @@ async function addWords(){
     tgt=r.t;const k=tgt.indexOf(':'),body={ru:r.ru,en:r.en,ipa:r.ipa||null,note:r.note||null};
     if(k>=0)body[tgt.slice(0,k)==='list'?'list_id':'group_id']=tgt.slice(k+1);
     try{await api('/words',{method:'POST',body});await poll(false);edDirty=true;toast('Слово добавлено')}
-    catch(e){if(e&&e.status===401)return;toast((e&&e.message)||'Не удалось добавить',5000);break}
+    catch(e){if(e&&e.status===401)return;toast(errText(e),6000);break}
   }
 }
 $('edAdd').onclick=addWords;
