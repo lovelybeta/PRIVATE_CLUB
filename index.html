@@ -334,6 +334,23 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 .pill.solid.danger{background:var(--wine);border-color:var(--wine);color:var(--white)}
 .pill.solid.danger:hover{opacity:.85}
 @media(max-width:680px){.modal{overflow:visible}.modal form{padding:22px 18px 20px}}
+
+/* --- логотип: капсом, «beta» по центру --- */
+.logo{width:auto;display:inline-flex;align-items:center}
+.logo .f{position:relative;text-transform:uppercase;letter-spacing:.09em;font-size:34px}
+.logo .b{left:0;right:0;justify-content:center;text-transform:uppercase}
+/* --- быстрое добавление карточек --- */
+.qa{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;padding:18px;border-radius:20px;background:var(--white);border:1px solid var(--grey)}
+.qa[hidden],.qa-extra[hidden],.scope-head[hidden]{display:none}
+.qa-row,.qa-extra{display:flex;gap:10px;flex-wrap:wrap}
+.qa-row .field,.qa-extra .field{flex:1;min-width:150px}
+.qa-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px;font-size:13px}
+#qaTarget{opacity:.6}
+.linkbtn{font-size:13px;text-decoration:underline;text-underline-offset:3px;opacity:.7;transition:opacity .2s}
+.linkbtn:hover{opacity:1}
+.scope-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 22px}
+.scope-head h2{flex:1;min-width:0;font-family:var(--serif);font-weight:400;font-size:clamp(30px,5vw,46px);line-height:1;overflow-wrap:anywhere}
+#scopeList{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 </style>
 </head>
 <body class="loading">
@@ -400,7 +417,6 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
       </div>
       <button class="pill" id="editWords" type="button">Редактировать слова</button>
     </div>
-    <h2 class="qtitle" id="qTitle"></h2>
 
     <div class="seg" role="group" aria-label="Язык лицевой стороны">
       <button id="langRu" aria-pressed="true">RU</button>
@@ -439,32 +455,36 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
   <!-- ============ КАРТОЧКИ ============ -->
   <section id="cardsView" class="hub" hidden>
     <div class="hub-head">
-      <div><h1>Карточки</h1><p class="hub-sub">Все ваши наборы слов в одном месте.</p></div>
-      <button class="pill solid" id="newList">+ Создать список</button>
+      <div><h1>Карточки</h1><p class="hub-sub">Добавляй слова в «Основной» или собирай их в группы карточек.</p></div>
+      <button class="pill solid" id="newList">+ Создать группу карточек</button>
     </div>
-
-    <div class="sec">
-      <div class="sec-head"><h2>Основной</h2><span class="sec-note">слова без списка</span></div>
-      <div class="grid grid-one">
-        <div class="tile tile-main" id="mainTile" role="button" tabindex="0" aria-label="Основной">
-          <span class="tile-ico"><svg class="ico"><use href="#i-inbox"/></svg></span>
-          <div class="tile-body">
-            <h3 class="tile-name">Основной</h3>
-            <div class="meta" id="mainMeta"></div>
-          </div>
-          <span class="due zero" id="mainDue"></span>
-        </div>
+    <div class="scope-head" id="scopeHead" hidden>
+      <button class="pill" id="scopeBack" type="button">Назад</button>
+      <h2 id="scopeName"></h2>
+      <button class="pill solid" id="scopeLearn" type="button">Учить</button>
+    </div>
+    <form class="qa" id="qaForm" autocomplete="off" novalidate>
+      <div class="qa-row">
+        <input class="field" id="qaRu" placeholder="Слово по-русски" aria-label="Русский">
+        <input class="field" id="qaEn" placeholder="Перевод (English)" aria-label="English">
+        <button class="pill solid" id="qaBtn" type="submit">Добавить</button>
+      </div>
+      <div class="qa-extra" id="qaExtra" hidden>
+        <input class="field" id="qaIpa" placeholder="Транскрипция" aria-label="Транскрипция">
+        <input class="field" id="qaNote" placeholder="Заметка" aria-label="Заметка">
+      </div>
+      <div class="qa-meta"><span id="qaTarget"></span><button class="linkbtn" id="qaMore" type="button">Транскрипция и заметка</button></div>
+    </form>
+    <div id="cardsOverview">
+      <div class="grid" id="gridLists"></div>
+      <div class="sec" style="margin-top:44px">
+        <div class="sec-head"><h2>Общие</h2><button class="pill" id="joinGroup">Подключиться по коду</button></div>
+        <div class="grid" id="gridGroups"></div>
       </div>
     </div>
-
-    <div class="sec">
-      <div class="sec-head"><h2>Мои списки</h2></div>
-      <div class="grid" id="gridLists"></div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-head"><h2>Общие</h2><button class="pill" id="joinGroup">Подключиться по коду</button></div>
-      <div class="grid" id="gridGroups"></div>
+    <div id="cardsScope" hidden>
+      <label class="search"><svg class="ico"><use href="#i-search"/></svg><input id="scopeSearch" type="search" placeholder="Поиск по словам" aria-label="Поиск по словам" autocomplete="off"></label>
+      <div id="scopeList"></div>
     </div>
   </section>
 
@@ -815,34 +835,66 @@ function stats(){ // слов и «к повторению»: по списка�
 }
 const dueEl=s=>s.total===0?mk('span','due zero','Пока пусто'):s.due===0?mk('span','due zero','На сегодня всё'):mk('span','due',s.due+' к повторению');
 function tile(type,item,s,meta){
-  const isL=type==='list',own=isL?item.role==='owner':item.role==='admin';
+  const isM=type==='main',isL=type==='list',own=isL?item.role==='owner':item.role==='admin';
   const t=mk('div','tile');t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',item.name);
-  t.append(mk('span','chip',(isL?ROLE_LIST:ROLE_GROUP)[item.role]||(isL?'Список':'Группа')),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
-  if(!isL){const g=ico('users');g.setAttribute('class','ico grp-ico');t.append(g)}
+  t.append(mk('span','chip',isM?'Без группы':(isL?ROLE_LIST:ROLE_GROUP)[item.role]||(isL?'Список':'Группа')),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
+  if(!isL&&!isM){const g=ico('users');g.setAttribute('class','ico grp-ico');t.append(g)}
   const foot=mk('div','tile-foot'),tools=mk('div','tile-tools');
   foot.append(dueEl(s));
   if(isL&&own)tools.append(miniBtn('Поделиться',()=>shareList(item)));
-  if(!isL&&!own)tools.append(miniBtn('Выйти',()=>leaveGroup(item),'leave'));
-  if(own)tools.append(iconBtn('edit','Переименовать',()=>renameItem(type,item)),iconBtn('trash','Удалить',()=>deleteItem(type,item),'danger'));
+  if(!isL&&!isM&&!own)tools.append(miniBtn('Выйти',()=>leaveGroup(item),'leave'));
+  if(own&&!isM)tools.append(iconBtn('edit','Переименовать',()=>renameItem(type,item)),iconBtn('trash','Удалить',()=>deleteItem(type,item),'danger'));
   foot.append(tools);t.append(foot);
-  const open=()=>openSource(type,item.id);
+  const open=()=>openScope(type,item.id);
   t.onclick=open;
   t.onkeydown=e=>{if(e.target===t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open()}};
   return t;
 }
 function emptyBox(title,text){const e=mk('div','empty');e.append(mk('b',null,title),mk('span',null,text));return e}
+/* ===== Вкладка «Карточки»: обзор групп и экран группы ===== */
+let scope=null; // null — обзор; {type:'main'|'list'|'group', id} — открыта группа карточек
+const scopeItem=()=>scope.type==='list'?DATA.lists.find(x=>x.id===scope.id):scope.type==='group'?DATA.groups.find(x=>x.id===scope.id):{name:'Основной',role:'owner'};
+const inScope=c=>!!scope&&(scope.type==='main'?!c.list_id&&!c.group_id:scope.type==='list'?c.list_id===scope.id:c.group_id===scope.id);
+function openScope(type,id){scope={type,id};$('scopeSearch').value='';renderHub();window.scrollTo(0,0)}
 function renderCards(){
-  const st=stats(),GL=$('gridLists'),GG=$('gridGroups'),m=st.m||{total:0,due:0};
+  const st=stats(),GL=$('gridLists'),GG=$('gridGroups'),sm=st.m||{total:0,due:0};
   GL.innerHTML='';GG.innerHTML='';
-  $('mainMeta').textContent=nWords(m.total);
-  const d=$('mainDue');d.className=m.total&&m.due?'due':'due zero';d.textContent=m.total===0?'Пока пусто':m.due?m.due+' к повторению':'На сегодня всё';
-  if(!DATA.lists.length)GL.append(emptyBox('Пока нет списков','Нажми «+ Создать список», чтобы начать.'));
+  const it=scope?scopeItem():null;if(scope&&!it)scope=null;
+  GL.append(tile('main',{id:'main',name:'Основной'},sm,nWords(sm.total)));
   DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,nWords(s.total)))});
   if(!DATA.groups.length)GG.append(emptyBox('Вы пока не в группах','Подключитесь по коду приглашения от друзей.'));
   DATA.groups.forEach(g=>{const s=st['g:'+g.id]||{total:0,due:0};GG.append(tile('group',g,s,nMembers(Number(g.members_count)||0)+' · '+nWords(s.total)))});
+  const canW=!scope||scope.type!=='list'||it.role==='owner'||it.role==='editor';
+  $('cardsOverview').hidden=!!scope;$('cardsScope').hidden=!scope;$('scopeHead').hidden=!scope;
+  $('qaForm').hidden=!canW;$('qaTarget').textContent='Добавляется в: '+(scope?it.name:'Основной');
+  if(!scope)return;
+  $('scopeName').textContent=it.name;
+  const q=$('scopeSearch').value.trim().toLowerCase(),L=$('scopeList');L.innerHTML='';
+  const ws=cards.filter(c=>c.id!=null&&c.status!=='archive'&&inScope(c)&&(!q||[c.ru,c.en,c.note].join(' ').toLowerCase().includes(q))).reverse();
+  if(!ws.length){L.append(emptyBox(q?'Ничего не найдено':'Пока нет карточек',q?'Попробуйте другой запрос.':'Добавьте первое слово в форме выше.'));return}
+  ws.forEach(c=>L.append(wordRow(c,canW?'В архив':null,()=>setWordStatus(c,'archive'))));
 }
-$('mainTile').onclick=()=>openSource('main','main');
-$('mainTile').onkeydown=e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openSource('main','main')}};
+$('scopeSearch').oninput=renderCards;
+$('scopeBack').onclick=()=>{scope=null;renderHub();window.scrollTo(0,0)};
+$('scopeLearn').onclick=()=>scope&&openSource(scope.type,scope.id);
+$('qaMore').onclick=()=>{const x=$('qaExtra');x.hidden=!x.hidden};
+$('qaForm').onsubmit=async e=>{ // Enter в «русском» переходит к переводу, Enter в переводе — добавляет
+  e.preventDefault();
+  if(readOnly){toast('Офлайн: изменения недоступны');return}
+  const ru=$('qaRu').value.trim(),en=$('qaEn').value.trim();
+  if(!ru){$('qaRu').focus();return}
+  if(!en){$('qaEn').focus();return}
+  const body={ru,en,ipa:$('qaIpa').value.trim()||null,note:$('qaNote').value.trim()||null};
+  if(scope&&scope.type==='list')body.list_id=scope.id;else if(scope&&scope.type==='group')body.group_id=scope.id; // без обоих — «Основной»
+  $('qaBtn').disabled=true;
+  try{
+    const r=await api('/words',{method:'POST',body});
+    cards.push(fromWord(r.word,cards.length));scheduleBackup();renderHub();
+    ['qaRu','qaEn','qaIpa','qaNote'].forEach(k=>$(k).value='');
+    $('qaRu').focus();
+  }catch(err){if(!(err&&err.status===401))toast((err&&err.message)||'Не удалось добавить',5000)}
+  $('qaBtn').disabled=false;
+};
 
 /* ===== Своё выпадающее меню и окно-форма ===== */
 function makeDD(host,btn,menu,onPick){
@@ -916,7 +968,7 @@ async function act(fn,ok,notFound){
   catch(e){if(e&&e.status===401)return;toast(e&&e.status===404&&notFound?notFound:(e&&e.message)||'Ошибка',5000)}
 }
 const pathOf=t=>t==='list'?'/lists':'/groups';
-$('newList').onclick=async()=>{const n=await askName('Новый список','Название','','Создать','Например, Английский');if(n)act(()=>api('/lists',{method:'POST',body:{name:n}}),'Список создан')};
+$('newList').onclick=async()=>{const n=await askName('Новая группа карточек','Название','','Создать','Например, Английский');if(n)act(()=>api('/lists',{method:'POST',body:{name:n}}),'Группа создана')};
 $('joinGroup').onclick=async()=>{const c=await askName('Подключиться по коду','Код приглашения','','Подключиться','XXXXXXXX');if(c)act(()=>api('/groups/join',{method:'POST',body:{invite_code:c}}),'Вы в группе')};
 async function renameItem(t,i){const n=await askName('Переименовать','Название',i.name,'Сохранить');if(n&&n!==i.name)act(()=>api(pathOf(t),{method:'PUT',body:{id:i.id,name:n}}),'Переименовано')}
 async function deleteItem(t,i){if(await ui({title:'Удалить «'+i.name+'»?',text:'Вместе с ним удалятся все слова. Это действие нельзя отменить.',ok:'Удалить',danger:true}))act(()=>api(pathOf(t)+'?id='+encodeURIComponent(i.id),{method:'DELETE'}),'Удалено')}
@@ -939,11 +991,10 @@ function ensureSrc(){ // true, если источник пришлось сме
 }
 const SDD=makeDD($('srcPill'),$('srcBtn'),$('srcMenu'),v=>{const i=v.indexOf(':');setSource(i<0?v:v.slice(0,i),i<0?v:v.slice(i+1))});
 function renderSrcBar(){
-  const it=[{head:'Мои списки'},{label:'Основной',value:'main'},...DATA.lists.map(l=>({label:l.name,value:'list:'+l.id}))];
+  const it=[{label:'Основной',value:'main'},...DATA.lists.map(l=>({label:l.name,value:'list:'+l.id}))];
   if(DATA.groups.length)it.push({head:'Общие'},...DATA.groups.map(g=>({label:g.name,value:'group:'+g.id})));
   it.push({sep:1},{label:'Учить все вместе',value:'all'});
   SDD.set(it,srcVal(src)||'all');
-  $('qTitle').textContent=src?'Учить: '+srcName():'';
 }
 function setSource(type,id){
   src={type,id};
@@ -965,7 +1016,7 @@ function wordRow(c,btn,fn,label){
   w.append(mk('b',null,c.ru||c.en||'—'));
   const sub=[c.en,c.ipa].filter(Boolean).join(' · ');if(sub)w.append(mk('span',null,sub));
   if(label)w.append(mk('span',null,label));
-  a.append(miniBtn(btn,fn));r.append(w,a);return r;
+  if(btn)a.append(miniBtn(btn,fn));r.append(w,a);return r;
 }
 function setWordStatus(c,st){
   if(readOnly){toast('Офлайн: изменения недоступны');return}
@@ -999,9 +1050,7 @@ $('edImport').onclick=()=>toast('Импорт подключим следующ�
 async function addWords(){
   if(readOnly){toast('Офлайн: изменения недоступны');return}
   const L=DATA.lists.filter(l=>l.role==='owner'||l.role==='editor'),G=DATA.groups;
-  if(!L.length&&!G.length){toast('Сначала создайте список на вкладке «Карточки»',4000);return}
-  const items=[];
-  if(L.length)items.push({head:'Мои списки'},...L.map(l=>({label:l.name,value:'list:'+l.id})));
+  const items=[{label:'Основной',value:'main'},...L.map(l=>({label:l.name,value:'list:'+l.id}))];
   if(G.length)items.push({head:'Общие'},...G.map(g=>({label:g.name,value:'group:'+g.id})));
   let tgt=items.some(i=>i.value===srcVal(src))?srcVal(src):items.find(i=>i.value).value;
   for(;;){ // окно открывается снова, пока не нажмут «Готово»
@@ -1013,7 +1062,7 @@ async function addWords(){
       {name:'note',label:'Заметка (необязательно)',multiline:true}]});
     if(!r)break;
     tgt=r.t;const k=tgt.indexOf(':'),body={ru:r.ru,en:r.en,ipa:r.ipa||null,note:r.note||null};
-    body[tgt.slice(0,k)==='list'?'list_id':'group_id']=tgt.slice(k+1);
+    if(k>=0)body[tgt.slice(0,k)==='list'?'list_id':'group_id']=tgt.slice(k+1);
     try{await api('/words',{method:'POST',body});await poll(false);edDirty=true;toast('Слово добавлено')}
     catch(e){if(e&&e.status===401)return;toast((e&&e.message)||'Не удалось добавить',5000);break}
   }
@@ -1024,8 +1073,9 @@ $('edAdd').onclick=addWords;
 const TABS={quiz:'quiz',cards:'cardsView',archive:'archiveView'};
 function tab(n){
   if(ED.open)ED.close();
+  if(n==='cards'&&!$('cardsView').hidden)scope=null; // повторный клик по вкладке — к обзору
   Object.keys(TABS).forEach(t=>{$(TABS[t]).hidden=t!==n;$('tab-'+t).setAttribute('aria-selected',t===n)});
-  $('edSearch').value=''; // поиск очищается при смене вкладки
+  $('edSearch').value='';$('scopeSearch').value=''; // поиск очищается при смене вкладки
   if(n==='quiz'){if(curId==null&&!revealed)rebuild();else renderQuiz()}
   else renderHub();
   window.scrollTo(0,0);
