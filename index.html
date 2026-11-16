@@ -148,6 +148,7 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 /* ===== хаб: плитки списков и групп ===== */
 :root{--shadow:rgba(0,0,0,.09)}
 :root[data-theme="dark"]{--shadow:rgba(0,0,0,.5)}
+.hub-actions{display:flex;gap:10px;flex-wrap:wrap}
 .hub-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:14px 0 28px}
 .hub-head h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,64px);line-height:1}
 .hub-sub{margin-top:10px;font-size:14px;opacity:.55;max-width:460px}
@@ -336,9 +337,9 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 @media(max-width:680px){.modal{overflow:visible}.modal form{padding:22px 18px 20px}}
 
 /* --- логотип: капсом, «beta» по центру --- */
-.logo{width:auto;display:inline-flex;align-items:center}
-.logo .f{position:relative;text-transform:uppercase;letter-spacing:.09em;font-size:34px}
-.logo .b{left:0;right:0;justify-content:center;text-transform:uppercase}
+.logo{width:max-content;justify-self:start;align-self:center;display:inline-flex;align-items:center}
+.logo .f{position:relative;text-transform:uppercase;letter-spacing:-.01em;font-size:34px}
+.logo .b{left:0;right:0;justify-content:center;text-transform:uppercase;padding-left:.06em}
 /* --- быстрое добавление карточек --- */
 .scope-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 22px}
 .scope-head h2{flex:1;min-width:0;font-family:var(--serif);font-weight:400;font-size:clamp(30px,5vw,46px);line-height:1;overflow-wrap:anywhere}
@@ -437,7 +438,6 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
         <button class="srcsel" id="srcBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Что учить"><span></span></button>
         <div class="menu" id="srcMenu" role="listbox" hidden></div>
       </div>
-      <button class="pill" id="editWords" type="button">Редактировать слова</button>
     </div>
 
     <div class="seg" role="group" aria-label="Язык лицевой стороны">
@@ -477,8 +477,8 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
   <!-- ============ КАРТОЧКИ ============ -->
   <section id="cardsView" class="hub" hidden>
     <div class="hub-head">
-      <div><h1>Карточки</h1><p class="hub-sub">Добавляй слова в «Основной» или собирай их в группы карточек.</p></div>
-      <button class="pill solid" id="newList">+ Создать группу карточек</button>
+      <div><h1>Карточки</h1><p class="hub-sub">Добавляй слова в «Основной» или собирай их в свои модули.</p></div>
+      <div class="hub-actions"><button class="pill" id="addCard" type="button">+ Добавить карточку</button><button class="pill solid" id="newList" type="button">+ Создать модуль</button></div>
     </div>
     <div class="scope-head" id="scopeHead" hidden>
       <button class="pill" id="scopeBack" type="button">Назад</button>
@@ -492,8 +492,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
         <div class="grid" id="gridGroups"></div>
       </div>
     </div>
-    <div class="words-block">
-      <div class="sec-head" id="wordsHead"><h2>Основной</h2><span class="sec-sub">Слова без группы</span></div>
+    <div class="words-block" id="wordsBlock">
       <form class="qa" id="qaForm" autocomplete="off" novalidate>
         <div class="qa-card">
           <div class="qa-cell"><label for="qaRu">Русский</label><textarea id="qaRu" rows="1" placeholder="слово или фраза"></textarea></div>
@@ -861,7 +860,7 @@ const dueEl=s=>s.total===0?mk('span','due zero','Пока пусто'):s.due===0
 function tile(type,item,s,meta){
   const isM=type==='main',isL=type==='list',own=isL?item.role==='owner':item.role==='admin';
   const t=mk('div','tile');t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',item.name);
-  t.append(mk('span','chip',isM?'Без группы':(isL?ROLE_LIST:ROLE_GROUP)[item.role]||(isL?'Список':'Группа')),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
+  t.append(mk('span','chip',isM?'По умолчанию':(isL?ROLE_LIST:ROLE_GROUP)[item.role]||(isL?'Список':'Группа')),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
   if(!isL&&!isM){const g=ico('users');g.setAttribute('class','ico grp-ico');t.append(g)}
   const foot=mk('div','tile-foot'),tools=mk('div','tile-tools');
   foot.append(dueEl(s));
@@ -900,14 +899,15 @@ function renderCards(){
   const st=stats(),GL=$('gridLists'),GG=$('gridGroups');
   GL.innerHTML='';GG.innerHTML='';
   const it=scope?scopeItem():null;if(scope&&!it)scope=null;
-  if(!DATA.lists.length)GL.append(emptyBox('Пока нет групп карточек','Создайте группу кнопкой выше или просто добавляйте слова ниже — они попадут в «Основной».'));
+  GL.append(tile('main',{id:'main',name:'Основной'},st.m||{total:0,due:0},nWords((st.m||{total:0}).total)));
   DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,nWords(s.total)))});
   if(!DATA.groups.length)GG.append(emptyBox('Вы пока не в группах','Подключитесь по коду приглашения от друзей.'));
   DATA.groups.forEach(g=>{const s=st['g:'+g.id]||{total:0,due:0};GG.append(tile('group',g,s,nMembers(Number(g.members_count)||0)+' · '+nWords(s.total)))});
   const canW=!scope||scope.type!=='list'||it.role==='owner'||it.role==='editor';
-  $('cardsOverview').hidden=!!scope;$('scopeHead').hidden=!scope;$('wordsHead').hidden=!!scope;
+  $('cardsOverview').hidden=!!scope;$('scopeHead').hidden=!scope;$('wordsBlock').hidden=!scope;
   $('qaForm').hidden=!canW;$('qaTarget').textContent='Добавляется в: '+(scope?it.name:'Основной');
-  if(scope)$('scopeName').textContent=it.name;
+  if(!scope)return;
+  $('scopeName').textContent=it.name;
   if($('cardsView').hidden)return; // слова рисуем только на открытой вкладке
   const q=$('scopeSearch').value.trim().toLowerCase(),L=$('scopeList');L.innerHTML='';
   const ws=cards.filter(c=>c.id!=null&&c.status!=='archive'&&inScope(c)&&(!q||[c.ru,c.en,c.ipa,c.note].join(' ').toLowerCase().includes(q))).reverse();
@@ -1015,11 +1015,11 @@ async function act(fn,ok,notFound){
   catch(e){if(e&&e.status===401)return;toast(e&&e.status===404&&notFound?notFound:(e&&e.message)||'Ошибка',5000)}
 }
 const pathOf=t=>t==='list'?'/lists':'/groups';
-$('newList').onclick=async()=>{const n=await askName('Новая группа карточек','Название','','Создать','Например, Английский');if(n)act(()=>api('/lists',{method:'POST',body:{name:n}}),'Группа создана')};
+$('newList').onclick=async()=>{const n=await askName('Новый модуль','Название','','Создать','Например, Английский');if(n)act(()=>api('/lists',{method:'POST',body:{name:n}}),'Модуль создан')};
 $('joinGroup').onclick=async()=>{const c=await askName('Подключиться по коду','Код приглашения','','Подключиться','XXXXXXXX');if(c)act(()=>api('/groups/join',{method:'POST',body:{invite_code:c}}),'Вы в группе')};
 async function renameItem(t,i){const n=await askName('Переименовать','Название',i.name,'Сохранить');if(n&&n!==i.name)act(()=>api(pathOf(t),{method:'PUT',body:{id:i.id,name:n}}),'Переименовано')}
 async function deleteItem(t,i){if(await ui({title:'Удалить «'+i.name+'»?',text:'Вместе с ним удалятся все слова. Это действие нельзя отменить.',ok:'Удалить',danger:true}))act(()=>api(pathOf(t)+'?id='+encodeURIComponent(i.id),{method:'DELETE'}),'Удалено')}
-async function shareList(i){const u=await askName('Поделиться списком','Ник друга','','Отправить','Логин друга');if(u)act(()=>api('/lists/share',{method:'POST',body:{list_id:i.id,username:u}}),'Список отправлен: '+u)}
+async function shareList(i){const u=await askName('Поделиться модулем','Ник друга','','Отправить','Логин друга');if(u)act(()=>api('/lists/share',{method:'POST',body:{list_id:i.id,username:u}}),'Модуль отправлен: '+u)}
 async function leaveGroup(i){if(await ui({title:'Выйти из «'+i.name+'»?',text:'Слова группы пропадут из вашего списка. Вернуться можно по коду приглашения.',ok:'Выйти',danger:true}))act(()=>api('/groups/leave',{method:'POST',body:{id:i.id}}),'Вы вышли из группы')}
 
 /* ===== Источник слов для квиза ===== */
@@ -1051,7 +1051,7 @@ function setSource(type,id){
 function openSource(type,id){setSource(type,id);tab('quiz')}
 function doneText(){
   let t='На сегодня всё!',p='Новые карточки появятся, когда подойдёт их срок.';
-  if(!src){t='Выбери, что учить';p='Выбери список или группу сверху.'}
+  if(!src){t='Выбери, что учить';p='Выбери модуль или группу сверху.'}
   else if(!cards.some(inSrc)){t='Здесь пока пусто:';p='добавь свою первую карточку'}
   $('doneT').textContent=t;$('doneP').textContent=p;
 }
@@ -1086,7 +1086,6 @@ function renderArchive(){
   arch.forEach(c=>A.append(wordRow(c,'Вернуть',()=>setWordStatus(c,'new'),nm(c))));
 }
 function renderHub(){renderCards();renderArchive();if(ED.open)renderEditor()}
-$('editWords').onclick=()=>{$('edTitle').textContent=srcName();$('edSearch').value='';$('toTop').classList.remove('show');renderEditor();ED.showModal();$('edBody').scrollTop=0};
 $('edClose').onclick=()=>ED.close();
 ED.onclick=e=>{if(e.target===ED)ED.close()};
 ED.addEventListener('close',()=>{$('edSearch').value='';if(edDirty){edDirty=false;rebuild()}});
@@ -1094,14 +1093,15 @@ $('edSearch').oninput=renderEditor;
 $('edBody').onscroll=e=>$('toTop').classList.toggle('show',e.target.scrollTop>240);
 $('toTop').onclick=()=>$('edBody').scrollTo({top:0,behavior:'smooth'});
 $('edImport').onclick=()=>toast('Импорт подключим следующим шагом'); // пока только визуально
-async function addWords(){
+async function addWords(pref){
   if(readOnly){toast('Офлайн: изменения недоступны');return}
   const L=DATA.lists.filter(l=>l.role==='owner'||l.role==='editor'),G=DATA.groups;
   const items=[{label:'Основной',value:'main'},...L.map(l=>({label:l.name,value:'list:'+l.id}))];
   if(G.length)items.push({head:'Общие'},...G.map(g=>({label:g.name,value:'group:'+g.id})));
-  let tgt=items.some(i=>i.value===srcVal(src))?srcVal(src):items.find(i=>i.value).value;
+  const want=typeof pref==='string'?pref:'main';
+  let tgt=items.some(i=>i.value===want)?want:'main';
   for(;;){ // окно открывается снова, пока не нажмут «Готово»
-    const r=await ui({title:'Новое слово',ok:'Добавить',cancel:'Готово',fields:[
+    const r=await ui({title:'Новая карточка',ok:'Добавить',cancel:'Готово',fields:[
       {name:'t',label:'Куда добавить',dd:{items,value:tgt}},
       {name:'ru',label:'Русский',required:true,placeholder:'слово'},
       {name:'en',label:'English',required:true,placeholder:'word'},
@@ -1114,7 +1114,8 @@ async function addWords(){
     catch(e){if(e&&e.status===401)return;toast(errText(e),6000);break}
   }
 }
-$('edAdd').onclick=addWords;
+$('edAdd').onclick=()=>addWords();
+$('addCard').onclick=()=>addWords(scope&&scope.type!=='main'?scope.type+':'+scope.id:'main');
 
 /* ===== Вкладки и логотип ===== */
 const TABS={quiz:'quiz',cards:'cardsView',archive:'archiveView'};
