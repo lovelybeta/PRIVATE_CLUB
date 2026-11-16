@@ -142,53 +142,45 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 .done h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6vw,56px)}
 .done p{margin-top:8px;opacity:.55}
 
-/* list */
-.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 24px}
-.tools .grow{flex:1}
-.sync{font-size:13px;opacity:.6;white-space:nowrap}
-.search{flex:1;min-width:180px;max-width:320px;padding:10px 18px;border-radius:999px;border:1px solid var(--grey);background:var(--white)}
-.list{display:grid;gap:12px}
-.row{display:grid;grid-template-columns:1fr 1fr auto;border-radius:20px;overflow:hidden;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
-.row:focus-within{border-color:var(--black)}
-.cell{padding:16px 22px;display:flex;flex-direction:column;gap:8px}
-.cell.e{background:var(--black);color:var(--white)}
-.cell label{font-size:12px;opacity:.5}
-.cell textarea{display:block;width:100%;resize:none;border:0;border-radius:0;padding:0;margin:0;text-indent:0;-webkit-appearance:none;appearance:none;background:transparent;outline:0;font-family:var(--serif);font-size:25px;line-height:1.15;overflow:hidden}
-.cell textarea::placeholder{opacity:.3}
-.cell .n{font-family:var(--sans);font-size:14px;line-height:1.4;background:var(--lilac);color:var(--black);border-radius:14px;padding:14px 16px;min-height:0}
-.cell .n::placeholder{color:var(--black);opacity:.4}
-.cell textarea.p{font-family:var(--sans);font-size:15px;opacity:.7}
-.ro{font-family:var(--serif);font-size:25px;line-height:1.15;white-space:pre-wrap}
-.ro.p{font-family:var(--sans);font-size:15px;opacity:.7}
-.ro.n{font-family:var(--sans);font-size:14px;line-height:1.4;background:var(--lilac);color:var(--black);border-radius:14px;padding:14px 16px}
-.side{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:6px;padding:10px;background:var(--paper)}
-.side button{height:34px;min-width:34px;border-radius:999px;font-size:15px;border:1px solid var(--grey);background:var(--white);padding:0 12px;white-space:nowrap}
-.side button:hover{background:var(--wine);color:var(--white);border-color:var(--wine)}
-.side .arch{font-size:13px;font-weight:500}
-.side .back{background:var(--lilac);border-color:var(--lilac);color:var(--black);font-weight:600;height:44px;padding:0 18px}
-.side .back:hover{background:var(--black);border-color:var(--black)}
-.empty{padding:48px;text-align:center;border:1px dashed var(--grey);border-radius:20px;background:var(--white)}
-.sub{margin:8px 0 20px;opacity:.6;font-size:14px}
-
-dialog{border:0;border-radius:24px;padding:28px;width:min(560px,92vw);background:var(--white);box-shadow:0 20px 80px rgba(0,0,0,.35)}
-dialog::backdrop{background:rgba(0,0,0,.55)}
-dialog h2{font-family:var(--serif);font-weight:400;font-size:32px;margin-bottom:8px}
-dialog p{font-size:14px;opacity:.7;margin-bottom:14px}
-dialog textarea{width:100%;height:200px;border:1px solid var(--grey);border-radius:14px;padding:14px;background:var(--paper);font-size:14px}
-dialog .act{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
-dialog .act #dlgPick{margin-right:auto}
-dialog .act .pill:disabled{opacity:.5;cursor:default}
-dialog p.info{min-height:20px;margin:10px 0 0;font-size:13px;opacity:.7}
-dialog textarea.drag{border-color:var(--black)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--black);color:var(--white);padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;transition:.3s;font-size:14px}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+/* ===== хаб: плитки списков и групп ===== */
+:root{--shadow:rgba(0,0,0,.09)}
+:root[data-theme="dark"]{--shadow:rgba(0,0,0,.5)}
+.hub-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:14px 0 28px}
+.hub-head h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,64px);line-height:1}
+.hub-sub{margin-top:10px;font-size:14px;opacity:.55;max-width:460px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.tile{position:relative;display:flex;flex-direction:column;gap:6px;min-height:178px;padding:20px 22px;border-radius:20px;background:var(--white);border:1px solid var(--grey);text-align:left;cursor:pointer;transition:border-color .2s,box-shadow .25s,transform .25s}
+.tile:hover{border-color:var(--black);box-shadow:0 14px 36px var(--shadow);transform:translateY(-3px)}
+.tile:active{transform:translateY(-1px)}
+.chip{align-self:flex-start;font-size:12px;font-weight:500;padding:3px 11px;border-radius:999px;background:var(--paper);border:1px solid var(--grey);opacity:.85}
+.go{position:absolute;top:16px;right:22px;font-family:var(--serif);font-size:26px;line-height:1;opacity:0;transform:translateX(-8px);transition:opacity .25s,transform .25s}
+.tile:hover .go,.tile:focus-visible .go{opacity:.7;transform:none}
+.tile-name{margin-top:auto;padding-top:18px;font-family:var(--serif);font-weight:400;font-size:31px;line-height:1.06;word-break:break-word}
+.meta{font-size:14px;opacity:.55}
+.tile-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:30px;margin-top:8px}
+.due{padding:4px 11px;border-radius:999px;background:var(--lilac);font-size:12.5px;font-weight:500;white-space:nowrap}
+.due.zero{background:transparent;border:1px solid var(--grey);opacity:.7}
+.leave{padding:6px 14px;border-radius:999px;border:1px solid var(--grey);font-size:13px;font-weight:500;transition:background .2s,color .2s,border-color .2s}
+.leave:hover{background:var(--wine);border-color:var(--wine);color:var(--white)}
+.empty{grid-column:1/-1;padding:56px 24px;text-align:center;border:1px dashed var(--grey);border-radius:20px;background:var(--white);opacity:.9}
+.empty b{display:block;font-family:var(--serif);font-weight:400;font-size:30px;margin-bottom:6px}
+.empty span{font-size:14px;opacity:.6}
+/* выбор источника в «Учить» */
+.srcbar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;width:100%;max-width:760px}
+.selwrap{position:relative;flex:1;min-width:200px}
+.selwrap::after{content:"";position:absolute;right:22px;top:50%;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-70%) rotate(45deg);pointer-events:none;opacity:.6}
+.sel{width:100%;appearance:none;-webkit-appearance:none;padding:11px 46px 11px 20px;border-radius:999px;border:1px solid var(--grey);background:var(--white);font-weight:500;cursor:pointer;outline:0;text-overflow:ellipsis;transition:border-color .2s}
+.sel:hover,.sel:focus{border-color:var(--black)}
+.sel:disabled{opacity:.5;cursor:default}
+.sync{font-size:13px;opacity:.5}
+@media(hover:none){.go{opacity:.5;transform:none}}
+@media(max-width:680px){.tile{min-height:156px}.tile-name{font-size:28px}.hub-head{margin:6px 0 20px}.srcbar .seg{width:100%}.srcbar .seg button{flex:1}}
+
 @media(max-width:680px){
   .face{padding:32px 24px}
-  .row{grid-template-columns:1fr}
-  .side{flex-direction:row;justify-content:flex-end;flex-wrap:wrap;background:var(--black);padding:0 22px 16px}
-  .side button{background:rgba(127,127,127,.2);border-color:rgba(127,127,127,.35);color:var(--white)}
-  .side .back{background:var(--lilac);border-color:var(--lilac);color:var(--black)}
   #loader{font-size:22px;padding:90px 28px}
   .logo{width:260px}
   .logo .f{font-size:34px}
@@ -229,9 +221,9 @@ dialog textarea.drag{border-color:var(--black)}
 <header>
   <div class="logo" id="logo" title="Copure / beta"><span class="f">Copure</span><span class="b">beta</span></div>
   <nav role="tablist">
-    <button role="tab" id="tab-quiz" aria-selected="true">Карточки</button>
-    <button role="tab" id="tab-list" aria-selected="false">Все слова</button>
-    <button role="tab" id="tab-arch" aria-selected="false">Archive</button>
+    <button role="tab" id="tab-lists" aria-selected="true">Мои списки</button>
+    <button role="tab" id="tab-groups" aria-selected="false">Общие</button>
+    <button role="tab" id="tab-quiz" aria-selected="false">Учить</button>
   </nav>
   <button class="theme" id="theme" aria-label="Тёмная или светлая тема" title="Тёмная / светлая тема">
     <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -265,7 +257,14 @@ dialog textarea.drag{border-color:var(--black)}
     </form>
   </div>
 
-  <section id="quiz" class="quiz">
+  <section id="quiz" class="quiz" hidden>
+    <div class="srcbar">
+      <div class="seg" role="group" aria-label="Источник слов">
+        <button id="kList" aria-pressed="true">Мой список</button>
+        <button id="kGroup" aria-pressed="false">Общая группа</button>
+      </div>
+      <div class="selwrap"><select class="sel" id="srcSel" aria-label="Что учить"></select></div>
+    </div>
     <div class="seg" role="group" aria-label="Язык лицевой стороны">
       <button id="langRu" aria-pressed="true">RU</button>
       <button id="langEn" aria-pressed="false">EN</button>
@@ -291,49 +290,37 @@ dialog textarea.drag{border-color:var(--black)}
         <button class="pill" id="shuffle">Перемешать</button>
         <button class="pill" id="restart">Заново</button>
       </div>
+      <div class="sync" id="sync"></div>
     </div>
 
     <div class="done" id="done" hidden>
-      <h2>На сегодня всё!</h2>
-      <p>Новые карточки появятся, когда подойдёт их срок.</p>
+      <h2 id="doneT">На сегодня всё!</h2>
+      <p id="doneP">Новые карточки появятся, когда подойдёт их срок.</p>
     </div>
   </section>
 
-  <section id="listView" hidden>
-    <div class="tools">
-      <input class="search" id="search" type="search" placeholder="Поиск по словам">
-      <span class="sync" id="sync"></span>
-      <span class="grow"></span>
-      <button class="pill solid" id="add">+ Карточка</button>
-      <button class="pill" id="imp">Импорт</button>
-      <button class="pill" id="exp">Экспорт</button>
+  <section id="lists" class="hub">
+    <div class="hub-head">
+      <div><h1>Мои списки</h1><p class="hub-sub">Личные наборы слов. Выбери список — и сразу к карточкам.</p></div>
+      <button class="pill solid" id="newList">+ Создать список</button>
     </div>
-    <div class="list" id="list"></div>
+    <div class="grid" id="gridLists"></div>
   </section>
 
-  <section id="archView" hidden>
-    <p class="sub" id="archSub"></p>
-    <div class="list" id="archList"></div>
+  <section id="groups" class="hub" hidden>
+    <div class="hub-head">
+      <div><h1>Общие</h1><p class="hub-sub">Группы, в которых слова учат вместе. Выбери группу — и к карточкам.</p></div>
+      <button class="pill solid" id="joinGroup">Подключиться по коду</button>
+    </div>
+    <div class="grid" id="gridGroups"></div>
   </section>
 </main>
 
-<dialog id="dlg">
-  <h2 id="dlgTitle">Импорт</h2>
-  <p id="dlgHelp"></p>
-  <textarea id="dlgText"></textarea>
-  <p class="info" id="dlgInfo"></p>
-  <input type="file" id="dlgFile" accept=".txt,.tsv,.csv,.json,.md,text/*,application/json" hidden>
-  <div class="act">
-    <button class="pill" id="dlgPick">Выбрать файл</button>
-    <button class="pill" id="dlgCancel">Закрыть</button>
-    <button class="pill solid" id="dlgOk">Добавить</button>
-  </div>
-</dialog>
 <div class="toast" id="toast"></div>
 
 <script>
 const WORKER_URL = 'https://test.lizabeta.workers.dev';
-const GROUP_ID = 'group-catcha';   // слова общей группы, которые показываем
+const SRC_KEY = 'copure-src';      // последний выбранный список/группа
 const TOKEN_KEY = 'catcha-token';  // JWT в localStorage
 const LANG_KEY = 'cumshot-lang';
 
@@ -401,12 +388,12 @@ function fmtIn(ms){
 
 /* ===== Резервная копия слов в IndexedDB (используется ТОЛЬКО когда нет связи с сервером) ===== */
 function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('catcha-backup',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
-async function idbGet(){
-  try{const db=await idbOpen();return await new Promise((res,rej)=>{const t=db.transaction('kv').objectStore('kv').get('cards');t.onsuccess=()=>res(t.result||null);t.onerror=()=>rej(t.error)})}
+async function idbGet(k='cards'){
+  try{const db=await idbOpen();return await new Promise((res,rej)=>{const t=db.transaction('kv').objectStore('kv').get(k);t.onsuccess=()=>res(t.result||null);t.onerror=()=>rej(t.error)})}
   catch(e){return null}
 }
-async function idbSet(v){
-  try{const db=await idbOpen();await new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,'cards');tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+async function idbSet(v,k='cards'){
+  try{const db=await idbOpen();await new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
   catch(e){}
 }
 function scheduleBackup(){
@@ -414,7 +401,8 @@ function scheduleBackup(){
   clearTimeout(bkTimer);
   bkTimer=setTimeout(()=>{
     if(readOnly)return;
-    idbSet(cards.filter(c=>c.id!=null).map(c=>({id:c.id,ru:c.ru,en:c.en,ipa:c.ipa,note:c.note,pos:c.pos,interval:c.interval,repetitions:c.repetitions,ease_factor:c.ease_factor,due_date:c.due_date,status:c.status})));
+    idbSet(cards.filter(c=>c.id!=null).map(c=>({id:c.id,list_id:c.list_id,group_id:c.group_id,ru:c.ru,en:c.en,ipa:c.ipa,note:c.note,pos:c.pos,interval:c.interval,repetitions:c.repetitions,ease_factor:c.ease_factor,due_date:c.due_date,status:c.status})));
+    idbSet({lists:DATA.lists,groups:DATA.groups},'meta');
   },1000);
 }
 
@@ -422,6 +410,7 @@ function scheduleBackup(){
 let readOnly=false, retryTimer=null, bkTimer=null, advancing=false;
 let cards=[], curId=null, queue=[], revealed=false, sessionTotal=0, lastSig='', lang='ru', q='', pollTimer=null;
 const $=id=>document.getElementById(id);
+let DATA={lists:[],groups:[]}, src=null, kind='list';const mem={};  // src = {type:'list'|'group', id}
 
 /* ===== Токен и запросы к Worker ===== */
 const getToken=()=>{try{return localStorage.getItem(TOKEN_KEY)}catch(e){return null}};
@@ -448,7 +437,7 @@ async function api(path,opt={}){
 }
 
 /* ===== Слова: преобразование данных сервера ===== */
-const blank=o=>({id:null,ru:'',en:'',ipa:'',note:'',pos:0,interval:0,repetitions:0,ease_factor:START_EASE,due_date:0,status:'new',...o});
+const blank=o=>({id:null,list_id:null,group_id:null,ru:'',en:'',ipa:'',note:'',pos:0,interval:0,repetitions:0,ease_factor:START_EASE,due_date:0,status:'new',...o});
 function parseDue(v){
   if(typeof v==='number')return v;
   if(typeof v==='string'&&v){
@@ -457,96 +446,67 @@ function parseDue(v){
   }
   return 0;
 }
-const fromWord=(w,i)=>blank({id:w.id,ru:w.ru||'',en:w.en||'',ipa:w.ipa||'',note:w.note||'',pos:i*10,interval:Number(w.interval)||0,repetitions:Number(w.repetitions)||0,ease_factor:Number(w.ease_factor)||START_EASE,due_date:parseDue(w.due_date),status:w.status||'new'});
-const textBody=c=>({ru:c.ru||'',en:c.en||'',ipa:c.ipa||'',note:c.note||''});
+const fromWord=(w,i)=>blank({id:w.id,list_id:w.list_id||null,group_id:w.group_id||null,ru:w.ru||'',en:w.en||'',ipa:w.ipa||'',note:w.note||'',pos:i*10,interval:Number(w.interval)||0,repetitions:Number(w.repetitions)||0,ease_factor:Number(w.ease_factor)||START_EASE,due_date:parseDue(w.due_date),status:w.status||'new'});
 const srsBody=c=>({interval:c.interval||0,repetitions:c.repetitions||0,ease_factor:c.ease_factor||START_EASE,due_date:c.due_date||0,status:c.status||'new'});
-const hasBoth=c=>!!((c.ru||'').trim()&&(c.en||'').trim());
 
-/* ===== Сохранение ===== */
+/* ===== Сохранение прогресса (PUT /words) ===== */
 function setStatus(s,msg){
-  $('sync').textContent=s==='ok'?'● общий список · синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='bad'?'● не сохранилось: '+(msg||'ошибка сервера'):s==='part'?'● карточка сохранится, когда заполнены оба слова':'● сохраняю…';
+  $('sync').textContent=s==='ok'?'● синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='bad'?'● не сохранилось: '+(msg||'ошибка сервера'):'● сохраняю…';
 }
 function toast(t,ms){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),ms||2200)}
-function queueSave(c,delay=700,srs=false){
+function queueSave(c,delay=0){
   if(readOnly)return; // офлайн: на сервер ничего не отправляем
-  if(srs)c._sdirty=true;else c._dirty=true;
-  clearTimeout(c._t);setStatus('wait');
+  c._sdirty=true;clearTimeout(c._t);setStatus('wait');
   c._t=setTimeout(()=>flush(c),delay);
 }
 async function flush(c){
   if(c._busy){c._again=true;return}
-  if(c._deleted)return;
-  if(c.id==null&&!hasBoth(c)){c._dirty=true;setStatus('part');return} // сервер ждёт и русский, и английский
-  const needT=c._dirty,needS=c._sdirty;
-  c._busy=true;c._dirty=false;c._sdirty=false;c._t=null;
+  if(c.id==null||!c._sdirty)return;
+  c._busy=true;c._sdirty=false;c._t=null;
   try{
-    if(c.id==null){
-      // POST /words — новое слово (вместе с текущим состоянием SM-2)
-      const r=await api('/words',{method:'POST',body:{group_id:GROUP_ID,...textBody(c),...srsBody(c)}});
-      c.id=r.word.id;
-    }else{
-      // PUT /words — обновлённый текст и/или прогресс SM-2
-      const body={id:c.id};
-      if(needT)Object.assign(body,textBody(c));
-      if(needS)Object.assign(body,srsBody(c));
-      if(needT||needS)await api('/words',{method:'PUT',body});
-    }
-    if(c._deleted)await api('/words?id='+encodeURIComponent(c.id),{method:'DELETE'});
-    setStatus('ok');scheduleBackup();
-    c._fails=0;
+    await api('/words',{method:'PUT',body:{id:c.id,...srsBody(c)}});
+    setStatus('ok');scheduleBackup();c._fails=0;
   }catch(e){
     if(e instanceof ApiError&&e.status===401){
       /* onUnauthorized уже показал экран входа */
     }else if(e instanceof ApiError&&e.status>=400&&e.status<500&&e.status!==429){
       setStatus('bad',e.message);toast(e.message,6000); // сервер отказал — повтор не поможет
     }else{
-      c._dirty=c._dirty||needT;c._sdirty=c._sdirty||needS;
-      if(e instanceof ApiError){ // сервер ответил ошибкой (5xx): показываем причину, пробуем не больше 3 раз
+      c._sdirty=true;
+      if(e instanceof ApiError){
         const why=e.detail||e.message;
-        c._fails=(c._fails||0)+1;
-        setStatus('bad',why);
-        console.error('Worker error',e.status,why);
-        if(c._fails>=3)toast('Сервер вернул ошибку: '+why,7000);
-        else c._t=setTimeout(()=>flush(c),5000);
-      }else{ // нет сети
-        setStatus('err');c._t=setTimeout(()=>flush(c),5000);
-      }
+        c._fails=(c._fails||0)+1;setStatus('bad',why);console.error('Worker error',e.status,why);
+        if(c._fails>=3)toast('Сервер вернул ошибку: '+why,7000);else c._t=setTimeout(()=>flush(c),5000);
+      }else{setStatus('err');c._t=setTimeout(()=>flush(c),5000)}
     }
   }
   c._busy=false;
   if(c._again){c._again=false;flush(c)}
 }
-async function removeCard(c){
-  clearTimeout(c._t);c._deleted=true;
-  if(c.id==null)return;
-  try{await api('/words?id='+encodeURIComponent(c.id),{method:'DELETE'});setStatus('ok');scheduleBackup()}
-  catch(e){if(e.status===401)return;setStatus('err');toast('Не удалось удалить: нет связи')}
-}
 
 /* ===== Загрузка с сервера: GET /data ===== */
 async function poll(first){
-  const ae=document.activeElement;
-  if(!first&&ae&&ae.tagName==='TEXTAREA'&&$('list').contains(ae))return;
   const data=await api('/data');
-  const rows=(data.words||[]).filter(w=>w.group_id===GROUP_ID).map((w,i)=>fromWord(w,i));
+  DATA.lists=data.lists||[];DATA.groups=data.groups||[];
+  const rows=(data.words||[]).map((w,i)=>fromWord(w,i));
   const local={};cards.forEach(c=>{if(c.id!=null)local[c.id]=c});
-  const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._dirty||l._sdirty||l._t))?l:r});
-  const fresh=cards.filter(c=>c.id==null&&!c._deleted);
-  const list=fresh.concat(next);
+  const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._sdirty||l._t))?l:r});
   setStatus('ok');
-  const sig=JSON.stringify(list.map(c=>[c.id,c.ru,c.en,c.ipa,c.note,c.pos,c.interval,c.repetitions,c.ease_factor,c.due_date,c.status]));
+  const srcChanged=ensureSrc();
+  const sig=JSON.stringify([DATA,next.map(c=>[c.id,c.list_id,c.group_id,c.ru,c.en,c.ipa,c.note,c.pos,c.interval,c.repetitions,c.ease_factor,c.due_date,c.status])]);
   if(sig===lastSig&&!first)return;
-  lastSig=sig;cards=list;scheduleBackup();
-  if(first||(curId==null&&!revealed))rebuild();
+  lastSig=sig;cards=next;scheduleBackup();
+  renderSrcBar();renderHub();
+  if(first||srcChanged||(curId==null&&!revealed))rebuild();
   else renderQuiz();
-  if(!$('listView').hidden)renderList();
-  if(!$('archView').hidden)renderArchive();
 }
 async function safePoll(){if(readOnly)return;try{await poll(false);if(curId==null&&!revealed&&cards.some(isDue)&&!$('quiz').hidden)rebuild()}catch(e){if(!(e&&e.status===401))setStatus('err')}}
 
 /* ===== Квиз ===== */
 const byId=id=>cards.find(c=>c.id===id);
-const isDue=c=>c.id!=null&&c.status!=='archive'&&(c.due_date||0)<=Date.now()&&((c.ru||'')+(c.en||'')).trim();
+const inSrc=c=>!!src&&(src.type==='list'?c.list_id===src.id:c.group_id===src.id);
+const dueBase=c=>c.id!=null&&c.status!=='archive'&&(c.due_date||0)<=Date.now()&&((c.ru||'')+(c.en||'')).trim();
+const isDue=c=>dueBase(c)&&inSrc(c); // в квиз попадают только слова выбранного списка/группы
 function rebuild(shuffle){
   let ids=cards.filter(isDue).sort((a,b)=>(a.due_date-b.due_date)||(a.pos-b.pos)).map(c=>c.id);
   if(shuffle)for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
@@ -568,7 +528,7 @@ function renderQuiz(){
   if(curId!=null&&!c&&!revealed){advance();return}
   const total=Math.max(sessionTotal,1);
   const remaining=queue.length+(curId!=null?1:0);
-  const done=curId==null;
+  const done=curId==null;if(done)doneText();
   $('stage').hidden=done;$('done').hidden=!done;
   $('left').textContent=done?'':'Осталось: '+remaining;
   $('bar').style.width=done?'100%':(Math.max(0,sessionTotal-remaining)/total*100)+'%';
@@ -614,7 +574,7 @@ function rate(r){
   if(pb){pb.classList.remove('pop');void pb.offsetWidth;pb.classList.add('pop')}
   renderQuiz();
   if(r==='archive')toast('Слово отправлено в архив');
-  if($('listView').hidden===false)renderList();
+  renderHub();
 }
 function next(){
   if(!revealed)return;
@@ -643,370 +603,106 @@ document.addEventListener('keydown',e=>{
   else if(revealed&&(e.key===' '||e.key==='Enter'||e.key==='ArrowRight')){e.preventDefault();next()}
 });
 
-/* ===== Все слова ===== */
-function fit(t){t.style.height='auto';t.style.height=t.scrollHeight+'px'}
-function archiveCard(c){
-  applyAnkiSM2(c,'archive',Date.now());queueSave(c,0,true);
-  queue=queue.filter(id=>id!==c.id);
-  if(curId===c.id&&!revealed)advance();
-  renderList();toast('Перенесено в Archive');
-}
-function restoreCard(c){
-  c.status=(c.interval>0)?'review':'new';c.due_date=Date.now();
-  queueSave(c,0,true);renderArchive();toast('Вернулось во «Все слова»');
-  if(curId==null&&!revealed)rebuild();
-}
-function renderList(){
-  const L=$('list');L.innerHTML='';
-  const f=q.trim().toLowerCase();
-  const act=cards.filter(c=>c.status!=='archive');
-  const shown=act.filter(c=>!f||((c.ru||'')+' '+(c.en||'')+' '+(c.ipa||'')+' '+(c.note||'')).toLowerCase().includes(f));
-  if(!shown.length){L.innerHTML='<div class="empty">'+(act.length?'Ничего не найдено':'Пока нет карточек. Нажми «+ Карточка» или «Импорт».')+'</div>';return}
-  shown.forEach(c=>{
-    const r=document.createElement('div');r.className='row';
-    r.innerHTML=
-      '<div class="cell"><label>Русский</label><textarea rows="1" data-k="ru" placeholder="Слово по-русски"></textarea></div>'+
-      '<div class="cell e"><label>English</label><textarea rows="1" data-k="en" placeholder="Translation"></textarea><textarea class="p" rows="1" data-k="ipa" placeholder="[транскрипция]"></textarea>'+
-      '<textarea class="n" rows="1" data-k="note" placeholder="Заметка / примеры"></textarea></div>'+
-      '<div class="side"><button class="arch" data-a="arch">В архив</button><button data-a="dup" title="Дублировать">⧉</button><button data-a="del" title="Удалить">✕</button></div>';
-    r.querySelectorAll('textarea').forEach(t=>{
-      t.value=c[t.dataset.k]||'';t.readOnly=readOnly;
-      t.addEventListener('input',()=>{c[t.dataset.k]=t.value;fit(t);queueSave(c)});
-    });
-    r.querySelector('[data-a=arch]').onclick=()=>archiveCard(c);
-    r.querySelector('[data-a=del]').onclick=()=>{
-      if(confirm('Удалить карточку? Она пропадёт у всех.')){
-        cards=cards.filter(x=>x!==c);lastSig='';removeCard(c); // → DELETE /words
-        queue=queue.filter(id=>id!==c.id);
-        if(curId===c.id&&!revealed)advance();
-        renderList();
-      }
-    };
-    r.querySelector('[data-a=dup]').onclick=()=>{
-      const d=blank({ru:c.ru,en:c.en,ipa:c.ipa,note:c.note,pos:(c.pos||0)+0.5});
-      cards.splice(cards.indexOf(c)+1,0,d);lastSig='';
-      queueSave(d,0);renderList();
-    };
-    L.appendChild(r);
+/* ===== Хаб: плитки списков и групп ===== */
+const plural=(n,f)=>{const a=Math.abs(n)%100,b=a%10;return f[a>10&&a<20?2:b>1&&b<5?1:b===1?0:2]};
+const nWords=n=>n+' '+plural(n,['слово','слова','слов']);
+const nMembers=n=>n+' '+plural(n,['участник','участника','участников']);
+const ROLE_LIST={owner:'Личный',editor:'Доступ: редактор',viewer:'Только чтение'};
+const ROLE_GROUP={admin:'Админ',member:'Участник'};
+function mk(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function clearBackup(){idbSet([]);idbSet(null,'meta')}
+function stats(){ // слов и «к повторению» на каждый список/группу
+  const st={};
+  cards.forEach(c=>{
+    const k=c.list_id?'l:'+c.list_id:c.group_id?'g:'+c.group_id:null;if(!k)return;
+    const o=st[k]||(st[k]={total:0,due:0});o.total++;if(dueBase(c))o.due++;
   });
-  L.querySelectorAll('textarea').forEach(fit);
+  return st;
 }
-$('search').oninput=e=>{q=e.target.value;renderList()};
-$('add').onclick=()=>{
-  const minPos=cards.reduce((m,c)=>Math.min(m,c.pos||0),0);
-  const c=blank({pos:minPos-10});
-  cards.unshift(c);q='';$('search').value='';lastSig='';
-  renderList();
-  const t=$('list').querySelector('textarea');t&&t.focus();
-};
-
-/* ===== Archive ===== */
-function renderArchive(){
-  const L=$('archList');L.innerHTML='';
-  const arch=cards.filter(c=>c.status==='archive');
-  $('archSub').textContent=arch.length?('В архиве слов: '+arch.length+'. Они не попадают в карточки, пока ты их не вернёшь.'):'';
-  if(!arch.length){L.innerHTML='<div class="empty">Архив пуст. Слова попадают сюда по кнопке «Archive» в карточках или «В архив» в списке.</div>';return}
-  arch.forEach(c=>{
-    const r=document.createElement('div');r.className='row';
-    r.innerHTML='<div class="cell"><label>Русский</label><div class="ro"></div></div>'+
-      '<div class="cell e"><label>English</label><div class="ro en"></div><div class="ro p"></div><div class="ro n"></div></div>'+
-      '<div class="side"><button class="back" title="Вернуть во «Все слова»">↩ Вернуть</button></div>';
-    r.querySelector('.ro').textContent=c.ru||'—';
-    r.querySelector('.ro.en').textContent=c.en||'—';
-    const ip=r.querySelector('.ro.p');ip.textContent=c.ipa||'';ip.hidden=!c.ipa;
-    const nn=r.querySelector('.ro.n');nn.textContent=c.note||'';nn.hidden=!c.note;
-    r.querySelector('.back').onclick=()=>restoreCard(c);
-    L.appendChild(r);
+function tile(type,item,s,chip,meta,leave){
+  const t=mk('div','tile');t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',item.name);
+  t.append(mk('span','chip',chip),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
+  const foot=mk('div','tile-foot');
+  foot.append(s.total===0?mk('span','due zero','Пока пусто'):s.due===0?mk('span','due zero','На сегодня всё'):mk('span','due',s.due+' к повторению'));
+  if(leave){
+    const b=mk('button','leave','Выйти');b.type='button';
+    b.onclick=e=>{e.stopPropagation();toast('Выход из группы подключим следующим шагом')}; // пока без логики
+    foot.append(b);
+  }
+  t.append(foot);
+  const open=()=>openSource(type,item.id);
+  t.onclick=open;
+  t.onkeydown=e=>{if(e.target===t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open()}};
+  return t;
+}
+function emptyBox(title,text){const e=mk('div','empty');e.append(mk('b',null,title),mk('span',null,text));return e}
+function renderHub(){
+  const st=stats(),GL=$('gridLists'),GG=$('gridGroups');
+  GL.innerHTML='';GG.innerHTML='';
+  if(!DATA.lists.length)GL.append(emptyBox('Пока нет списков','Нажми «+ Создать список», чтобы начать.'));
+  DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,ROLE_LIST[l.role]||'Список',nWords(s.total)))});
+  if(!DATA.groups.length)GG.append(emptyBox('Вы пока не в группах','Подключитесь по коду приглашения от друзей.'));
+  DATA.groups.forEach(g=>{
+    const s=st['g:'+g.id]||{total:0,due:0},n=Number(g.members_count)||0;
+    GG.append(tile('group',g,s,ROLE_GROUP[g.role]||'Группа',nMembers(n)+' · '+nWords(s.total),true));
   });
 }
+$('newList').onclick=()=>toast('Создание списков подключим следующим шагом');   // пока без логики
+$('joinGroup').onclick=()=>toast('Подключение по коду подключим следующим шагом'); // пока без логики
 
-/* ===== Импорт / экспорт ===== */
-let mode='',dlgHint='';
-/*PARSER-START*/
-const HAS_CYR=s=>/[\u0400-\u04FF]/.test(s);
-const HAS_LAT=s=>/[A-Za-z]/.test(s);
-const IPA_CH=/[ˈˌːəɪʊæɒʌɔɛɜθðʃʒŋɑɐ]/;
-const IPA_ONLY=/^\s*(?:\[[^\]]*\]|\/[^\/]*\/)(?:\s*[;,]?\s*(?:\[[^\]]*\]|\/[^\/]*\/))*\s*$/;
-const TRAIL_IPA=/\s*(\[[^\]]*\](?:\s*[;,]?\s*\[[^\]]*\])*)\s*$/;
-const HDR={
-  ru:/^(ru|rus|russian|русский|рус)$/,
-  en:/^(en|eng|english|английский|англ)$/,
-  ipa:/^(ipa|transcription|транскрипция|pron|pronunciation)$/,
-  note:/^(note|notes|example|examples|comment|заметка|заметки|пример|примеры|примечание|комментарий)$/
-};
-const keyOf=c=>((c.ru||'')+'|'+(c.en||'')).toLowerCase().replace(/\s+/g,' ').trim();
-
-// Разбор таблицы с разделителем d; поля в "кавычках" могут содержать переносы строк (так экспортируют Excel и Google Sheets)
-function parseDelimited(text,d,noQuote){
-  const rows=[];let row=[],f='',fs=true,inQ=false;
-  const endField=()=>{row.push(f);f='';fs=true};
-  const endRow=()=>{endField();if(row.some(x=>x.trim()!==''))rows.push(row);row=[]};
-  for(let i=0;i<text.length;i++){
-    const ch=text[i];
-    if(inQ){
-      if(ch==='"'){if(text[i+1]==='"'){f+='"';i++}else inQ=false}
-      else f+=ch;
-      continue;
-    }
-    if(ch==='"'&&fs&&!noQuote){inQ=true;fs=false;continue}
-    if(text.startsWith(d,i)){endField();i+=d.length-1;continue}
-    if(ch==='\r')continue;
-    if(ch==='\n'){endRow();continue}
-    f+=ch;fs=false;
-  }
-  endRow();
-  rows.unbalanced=inQ; // кавычка открылась и не закрылась — это не таблица из Excel, читаем без кавычек
-  return rows;
+/* ===== Источник слов для квиза ===== */
+const itemsOf=k=>k==='list'?DATA.lists:DATA.groups;
+const validSrc=x=>!!x&&itemsOf(x.type).some(i=>i.id===x.id);
+function ensureSrc(){ // true, если источник пришлось сменить
+  if(validSrc(src))return false;
+  let x=null;try{x=JSON.parse(localStorage.getItem(SRC_KEY))}catch(e){}
+  if(!validSrc(x))x=DATA.lists[0]?{type:'list',id:DATA.lists[0].id}:DATA.groups[0]?{type:'group',id:DATA.groups[0].id}:null;
+  const changed=!!(src||x);src=x;if(x){kind=x.type;mem[x.type]=x.id}
+  return changed;
 }
-// Какой разделитель в тексте: Tab, |, ;, « — », « – », « - », « = » (запятая — только для .csv)
-function detectDelim(text,hint){
-  const lines=text.split(/\r?\n/).filter(l=>l.trim()).slice(0,60);
-  if(!lines.length)return null;
-  if(lines.some(l=>l.includes('\t')))return '\t';
-  const need=Math.ceil(lines.length*0.5);
-  for(const d of ['|',';',' — ',' – ',' - ',' = ']){
-    if(lines.filter(l=>l.includes(d)).length>=need)return d;
-  }
-  if(hint==='csv')return ',';
-  return null;
+function renderSrcBar(){
+  if(src)kind=src.type;
+  $('kList').setAttribute('aria-pressed',kind==='list');$('kGroup').setAttribute('aria-pressed',kind==='group');
+  const sel=$('srcSel'),items=itemsOf(kind);sel.innerHTML='';
+  if(!items.length){sel.add(new Option(kind==='list'?'Списков пока нет':'Групп пока нет',''));sel.disabled=true;return}
+  sel.disabled=false;
+  items.forEach(i=>sel.add(new Option(i.name,i.id)));
+  sel.value=src&&src.type===kind?src.id:items[0].id;
 }
-// Запасной вариант: «русский english» через пробел — режем по границе алфавитов
-function splitByScript(l){
-  l=l.trim();
-  const a=l.match(/^([^A-Za-z]*[\u0400-\u04FF][^A-Za-z]*?)\s+([A-Za-z].*)$/);
-  if(a)return [a[1],a[2]];
-  const b=l.match(/^([A-Za-z][^\u0400-\u04FF]*?)\s+([\u0400-\u04FF].*)$/);
-  if(b)return [b[2],b[1]];
-  return null;
+function setSource(type,id){
+  src={type,id};kind=type;mem[type]=id;
+  try{localStorage.setItem(SRC_KEY,JSON.stringify(src))}catch(e){}
+  renderSrcBar();rebuild();
 }
-// Транскрипция в конце английского слова: «word [wɜːd]» → word + [wɜːd]
-function finishCard(ru,en,ipa,note){
-  ru=(ru||'').trim();en=(en||'').trim();ipa=(ipa||'').trim();note=(note||'').trim();
-  if(!ipa){
-    const m=en.match(TRAIL_IPA);
-    if(m&&m.index>0){ipa=m[1].trim();en=en.slice(0,m.index).trim()}
-    else{const s=en.match(/\s+(\/[^\/\n]+\/)\s*$/);if(s&&IPA_CH.test(s[1])){ipa=s[1];en=en.slice(0,s.index).trim()}}
-  }
-  return {ru,en,ipa,note};
+function openSource(type,id){setSource(type,id);tab('quiz')}
+function switchKind(k){
+  const items=itemsOf(k);
+  if(items.length)setSource(k,items.some(i=>i.id===mem[k])?mem[k]:items[0].id);
+  else{kind=k;src=null;renderSrcBar();rebuild()}
 }
-function rowToCard(c,map,d,anyNL){
-  let ru,en,ipa='',note='';
-  if(map){
-    ru=c[map.ru]||'';en=c[map.en]||'';
-    ipa=map.ipa>=0?(c[map.ipa]||''):'';note=map.note>=0?(c[map.note]||''):'';
-  }else{
-    ru=(c[0]||'').trim();en=(c[1]||'').trim();
-    const rest=c.slice(2);
-    if(rest.length){
-      const r0=rest[0]||'';
-      if(IPA_ONLY.test(r0)||(!r0.trim()&&rest.length>1)){ipa=r0;note=rest.slice(1).join(d)}
-      else note=rest.join(d);
-    }
-    // в первом столбце английский, во втором русский — меняем местами
-    if(HAS_LAT(ru)&&!HAS_CYR(ru)&&HAS_CYR(en)){const t=ru;ru=en;en=t}
-  }
-  // старый формат: переносы строк в заметке записаны как « / »
-  if(!anyNL&&note.indexOf(' / ')>=0)note=note.replace(/ \/ /g,'\n');
-  return finishCard(ru,en,ipa,note);
+$('kList').onclick=()=>switchKind('list');
+$('kGroup').onclick=()=>switchKind('group');
+$('srcSel').onchange=e=>{if(e.target.value)setSource(kind,e.target.value)};
+function doneText(){
+  let t='На сегодня всё!',p='Новые карточки появятся, когда подойдёт их срок.';
+  if(!src){t='Выбери, что учить';p='Открой список или группу — слова появятся здесь.'}
+  else if(!cards.some(inSrc)){t='Здесь пока пусто';p='В этом наборе ещё нет слов.'}
+  $('doneT').textContent=t;$('doneP').textContent=p;
 }
-function parseImport(text,hint){
-  text=String(text||'').replace(/^\uFEFF/,'').trim();
-  const out={cards:[],skipped:0};
-  if(!text)return out;
-  const push=c=>{if(!c.ru||!c.en){out.skipped++;return}out.cards.push(c)};
-  // 1) JSON: массив объектов {ru,en,ipa,note} (или {russian,english,transcription,example})
-  if(/^[\[{]/.test(text)){
-    try{
-      let j=JSON.parse(text);
-      if(!Array.isArray(j))j=j.cards||j.words||j.items||[];
-      j.forEach(o=>{
-        if(Array.isArray(o))push(rowToCard(o.map(x=>String(x==null?'':x)),null,'\t',true));
-        else if(o&&typeof o==='object'){
-          const g=(...ks)=>{for(const k of ks)if(o[k]!=null)return String(o[k]);return ''};
-          const fc=finishCard(g('ru','russian','Russian','rus'),g('en','english','English','eng'),g('ipa','transcription','pron'),g('note','notes','example','examples','comment'));if(o.archived===true||o.status==='archive')fc.archived=true;push(fc);
-        }else out.skipped++;
-      });
-      return out;
-    }catch(e){/* не JSON — читаем как таблицу */}
-  }
-  // 2) таблица / текст
-  const d=detectDelim(text,hint);
-  if(!d){
-    text.split(/\r?\n/).filter(l=>l.trim()).forEach(l=>{
-      const p=splitByScript(l);
-      if(p)push(finishCard(p[0],p[1],'',''));else out.skipped++;
-    });
-    return out;
-  }
-  let rows=parseDelimited(text,d);
-  if(rows.unbalanced)rows=parseDelimited(text,d,true);
-  if(!rows.length)return out;
-  let map=null,start=0;
-  const h=rows[0].map(x=>x.trim().toLowerCase());
-  const idx=re=>h.findIndex(x=>re.test(x));
-  const m={ru:idx(HDR.ru),en:idx(HDR.en),ipa:idx(HDR.ipa),note:idx(HDR.note)};
-  if(m.ru>=0&&m.en>=0){map=m;start=1}
-  const anyNL=rows.some(r=>r.some(x=>x.indexOf('\n')>=0));
-  for(let i=start;i<rows.length;i++){
-    if(rows[i].length<2&&!map){out.skipped++;continue}
-    push(rowToCard(rows[i],map,d,anyNL));
-  }
-  return out;
-}
-/*PARSER-END*/
-
-// Экспорт: «русский | english [транскрипция] | заметка» (переносы строк в заметке записаны как « / »)
-const lineOf=c=>[c.ru||'',(c.en||'')+(c.ipa?' '+c.ipa:''),(c.note||'').replace(/\n/g,' / ')].join(' | ');
-function download(name,text,type){
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;
-  document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
-}
-// на телефоне открываем меню «Сохранить в Файлы», на компьютере просто скачиваем
-async function saveJsonFile(name,text){
-  try{
-    const file=new File([text],name,{type:'application/json'});
-    if(matchMedia('(pointer:coarse)').matches&&navigator.canShare&&navigator.canShare({files:[file]})){
-      await navigator.share({files:[file]});return;
-    }
-  }catch(err){if(err&&err.name==='AbortError')return}
-  download(name,text,'application/json');
-}
-function planImport(){
-  const p=parseImport($('dlgText').value,dlgHint);
-  const have=new Set(cards.map(keyOf));
-  const add=[];let dup=0;
-  p.cards.forEach(c=>{const k=keyOf(c);if(have.has(k)){dup++;return}have.add(k);add.push(c)});
-  return {add,dup,skipped:p.skipped};
-}
-function updateInfo(){
-  if(mode!=='imp')return;
-  if(!$('dlgText').value.trim()){$('dlgInfo').textContent='';return}
-  const p=planImport();
-  let s='Новых карточек: '+p.add.length;
-  if(p.dup)s+=', уже есть на сайте: '+p.dup;
-  if(p.skipped)s+=', не распознано строк: '+p.skipped;
-  $('dlgInfo').textContent=s;
-}
-async function loadFile(f){
-  if(!f)return;
-  if(f.size>5e6){toast('Файл слишком большой');return}
-  dlgHint=/\.csv$/i.test(f.name)?'csv':'';
-  $('dlgText').value=await f.text();
-  updateInfo();
-  await runImport(); // файл импортируется автоматически
-}
-function openDlg(m){
-  mode=m;dlgHint='';
-  $('dlgInfo').textContent='';
-  if(m==='imp'){
-    $('dlgTitle').textContent='Импорт';
-    $('dlgHelp').textContent='Одна карточка на строку: русский | english [транскрипция] | заметка. Разделитель — « | » (пробел, палка, пробел) или Tab, так что старый экспорт тоже подойдёт. Кнопка «Выбрать файл» принимает .txt, .csv и .json и импортирует сразу. Русский и английский можно перепутать местами, дубликаты пропущу.';
-    $('dlgText').value='';$('dlgOk').textContent='Добавить';$('dlgPick').textContent='Выбрать файл';
-  }else{
-    $('dlgTitle').textContent='Экспорт';
-    $('dlgHelp').textContent='Все слова, включая архив: русский | english [транскрипция] | заметка. Скопируй текст или скачай my_cards.json — оба варианта можно вставить обратно через «Импорт». Прогресс повторений в копию не входит.';
-    $('dlgText').value=cards.filter(c=>c.ru||c.en).map(lineOf).join('\n');
-    $('dlgOk').textContent='Скопировать';$('dlgPick').textContent='Скачать my_cards.json';
-  }
-  $('dlg').showModal();
-}
-$('imp').onclick=()=>openDlg('imp');$('exp').onclick=()=>openDlg('exp');
-$('dlgCancel').onclick=()=>$('dlg').close();
-$('dlgText').addEventListener('input',updateInfo);
-$('dlgPick').onclick=async()=>{
-  if(mode==='imp'){$('dlgFile').click();return}
-  const list=cards.filter(c=>c.ru||c.en).map(c=>{
-    const o={ru:c.ru||'',en:c.en||'',ipa:c.ipa||'',note:c.note||''};
-    if(c.status==='archive')o.archived=true;
-    return o;
-  });
-  await saveJsonFile('my_cards.json',JSON.stringify(list,null,2));
-  toast('my_cards.json: '+list.length+' карточек');
-};
-$('dlgFile').onchange=async e=>{await loadFile(e.target.files[0]);e.target.value=''};
-$('dlgText').addEventListener('dragover',e=>{if(mode==='imp'){e.preventDefault();e.currentTarget.classList.add('drag')}});
-$('dlgText').addEventListener('dragleave',e=>e.currentTarget.classList.remove('drag'));
-$('dlgText').addEventListener('drop',async e=>{
-  e.currentTarget.classList.remove('drag');
-  if(mode!=='imp')return;
-  const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
-  if(f){e.preventDefault();await loadFile(f)}
-});
-async function runImport(){
-  const plan=planImport();
-  if(!plan.add.length){
-    toast(plan.dup?'Все эти карточки уже есть на сайте':'Не смог распознать карточки: нужны строки «русский | english»',4500);
-    return;
-  }
-  let pos=cards.reduce((m,c)=>Math.max(m,c.pos||0),0);
-  const add=plan.add.map(c=>{
-    const x=blank({...c,pos:(pos+=10)});
-    if(c.archived){x.status='archive';x.due_date=Date.now()+3650*DAY}
-    return x;
-  });
-  $('dlgOk').disabled=true;$('dlgPick').disabled=true;setStatus('wait');
-  let ok=0,lastErr='';const failed=[];
-  // POST /words по одному слову, по 6 запросов параллельно
-  for(let i=0;i<add.length;i+=6){
-    if(!getToken())break; // сессия закончилась посреди импорта
-    const part=add.slice(i,i+6);
-    const res=await Promise.allSettled(part.map(c=>api('/words',{method:'POST',body:{group_id:GROUP_ID,...textBody(c),...srsBody(c)}})));
-    res.forEach((r,k)=>{
-      if(r.status==='fulfilled'){
-        part[k].id=r.value.word.id;
-        if(!cards.some(x=>x.id===part[k].id))cards.push(part[k]);
-        ok++;
-      }else{
-        failed.push(part[k]);
-        lastErr=(r.reason&&(r.reason.detail||r.reason.message))||lastErr;
-      }
-    });
-    $('dlgOk').textContent='Добавляю… '+Math.min(i+6,add.length)+'/'+add.length;
-    if(ok===0&&failed.length>=6){failed.push(...add.slice(i+6));break} // сервер отвечает ошибкой — не долбим дальше
-  }
-  $('dlgOk').disabled=false;$('dlgPick').disabled=false;$('dlgOk').textContent='Добавить';
-  if(!getToken())return; // onUnauthorized уже показал экран входа
-  lastSig='';renderList();
-  if(curId==null&&!revealed)rebuild();
-  if(ok)scheduleBackup();
-  if(failed.length){
-    // в окне остаются только строки, которые не загрузились — можно нажать «Добавить» ещё раз
-    $('dlgText').value=failed.map(lineOf).join('\n');dlgHint='';updateInfo();
-    if(lastErr)$('dlgInfo').textContent+=' · ответ сервера: '+lastErr;
-    console.error('Import failed:',lastErr);
-    setStatus('bad',lastErr||'ошибка сервера');
-    toast('Добавлено: '+ok+', не получилось: '+failed.length+(lastErr?' ('+lastErr+')':''),7000);
-  }else{
-    $('dlg').close();toast('Добавлено: '+ok+(plan.dup?', пропущено дубликатов: '+plan.dup:''));setStatus('ok');
-  }
-}
-$('dlgOk').onclick=async()=>{
-  if(mode==='imp')await runImport();
-  else{
-    const t=$('dlgText');t.select();
-    try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}
-    toast('Скопировано');
-  }
-};
 
 /* ===== Вкладки и логотип ===== */
 function tab(n){
-  $('quiz').hidden=n!=='quiz';$('listView').hidden=n!=='list';$('archView').hidden=n!=='arch';
-  $('tab-quiz').setAttribute('aria-selected',n==='quiz');
-  $('tab-list').setAttribute('aria-selected',n==='list');
-  $('tab-arch').setAttribute('aria-selected',n==='arch');
-  if(n==='quiz'){if(!revealed)rebuild();else renderQuiz()}
-  else if(n==='list')renderList();
-  else renderArchive();
+  ['lists','groups','quiz'].forEach(t=>{$(t).hidden=t!==n;$('tab-'+t).setAttribute('aria-selected',t===n)});
+  if(n==='quiz'){if(curId==null&&!revealed)rebuild();else renderQuiz()}
+  else renderHub();
+  window.scrollTo(0,0);
 }
-$('tab-quiz').onclick=()=>tab('quiz');$('tab-list').onclick=()=>tab('list');$('tab-arch').onclick=()=>tab('arch');
+['lists','groups','quiz'].forEach(t=>$('tab-'+t).onclick=()=>tab(t));
 $('logo').onclick=()=>{
   const l=$('logo');l.classList.add('flip');
   clearTimeout(l._t);l._t=setTimeout(()=>l.classList.remove('flip'),2500);
   if(!getToken()||document.body.className==='auth')return;
-  if($('quiz').hidden)tab('quiz');
+  if($('lists').hidden)tab('lists');
 };
 
 /* ===== Тема ===== */
@@ -1042,7 +738,7 @@ function resetState(){
   cards.forEach(c=>{clearTimeout(c._t);c._deleted=true}); // чтобы отложенные сохранения не ушли без токена
   cards=[];curId=null;queue=[];revealed=false;lastSig='';sessionTotal=0;
   clearTimeout(bkTimer);
-  try{$('dlg').close()}catch(e){}
+  DATA={lists:[],groups:[]};src=null;
 }
 function showAuth(msg){
   clearInterval(pollTimer);clearInterval(retryTimer);readOnly=false;
@@ -1054,7 +750,7 @@ function showAuth(msg){
 }
 function onUnauthorized(){
   if(document.body.className==='auth')return;
-  setToken(null);resetState();idbSet([]);
+  setToken(null);resetState();clearBackup();
   showAuth('Сессия закончилась — войди заново');
 }
 $('authForm').onsubmit=async e=>{
@@ -1075,16 +771,12 @@ $('authForm').onsubmit=async e=>{
 };
 $('logout').onclick=()=>{
   if(!confirm('Выйти из аккаунта?'))return;
-  setToken(null);resetState();idbSet([]);
+  setToken(null);resetState();clearBackup();
   showAuth();
 };
 
 /* ===== Старт ===== */
-function refreshViews(){
-  if(!$('listView').hidden)renderList();
-  if(!$('archView').hidden)renderArchive();
-  renderQuiz();
-}
+function refreshViews(){renderSrcBar();renderHub();renderQuiz()}
 async function start(silent){
   if(!getToken()){showAuth();return}   // нет токена — форма входа
   if(!silent)document.body.className='loading';
@@ -1101,12 +793,12 @@ async function start(silent){
   }catch(e){
     if(e&&e.status===401)return;       // onUnauthorized уже показал форму входа
     if(silent)return; // тихая попытка не удалась — остаёмся в режиме чтения
-    const bk=await idbGet();
+    const bk=await idbGet(),meta=await idbGet('meta');
     await hold();
     if(!getToken())return;
-    if(bk&&bk.length){
+    if((bk&&bk.length)||(meta&&((meta.lists||[]).length||(meta.groups||[]).length))){
       readOnly=true;clearInterval(pollTimer);
-      cards=bk.map(blank);lastSig='';
+      cards=(bk||[]).map(blank);if(meta){DATA.lists=meta.lists||[];DATA.groups=meta.groups||[]}ensureSrc();lastSig='';
       document.body.className='readonly';
       rebuild();refreshViews();
       clearInterval(retryTimer);retryTimer=setInterval(()=>start(true),15000);
