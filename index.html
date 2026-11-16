@@ -175,7 +175,11 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 dialog h2{font-family:var(--serif);font-weight:400;font-size:32px;margin-bottom:8px}
 dialog p{font-size:14px;opacity:.7;margin-bottom:14px}
 dialog textarea{width:100%;height:200px;border:1px solid var(--grey);border-radius:14px;padding:14px;background:var(--paper);font-size:14px}
-dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+dialog .act{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+dialog .act #dlgPick{margin-right:auto}
+dialog .act .pill:disabled{opacity:.5;cursor:default}
+dialog p.info{min-height:20px;margin:10px 0 0;font-size:13px;opacity:.7}
+dialog textarea.drag{border-color:var(--black)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--black);color:var(--white);padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;transition:.3s;font-size:14px}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
@@ -317,7 +321,10 @@ dialog .act{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
   <h2 id="dlgTitle">Импорт</h2>
   <p id="dlgHelp"></p>
   <textarea id="dlgText"></textarea>
+  <p class="info" id="dlgInfo"></p>
+  <input type="file" id="dlgFile" accept=".txt,.tsv,.csv,.json,.md,text/*,application/json" hidden>
   <div class="act">
+    <button class="pill" id="dlgPick">Выбрать файл</button>
     <button class="pill" id="dlgCancel">Закрыть</button>
     <button class="pill solid" id="dlgOk">Добавить</button>
   </div>
@@ -420,7 +427,7 @@ const $=id=>document.getElementById(id);
 const getToken=()=>{try{return localStorage.getItem(TOKEN_KEY)}catch(e){return null}};
 const setToken=t=>{try{if(t)localStorage.setItem(TOKEN_KEY,t);else localStorage.removeItem(TOKEN_KEY)}catch(e){}};
 
-class ApiError extends Error{constructor(status,msg){super(msg);this.status=status}}
+class ApiError extends Error{constructor(status,msg,detail){super(msg);this.status=status;this.detail=detail||''}}
 
 async function api(path,opt={}){
   const headers={};
@@ -435,7 +442,7 @@ async function api(path,opt={}){
   let data=null;try{data=await r.json()}catch(e){}
   if(!r.ok){
     if(r.status===401&&!opt.public)onUnauthorized(); // токен недействителен или сессии сброшены
-    throw new ApiError(r.status,(data&&data.error)||('Ошибка сервера ('+r.status+')'));
+    throw new ApiError(r.status,(data&&data.error)||('Ошибка сервера ('+r.status+')'),data&&data.detail);
   }
   return data;
 }
@@ -456,10 +463,10 @@ const srsBody=c=>({interval:c.interval||0,repetitions:c.repetitions||0,ease_fact
 const hasBoth=c=>!!((c.ru||'').trim()&&(c.en||'').trim());
 
 /* ===== Сохранение ===== */
-function setStatus(s){
-  $('sync').textContent=s==='ok'?'● общий список · синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='part'?'● карточка сохранится, когда заполнены оба слова':'● сохраняю…';
+function setStatus(s,msg){
+  $('sync').textContent=s==='ok'?'● общий список · синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='bad'?'● не сохранилось: '+(msg||'ошибка сервера'):s==='part'?'● карточка сохранится, когда заполнены оба слова':'● сохраняю…';
 }
-function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}
+function toast(t,ms){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),ms||2200)}
 function queueSave(c,delay=700,srs=false){
   if(readOnly)return; // офлайн: на сервер ничего не отправляем
   if(srs)c._sdirty=true;else c._dirty=true;
@@ -486,12 +493,24 @@ async function flush(c){
     }
     if(c._deleted)await api('/words?id='+encodeURIComponent(c.id),{method:'DELETE'});
     setStatus('ok');scheduleBackup();
+    c._fails=0;
   }catch(e){
-    if(e instanceof ApiError&&e.status>=400&&e.status<500&&e.status!==401&&e.status!==429){
-      setStatus('err');toast(e.message); // сервер отказал — повтор не поможет
-    }else if(!(e instanceof ApiError&&e.status===401)){
+    if(e instanceof ApiError&&e.status===401){
+      /* onUnauthorized уже показал экран входа */
+    }else if(e instanceof ApiError&&e.status>=400&&e.status<500&&e.status!==429){
+      setStatus('bad',e.message);toast(e.message,6000); // сервер отказал — повтор не поможет
+    }else{
       c._dirty=c._dirty||needT;c._sdirty=c._sdirty||needS;
-      setStatus('err');c._t=setTimeout(()=>flush(c),5000);
+      if(e instanceof ApiError){ // сервер ответил ошибкой (5xx): показываем причину, пробуем не больше 3 раз
+        const why=e.detail||e.message;
+        c._fails=(c._fails||0)+1;
+        setStatus('bad',why);
+        console.error('Worker error',e.status,why);
+        if(c._fails>=3)toast('Сервер вернул ошибку: '+why,7000);
+        else c._t=setTimeout(()=>flush(c),5000);
+      }else{ // нет сети
+        setStatus('err');c._t=setTimeout(()=>flush(c),5000);
+      }
     }
   }
   c._busy=false;
@@ -702,60 +721,270 @@ function renderArchive(){
 }
 
 /* ===== Импорт / экспорт ===== */
-let mode='';
-const lineOf=c=>[c.ru,(c.en||'')+(c.ipa?' '+c.ipa:''),(c.note||'').replace(/\n/g,' / ')].join('\t');
+let mode='',dlgHint='';
+/*PARSER-START*/
+const HAS_CYR=s=>/[\u0400-\u04FF]/.test(s);
+const HAS_LAT=s=>/[A-Za-z]/.test(s);
+const IPA_CH=/[ˈˌːəɪʊæɒʌɔɛɜθðʃʒŋɑɐ]/;
+const IPA_ONLY=/^\s*(?:\[[^\]]*\]|\/[^\/]*\/)(?:\s*[;,]?\s*(?:\[[^\]]*\]|\/[^\/]*\/))*\s*$/;
+const TRAIL_IPA=/\s*(\[[^\]]*\](?:\s*[;,]?\s*\[[^\]]*\])*)\s*$/;
+const HDR={
+  ru:/^(ru|rus|russian|русский|рус)$/,
+  en:/^(en|eng|english|английский|англ)$/,
+  ipa:/^(ipa|transcription|транскрипция|pron|pronunciation)$/,
+  note:/^(note|notes|example|examples|comment|заметка|заметки|пример|примеры|примечание|комментарий)$/
+};
+const keyOf=c=>((c.ru||'')+'|'+(c.en||'')).toLowerCase().replace(/\s+/g,' ').trim();
+
+// Разбор таблицы с разделителем d; поля в "кавычках" могут содержать переносы строк (так экспортируют Excel и Google Sheets)
+function parseDelimited(text,d,noQuote){
+  const rows=[];let row=[],f='',fs=true,inQ=false;
+  const endField=()=>{row.push(f);f='';fs=true};
+  const endRow=()=>{endField();if(row.some(x=>x.trim()!==''))rows.push(row);row=[]};
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(inQ){
+      if(ch==='"'){if(text[i+1]==='"'){f+='"';i++}else inQ=false}
+      else f+=ch;
+      continue;
+    }
+    if(ch==='"'&&fs&&!noQuote){inQ=true;fs=false;continue}
+    if(text.startsWith(d,i)){endField();i+=d.length-1;continue}
+    if(ch==='\r')continue;
+    if(ch==='\n'){endRow();continue}
+    f+=ch;fs=false;
+  }
+  endRow();
+  rows.unbalanced=inQ; // кавычка открылась и не закрылась — это не таблица из Excel, читаем без кавычек
+  return rows;
+}
+// Какой разделитель в тексте: Tab, |, ;, « — », « – », « - », « = » (запятая — только для .csv)
+function detectDelim(text,hint){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim()).slice(0,60);
+  if(!lines.length)return null;
+  if(lines.some(l=>l.includes('\t')))return '\t';
+  const need=Math.ceil(lines.length*0.5);
+  for(const d of ['|',';',' — ',' – ',' - ',' = ']){
+    if(lines.filter(l=>l.includes(d)).length>=need)return d;
+  }
+  if(hint==='csv')return ',';
+  return null;
+}
+// Запасной вариант: «русский english» через пробел — режем по границе алфавитов
+function splitByScript(l){
+  l=l.trim();
+  const a=l.match(/^([^A-Za-z]*[\u0400-\u04FF][^A-Za-z]*?)\s+([A-Za-z].*)$/);
+  if(a)return [a[1],a[2]];
+  const b=l.match(/^([A-Za-z][^\u0400-\u04FF]*?)\s+([\u0400-\u04FF].*)$/);
+  if(b)return [b[2],b[1]];
+  return null;
+}
+// Транскрипция в конце английского слова: «word [wɜːd]» → word + [wɜːd]
+function finishCard(ru,en,ipa,note){
+  ru=(ru||'').trim();en=(en||'').trim();ipa=(ipa||'').trim();note=(note||'').trim();
+  if(!ipa){
+    const m=en.match(TRAIL_IPA);
+    if(m&&m.index>0){ipa=m[1].trim();en=en.slice(0,m.index).trim()}
+    else{const s=en.match(/\s+(\/[^\/\n]+\/)\s*$/);if(s&&IPA_CH.test(s[1])){ipa=s[1];en=en.slice(0,s.index).trim()}}
+  }
+  return {ru,en,ipa,note};
+}
+function rowToCard(c,map,d,anyNL){
+  let ru,en,ipa='',note='';
+  if(map){
+    ru=c[map.ru]||'';en=c[map.en]||'';
+    ipa=map.ipa>=0?(c[map.ipa]||''):'';note=map.note>=0?(c[map.note]||''):'';
+  }else{
+    ru=(c[0]||'').trim();en=(c[1]||'').trim();
+    const rest=c.slice(2);
+    if(rest.length){
+      const r0=rest[0]||'';
+      if(IPA_ONLY.test(r0)||(!r0.trim()&&rest.length>1)){ipa=r0;note=rest.slice(1).join(d)}
+      else note=rest.join(d);
+    }
+    // в первом столбце английский, во втором русский — меняем местами
+    if(HAS_LAT(ru)&&!HAS_CYR(ru)&&HAS_CYR(en)){const t=ru;ru=en;en=t}
+  }
+  // старый формат: переносы строк в заметке записаны как « / »
+  if(!anyNL&&note.indexOf(' / ')>=0)note=note.replace(/ \/ /g,'\n');
+  return finishCard(ru,en,ipa,note);
+}
+function parseImport(text,hint){
+  text=String(text||'').replace(/^\uFEFF/,'').trim();
+  const out={cards:[],skipped:0};
+  if(!text)return out;
+  const push=c=>{if(!c.ru||!c.en){out.skipped++;return}out.cards.push(c)};
+  // 1) JSON: массив объектов {ru,en,ipa,note} (или {russian,english,transcription,example})
+  if(/^[\[{]/.test(text)){
+    try{
+      let j=JSON.parse(text);
+      if(!Array.isArray(j))j=j.cards||j.words||j.items||[];
+      j.forEach(o=>{
+        if(Array.isArray(o))push(rowToCard(o.map(x=>String(x==null?'':x)),null,'\t',true));
+        else if(o&&typeof o==='object'){
+          const g=(...ks)=>{for(const k of ks)if(o[k]!=null)return String(o[k]);return ''};
+          const fc=finishCard(g('ru','russian','Russian','rus'),g('en','english','English','eng'),g('ipa','transcription','pron'),g('note','notes','example','examples','comment'));if(o.archived===true||o.status==='archive')fc.archived=true;push(fc);
+        }else out.skipped++;
+      });
+      return out;
+    }catch(e){/* не JSON — читаем как таблицу */}
+  }
+  // 2) таблица / текст
+  const d=detectDelim(text,hint);
+  if(!d){
+    text.split(/\r?\n/).filter(l=>l.trim()).forEach(l=>{
+      const p=splitByScript(l);
+      if(p)push(finishCard(p[0],p[1],'',''));else out.skipped++;
+    });
+    return out;
+  }
+  let rows=parseDelimited(text,d);
+  if(rows.unbalanced)rows=parseDelimited(text,d,true);
+  if(!rows.length)return out;
+  let map=null,start=0;
+  const h=rows[0].map(x=>x.trim().toLowerCase());
+  const idx=re=>h.findIndex(x=>re.test(x));
+  const m={ru:idx(HDR.ru),en:idx(HDR.en),ipa:idx(HDR.ipa),note:idx(HDR.note)};
+  if(m.ru>=0&&m.en>=0){map=m;start=1}
+  const anyNL=rows.some(r=>r.some(x=>x.indexOf('\n')>=0));
+  for(let i=start;i<rows.length;i++){
+    if(rows[i].length<2&&!map){out.skipped++;continue}
+    push(rowToCard(rows[i],map,d,anyNL));
+  }
+  return out;
+}
+/*PARSER-END*/
+
+// Экспорт: «русский | english [транскрипция] | заметка» (переносы строк в заметке записаны как « / »)
+const lineOf=c=>[c.ru||'',(c.en||'')+(c.ipa?' '+c.ipa:''),(c.note||'').replace(/\n/g,' / ')].join(' | ');
+function download(name,text,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+}
+// на телефоне открываем меню «Сохранить в Файлы», на компьютере просто скачиваем
+async function saveJsonFile(name,text){
+  try{
+    const file=new File([text],name,{type:'application/json'});
+    if(matchMedia('(pointer:coarse)').matches&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file]});return;
+    }
+  }catch(err){if(err&&err.name==='AbortError')return}
+  download(name,text,'application/json');
+}
+function planImport(){
+  const p=parseImport($('dlgText').value,dlgHint);
+  const have=new Set(cards.map(keyOf));
+  const add=[];let dup=0;
+  p.cards.forEach(c=>{const k=keyOf(c);if(have.has(k)){dup++;return}have.add(k);add.push(c)});
+  return {add,dup,skipped:p.skipped};
+}
+function updateInfo(){
+  if(mode!=='imp')return;
+  if(!$('dlgText').value.trim()){$('dlgInfo').textContent='';return}
+  const p=planImport();
+  let s='Новых карточек: '+p.add.length;
+  if(p.dup)s+=', уже есть на сайте: '+p.dup;
+  if(p.skipped)s+=', не распознано строк: '+p.skipped;
+  $('dlgInfo').textContent=s;
+}
+async function loadFile(f){
+  if(!f)return;
+  if(f.size>5e6){toast('Файл слишком большой');return}
+  dlgHint=/\.csv$/i.test(f.name)?'csv':'';
+  $('dlgText').value=await f.text();
+  updateInfo();
+  await runImport(); // файл импортируется автоматически
+}
 function openDlg(m){
-  mode=m;
+  mode=m;dlgHint='';
+  $('dlgInfo').textContent='';
   if(m==='imp'){
     $('dlgTitle').textContent='Импорт';
-    $('dlgHelp').textContent='Вставь список: одна карточка на строку, «русский [Tab] english [Tab] заметка». Это формат экспорта Quizlet (Export → Copy text). Транскрипция в [скобках] после английского слова подхватится сама. Заметка необязательна. Слова сразу появятся у всех.';
-    $('dlgText').value='';$('dlgOk').textContent='Добавить';
+    $('dlgHelp').textContent='Одна карточка на строку: русский | english [транскрипция] | заметка. Разделитель — « | » (пробел, палка, пробел) или Tab, так что старый экспорт тоже подойдёт. Кнопка «Выбрать файл» принимает .txt, .csv и .json и импортирует сразу. Русский и английский можно перепутать местами, дубликаты пропущу.';
+    $('dlgText').value='';$('dlgOk').textContent='Добавить';$('dlgPick').textContent='Выбрать файл';
   }else{
     $('dlgTitle').textContent='Экспорт';
-    $('dlgHelp').textContent='Скопируй текст и сохрани как резервную копию (в неё входят и слова из архива). Его можно вставить обратно через «Импорт». Прогресс повторений в копию не входит.';
-    $('dlgText').value=cards.map(lineOf).join('\n');
-    $('dlgOk').textContent='Скопировать';
+    $('dlgHelp').textContent='Все слова, включая архив: русский | english [транскрипция] | заметка. Скопируй текст или скачай my_cards.json — оба варианта можно вставить обратно через «Импорт». Прогресс повторений в копию не входит.';
+    $('dlgText').value=cards.filter(c=>c.ru||c.en).map(lineOf).join('\n');
+    $('dlgOk').textContent='Скопировать';$('dlgPick').textContent='Скачать my_cards.json';
   }
   $('dlg').showModal();
 }
 $('imp').onclick=()=>openDlg('imp');$('exp').onclick=()=>openDlg('exp');
 $('dlgCancel').onclick=()=>$('dlg').close();
-$('dlgOk').onclick=async()=>{
-  if(mode==='imp'){
-    let pos=cards.reduce((m,c)=>Math.max(m,c.pos||0),0);
-    const add=$('dlgText').value.split('\n').map(l=>l.split('\t')).filter(p=>p[0]&&p[0].trim()&&p[1]!==undefined)
-      .map(p=>blank({ru:p[0].trim(),en:(p[1]||'').replace(/\s*(\[[^\]]*\])\s*$/,'').trim(),ipa:((p[1]||'').match(/(\[[^\]]*\])\s*$/)||['',''])[1],note:(p[2]||'').trim().replace(/ \/ /g,'\n'),pos:(pos+=10)}))
-      .filter(c=>c.en);
-    if(!add.length){toast('Не нашёл строк с Tab между словами');return}
-    $('dlgOk').disabled=true;setStatus('wait');
-    let ok=0;const failed=[];
-    // POST /words по одному слову, по 5 запросов параллельно
-    for(let i=0;i<add.length;i+=5){
-      if(!getToken())break; // сессия закончилась посреди импорта
-      const part=add.slice(i,i+5);
-      const res=await Promise.allSettled(part.map(c=>api('/words',{method:'POST',body:{group_id:GROUP_ID,...textBody(c),...srsBody(c)}})));
-      res.forEach((r,k)=>{
-        if(r.status==='fulfilled'){
-          part[k].id=r.value.word.id;
-          if(!cards.some(x=>x.id===part[k].id))cards.push(part[k]);
-          ok++;
-        }else failed.push(part[k]);
-      });
-      $('dlgOk').textContent='Добавляю… '+Math.min(i+5,add.length)+'/'+add.length;
-    }
-    $('dlgOk').disabled=false;$('dlgOk').textContent='Добавить';
-    if(!getToken())return; // onUnauthorized уже показал экран входа
-    lastSig='';renderList();
-    if(curId==null&&!revealed)rebuild();
-    if(ok)scheduleBackup();
-    if(failed.length){
-      // в окне остаются только строки, которые не загрузились — можно нажать «Добавить» ещё раз
-      $('dlgText').value=failed.map(lineOf).join('\n');
-      setStatus('err');toast('Добавлено: '+ok+', не получилось: '+failed.length);
-    }else{
-      $('dlg').close();toast('Добавлено: '+ok);setStatus('ok');
-    }
+$('dlgText').addEventListener('input',updateInfo);
+$('dlgPick').onclick=async()=>{
+  if(mode==='imp'){$('dlgFile').click();return}
+  const list=cards.filter(c=>c.ru||c.en).map(c=>{
+    const o={ru:c.ru||'',en:c.en||'',ipa:c.ipa||'',note:c.note||''};
+    if(c.status==='archive')o.archived=true;
+    return o;
+  });
+  await saveJsonFile('my_cards.json',JSON.stringify(list,null,2));
+  toast('my_cards.json: '+list.length+' карточек');
+};
+$('dlgFile').onchange=async e=>{await loadFile(e.target.files[0]);e.target.value=''};
+$('dlgText').addEventListener('dragover',e=>{if(mode==='imp'){e.preventDefault();e.currentTarget.classList.add('drag')}});
+$('dlgText').addEventListener('dragleave',e=>e.currentTarget.classList.remove('drag'));
+$('dlgText').addEventListener('drop',async e=>{
+  e.currentTarget.classList.remove('drag');
+  if(mode!=='imp')return;
+  const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(f){e.preventDefault();await loadFile(f)}
+});
+async function runImport(){
+  const plan=planImport();
+  if(!plan.add.length){
+    toast(plan.dup?'Все эти карточки уже есть на сайте':'Не смог распознать карточки: нужны строки «русский | english»',4500);
+    return;
+  }
+  let pos=cards.reduce((m,c)=>Math.max(m,c.pos||0),0);
+  const add=plan.add.map(c=>{
+    const x=blank({...c,pos:(pos+=10)});
+    if(c.archived){x.status='archive';x.due_date=Date.now()+3650*DAY}
+    return x;
+  });
+  $('dlgOk').disabled=true;$('dlgPick').disabled=true;setStatus('wait');
+  let ok=0,lastErr='';const failed=[];
+  // POST /words по одному слову, по 6 запросов параллельно
+  for(let i=0;i<add.length;i+=6){
+    if(!getToken())break; // сессия закончилась посреди импорта
+    const part=add.slice(i,i+6);
+    const res=await Promise.allSettled(part.map(c=>api('/words',{method:'POST',body:{group_id:GROUP_ID,...textBody(c),...srsBody(c)}})));
+    res.forEach((r,k)=>{
+      if(r.status==='fulfilled'){
+        part[k].id=r.value.word.id;
+        if(!cards.some(x=>x.id===part[k].id))cards.push(part[k]);
+        ok++;
+      }else{
+        failed.push(part[k]);
+        lastErr=(r.reason&&(r.reason.detail||r.reason.message))||lastErr;
+      }
+    });
+    $('dlgOk').textContent='Добавляю… '+Math.min(i+6,add.length)+'/'+add.length;
+    if(ok===0&&failed.length>=6){failed.push(...add.slice(i+6));break} // сервер отвечает ошибкой — не долбим дальше
+  }
+  $('dlgOk').disabled=false;$('dlgPick').disabled=false;$('dlgOk').textContent='Добавить';
+  if(!getToken())return; // onUnauthorized уже показал экран входа
+  lastSig='';renderList();
+  if(curId==null&&!revealed)rebuild();
+  if(ok)scheduleBackup();
+  if(failed.length){
+    // в окне остаются только строки, которые не загрузились — можно нажать «Добавить» ещё раз
+    $('dlgText').value=failed.map(lineOf).join('\n');dlgHint='';updateInfo();
+    if(lastErr)$('dlgInfo').textContent+=' · ответ сервера: '+lastErr;
+    console.error('Import failed:',lastErr);
+    setStatus('bad',lastErr||'ошибка сервера');
+    toast('Добавлено: '+ok+', не получилось: '+failed.length+(lastErr?' ('+lastErr+')':''),7000);
   }else{
+    $('dlg').close();toast('Добавлено: '+ok+(plan.dup?', пропущено дубликатов: '+plan.dup:''));setStatus('ok');
+  }
+}
+$('dlgOk').onclick=async()=>{
+  if(mode==='imp')await runImport();
+  else{
     const t=$('dlgText');t.select();
     try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}
     toast('Скопировано');
