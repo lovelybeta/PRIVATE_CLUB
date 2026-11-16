@@ -215,15 +215,134 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
   .authcard{padding:32px 20px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* --- мягкий сиреневый в тёмной теме + тёмный текст на нём --- */
+:root{--on-lilac:#000}
+:root[data-theme="dark"]{--lilac:#aa9fc8;--on-lilac:#1d1a1a}
+.due,.robar,.face .note{color:var(--on-lilac)}
+.due.zero{color:inherit}
+
+/* --- иконки (SVG-спрайт) --- */
+.ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;opacity:.55;transition:opacity .2s,background .2s,color .2s}
+.icon-btn:hover{opacity:1;background:var(--paper)}
+.icon-btn.danger:hover{background:var(--wine);color:var(--white)}
+
+/* --- вкладка «Учить»: плашка выбора источника --- */
+.srcbar{display:flex;justify-content:center;width:100%;max-width:760px}
+.srcpill{position:relative;display:inline-flex;align-items:center;gap:10px;max-width:100%;padding:0 44px 0 18px;height:46px;border-radius:999px;background:var(--white);border:1px solid var(--grey);cursor:pointer;transition:border-color .2s,box-shadow .25s}
+.srcpill:hover,.srcpill:focus-within{border-color:var(--black);box-shadow:0 8px 24px var(--shadow)}
+.srcpill::after{content:"";position:absolute;right:20px;top:50%;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-70%) rotate(45deg);opacity:.55;pointer-events:none}
+.srccap{font-size:13px;opacity:.5;white-space:nowrap}
+.srcsel{min-width:0;max-width:320px;height:100%;appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;font-weight:500;cursor:pointer;text-overflow:ellipsis}
+.srcsel:focus-visible{outline:0}
+.srcpill:has(.srcsel:focus-visible){outline:2px solid var(--wine);outline-offset:3px}
+
+/* --- плашка синхронизации --- */
+.sync{display:inline-block;align-self:center;padding:4px 14px;border-radius:999px;border:1px solid var(--grey);font-size:12.5px;opacity:.6}
+.sync:empty{display:none}
+
+/* --- вкладка «Карточки»: секции --- */
+.sec{margin-bottom:44px}
+.sec-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,4vw,34px);line-height:1}
+.sec-head .pill{margin-left:auto}
+.sec-note{font-size:13px;opacity:.5}
+.grid-one{grid-template-columns:1fr}
+
+/* плитка «Основной» */
+.tile-main{flex-direction:row;align-items:center;gap:18px;min-height:0;padding:20px 24px}
+.tile-ico{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--paper);border:1px solid var(--grey);flex:none;transition:background .2s,border-color .2s}
+.tile-ico .ico{width:20px;height:20px}
+.tile-main:hover .tile-ico{background:var(--lilac);border-color:var(--lilac);color:var(--on-lilac)}
+.tile-body{flex:1;min-width:0}
+.tile-main .tile-name{margin:0;padding:0;font-size:30px}
+.tile-main .due:empty{display:none}
+
+/* элементы плиток списков и групп (их создаёт JS) */
+.tile-tools{display:flex;align-items:center;gap:2px;margin-left:auto}
+.mini{padding:6px 14px;border-radius:999px;border:1px solid var(--grey);font-size:13px;font-weight:500;transition:background .2s,color .2s,border-color .2s}
+.mini:hover{background:var(--black);border-color:var(--black);color:var(--white)}
+.grp-ico{position:absolute;top:20px;right:22px;width:20px;height:20px;opacity:.28;transition:opacity .2s}
+.tile:hover .grp-ico{opacity:0}
+
+/* --- вкладка «Архив» и строки слов --- */
+#archiveList,#edList{display:flex;flex-direction:column;gap:10px}
+.wrow{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
+.wrow:hover{border-color:var(--black)}
+.wrow .w{flex:1;min-width:0}
+.wrow .w b{display:block;font-weight:500;overflow-wrap:anywhere}
+.wrow .w span{display:block;font-size:14px;opacity:.55;overflow-wrap:anywhere}
+.wrow-actions{display:flex;align-items:center;gap:4px;flex:none}
+
+/* --- модальное окно редактора --- */
+dialog{display:none;position:fixed;inset:0;margin:auto;padding:0;width:min(720px,calc(100% - 24px));max-height:86vh;flex-direction:column;overflow:hidden;border-radius:24px;border:1px solid var(--grey);background:var(--paper);color:var(--black);box-shadow:0 30px 80px var(--shadow)}
+dialog[open]{display:flex}
+dialog::backdrop{background:rgba(0,0,0,.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.dlg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 24px 8px}
+.dlg-head h2{margin-top:10px;font-family:var(--serif);font-weight:400;font-size:clamp(28px,5vw,38px);line-height:1.05;overflow-wrap:anywhere}
+.dlg-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 24px 16px}
+.search{display:flex;align-items:center;gap:10px;flex:1;min-width:180px;height:42px;padding:0 16px;border-radius:999px;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
+.search:focus-within{border-color:var(--black)}
+.search .ico{opacity:.5}
+.search input{flex:1;min-width:0;border:0;outline:0;background:transparent}
+.dlg-body{flex:1;overflow-y:auto;padding:4px 24px 24px;overscroll-behavior:contain}
+
+/* плавающая кнопка «Наверх» (JS добавляет класс .show при прокрутке) */
+.totop{position:absolute;right:22px;bottom:22px;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--black);color:var(--white);box-shadow:0 8px 22px var(--shadow);opacity:0;transform:translateY(10px) scale(.9);pointer-events:none;transition:opacity .25s,transform .25s}
+.totop.show{opacity:.92;transform:none;pointer-events:auto}
+.totop:hover{opacity:1;transform:translateY(-2px)}
+.totop .ico{width:18px;height:18px;stroke-width:2}
+
+@media(max-width:680px){
+  .srcpill{width:100%}.srcsel{flex:1;max-width:none}
+  .tile-main{padding:16px 18px}.tile-main .tile-name{font-size:26px}
+  .sec-head .pill{margin-left:0}
+  dialog{width:100%;max-height:92vh;margin:auto 0 0;border-radius:24px 24px 0 0}
+  .dlg-head,.dlg-tools,.dlg-body{padding-left:18px;padding-right:18px}
+}
+
+.srcbar{gap:10px;flex-wrap:wrap;align-items:center}
+.qtitle{font-family:var(--serif);font-weight:400;font-size:clamp(30px,5vw,44px);line-height:1.05;text-align:center;overflow-wrap:anywhere}
+.qtitle:empty{display:none}
+
+/* --- своё выпадающее меню (вместо системного select) --- */
+.srcsel{flex:1;max-width:300px;text-align:left;white-space:nowrap;overflow:hidden}
+.srcsel span{display:block;overflow:hidden;text-overflow:ellipsis}
+.menu{position:absolute;left:0;top:calc(100% + 8px);z-index:40;min-width:100%;width:max-content;max-width:min(360px,calc(100vw - 32px));max-height:min(320px,50vh);overflow-y:auto;padding:8px;border-radius:20px;background:var(--white);border:1px solid var(--grey);box-shadow:0 18px 44px var(--shadow);animation:menuIn .16s ease;text-align:left}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.menu-head{padding:10px 14px 4px;font-family:var(--serif);font-style:italic;font-size:18px;opacity:.6}
+.menu-sep{height:1px;margin:6px 10px;background:var(--grey)}
+.opt{padding:10px 14px;border-radius:12px;font-size:15px;cursor:pointer;outline:0;overflow-wrap:anywhere;transition:background .15s}
+.opt:hover,.opt:focus-visible{background:var(--paper)}
+.opt[aria-selected="true"]{background:var(--lilac);color:var(--on-lilac);font-weight:500}
+/* --- окно-форма (вместо prompt/confirm) --- */
+.modal{width:min(440px,calc(100% - 24px));overflow:visible}
+.modal form{display:flex;flex-direction:column;gap:14px;padding:26px 26px 22px}
+.modal h2{font-family:var(--serif);font-weight:400;font-size:32px;line-height:1.05;overflow-wrap:anywhere}
+.m-text{font-size:15px;line-height:1.5;opacity:.7}
+#mFields{display:flex;flex-direction:column;gap:14px}
+#mFields:empty{display:none}
+.m-field{display:flex;flex-direction:column;gap:6px}
+.m-field>span{font-size:13px;font-weight:500;opacity:.6;padding-left:4px}
+.m-dd{display:flex;width:100%;max-width:none}
+.m-dd .menu{max-height:min(260px,40vh)}
+textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.45}
+.m-err{font-size:13px;color:var(--wine)}
+.m-err:empty{display:none}
+.m-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
+.pill.solid.danger{background:var(--wine);border-color:var(--wine);color:var(--white)}
+.pill.solid.danger:hover{opacity:.85}
+@media(max-width:680px){.modal{overflow:visible}.modal form{padding:22px 18px 20px}}
 </style>
 </head>
 <body class="loading">
 <header>
   <div class="logo" id="logo" title="Copure / beta"><span class="f">Copure</span><span class="b">beta</span></div>
   <nav role="tablist">
-    <button role="tab" id="tab-lists" aria-selected="true">Мои списки</button>
-    <button role="tab" id="tab-groups" aria-selected="false">Общие</button>
-    <button role="tab" id="tab-quiz" aria-selected="false">Учить</button>
+    <button role="tab" id="tab-quiz" aria-selected="true">Учить</button>
+    <button role="tab" id="tab-cards" aria-selected="false">Карточки</button>
+    <button role="tab" id="tab-archive" aria-selected="false">Архив</button>
   </nav>
   <button class="theme" id="theme" aria-label="Тёмная или светлая тема" title="Тёмная / светлая тема">
     <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -235,6 +354,19 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 </header>
 
 <main>
+  <!-- SVG-спрайт: иконки подключаются так: <svg class="ico"><use href="#i-edit"/></svg> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 2l10 5-10 5L2 7z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></symbol>
+  </svg>
+
   <div class="robar" id="roBar">Офлайн · режим чтения: изменения не сохраняются. Когда появится интернет, сайт синхронизируется.</div>
   <div id="loader">You look lovely! Let me connect you...</div>
   <div id="offline">
@@ -257,14 +389,19 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
     </form>
   </div>
 
-  <section id="quiz" class="quiz" hidden>
+  <!-- ============ УЧИТЬ ============ -->
+  <section id="quiz" class="quiz">
     <div class="srcbar">
-      <div class="seg" role="group" aria-label="Источник слов">
-        <button id="kList" aria-pressed="true">Мой список</button>
-        <button id="kGroup" aria-pressed="false">Общая группа</button>
+      <div class="srcpill" id="srcPill">
+        <svg class="ico"><use href="#i-layers"/></svg>
+        <span class="srccap">Источник</span>
+        <button class="srcsel" id="srcBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Что учить"><span></span></button>
+        <div class="menu" id="srcMenu" role="listbox" hidden></div>
       </div>
-      <div class="selwrap"><select class="sel" id="srcSel" aria-label="Что учить"></select></div>
+      <button class="pill" id="editWords" type="button">Редактировать слова</button>
     </div>
+    <h2 class="qtitle" id="qTitle"></h2>
+
     <div class="seg" role="group" aria-label="Язык лицевой стороны">
       <button id="langRu" aria-pressed="true">RU</button>
       <button id="langEn" aria-pressed="false">EN</button>
@@ -299,21 +436,75 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
     </div>
   </section>
 
-  <section id="lists" class="hub">
+  <!-- ============ КАРТОЧКИ ============ -->
+  <section id="cardsView" class="hub" hidden>
     <div class="hub-head">
-      <div><h1>Мои списки</h1><p class="hub-sub">Личные наборы слов. Выбери список — и сразу к карточкам.</p></div>
+      <div><h1>Карточки</h1><p class="hub-sub">Все ваши наборы слов в одном месте.</p></div>
       <button class="pill solid" id="newList">+ Создать список</button>
     </div>
-    <div class="grid" id="gridLists"></div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Основной</h2><span class="sec-note">слова без списка</span></div>
+      <div class="grid grid-one">
+        <div class="tile tile-main" id="mainTile" role="button" tabindex="0" aria-label="Основной">
+          <span class="tile-ico"><svg class="ico"><use href="#i-inbox"/></svg></span>
+          <div class="tile-body">
+            <h3 class="tile-name">Основной</h3>
+            <div class="meta" id="mainMeta"></div>
+          </div>
+          <span class="due zero" id="mainDue"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Мои списки</h2></div>
+      <div class="grid" id="gridLists"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>Общие</h2><button class="pill" id="joinGroup">Подключиться по коду</button></div>
+      <div class="grid" id="gridGroups"></div>
+    </div>
   </section>
 
-  <section id="groups" class="hub" hidden>
+  <!-- ============ АРХИВ ============ -->
+  <section id="archiveView" class="hub" hidden>
     <div class="hub-head">
-      <div><h1>Общие</h1><p class="hub-sub">Группы, в которых слова учат вместе. Выбери группу — и к карточкам.</p></div>
-      <button class="pill solid" id="joinGroup">Подключиться по коду</button>
+      <div><h1>Архив</h1><p class="hub-sub">Слова, которые вы больше не повторяете.</p></div>
     </div>
-    <div class="grid" id="gridGroups"></div>
+    <div id="archiveList"></div>
   </section>
+
+  <!-- ============ РЕДАКТОР СЛОВ (модалка) ============ -->
+  <dialog id="editor" aria-labelledby="edTitle">
+    <div class="dlg-head">
+      <div><span class="chip">Редактор слов</span><h2 id="edTitle"></h2></div>
+      <button class="icon-btn" id="edClose" type="button" aria-label="Закрыть"><svg class="ico"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="dlg-tools">
+      <label class="search">
+        <svg class="ico"><use href="#i-search"/></svg>
+        <input id="edSearch" type="search" placeholder="Поиск по словам" aria-label="Поиск по словам" autocomplete="off">
+      </label>
+      <button class="pill" id="edAdd" type="button">+ Добавить</button>
+      <button class="pill" id="edImport" type="button">Импорт</button>
+    </div>
+    <div class="dlg-body" id="edBody"><div id="edList"></div></div>
+    <button class="totop" id="toTop" type="button" aria-label="Наверх"><svg class="ico"><use href="#i-up"/></svg></button>
+  </dialog>
+<dialog id="modal" class="modal" aria-labelledby="mTitle">
+    <form id="mForm" novalidate>
+      <h2 id="mTitle"></h2>
+      <p class="m-text" id="mText" hidden></p>
+      <div id="mFields"></div>
+      <div class="m-err" id="mErr" role="alert"></div>
+      <div class="m-actions">
+        <button class="pill" id="mCancel" type="button">Отмена</button>
+        <button class="pill solid" id="mOk" type="submit">OK</button>
+      </div>
+    </form>
+  </dialog>
 </main>
 
 <div class="toast" id="toast"></div>
@@ -453,7 +644,7 @@ const srsBody=c=>({interval:c.interval||0,repetitions:c.repetitions||0,ease_fact
 function setStatus(s,msg){
   $('sync').textContent=s==='ok'?'● синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='bad'?'● не сохранилось: '+(msg||'ошибка сервера'):'● сохраняю…';
 }
-function toast(t,ms){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),ms||2200)}
+function toast(t,ms){const e=$('toast');([...document.querySelectorAll('dialog[open]')].pop()||document.body).append(e);e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),ms||2200)}
 function queueSave(c,delay=0){
   if(readOnly)return; // офлайн: на сервер ничего не отправляем
   c._sdirty=true;clearTimeout(c._t);setStatus('wait');
@@ -504,7 +695,7 @@ async function safePoll(){if(readOnly)return;try{await poll(false);if(curId==nul
 
 /* ===== Квиз ===== */
 const byId=id=>cards.find(c=>c.id===id);
-const inSrc=c=>!!src&&(src.type==='list'?c.list_id===src.id:c.group_id===src.id);
+const inSrc=c=>!!src&&(src.type==='all'||(src.type==='main'?!c.list_id&&!c.group_id:src.type==='list'?c.list_id===src.id:c.group_id===src.id));
 const dueBase=c=>c.id!=null&&c.status!=='archive'&&(c.due_date||0)<=Date.now()&&((c.ru||'')+(c.en||'')).trim();
 const isDue=c=>dueBase(c)&&inSrc(c); // в квиз попадают только слова выбранного списка/группы
 function rebuild(shuffle){
@@ -603,7 +794,7 @@ document.addEventListener('keydown',e=>{
   else if(revealed&&(e.key===' '||e.key==='Enter'||e.key==='ArrowRight')){e.preventDefault();next()}
 });
 
-/* ===== Хаб: плитки списков и групп ===== */
+/* ===== Карточки: плитки и управление списками ===== */
 const plural=(n,f)=>{const a=Math.abs(n)%100,b=a%10;return f[a>10&&a<20?2:b>1&&b<5?1:b===1?0:2]};
 const nWords=n=>n+' '+plural(n,['слово','слова','слов']);
 const nMembers=n=>n+' '+plural(n,['участник','участника','участников']);
@@ -611,98 +802,240 @@ const ROLE_LIST={owner:'Личный',editor:'Доступ: редактор',vi
 const ROLE_GROUP={admin:'Админ',member:'Участник'};
 function mk(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
 function clearBackup(){idbSet([]);idbSet(null,'meta')}
-function stats(){ // слов и «к повторению» на каждый список/группу
+function ico(n){const NS='http://www.w3.org/2000/svg',s=document.createElementNS(NS,'svg'),u=document.createElementNS(NS,'use');s.setAttribute('class','ico');u.setAttribute('href','#i-'+n);s.append(u);return s}
+function iconBtn(n,label,fn,cls){const b=mk('button','icon-btn'+(cls?' '+cls:''));b.type='button';b.title=label;b.setAttribute('aria-label',label);b.append(ico(n));b.onclick=e=>{e.stopPropagation();fn()};return b}
+function miniBtn(t,fn,cls){const b=mk('button',cls||'mini',t);b.type='button';b.onclick=e=>{e.stopPropagation();fn()};return b}
+function stats(){ // слов и «к повторению»: по спискам, группам и «Основному» (ключ m)
   const st={};
   cards.forEach(c=>{
-    const k=c.list_id?'l:'+c.list_id:c.group_id?'g:'+c.group_id:null;if(!k)return;
+    const k=c.list_id?'l:'+c.list_id:c.group_id?'g:'+c.group_id:'m';
     const o=st[k]||(st[k]={total:0,due:0});o.total++;if(dueBase(c))o.due++;
   });
   return st;
 }
-function tile(type,item,s,chip,meta,leave){
+const dueEl=s=>s.total===0?mk('span','due zero','Пока пусто'):s.due===0?mk('span','due zero','На сегодня всё'):mk('span','due',s.due+' к повторению');
+function tile(type,item,s,meta){
+  const isL=type==='list',own=isL?item.role==='owner':item.role==='admin';
   const t=mk('div','tile');t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',item.name);
-  t.append(mk('span','chip',chip),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
-  const foot=mk('div','tile-foot');
-  foot.append(s.total===0?mk('span','due zero','Пока пусто'):s.due===0?mk('span','due zero','На сегодня всё'):mk('span','due',s.due+' к повторению'));
-  if(leave){
-    const b=mk('button','leave','Выйти');b.type='button';
-    b.onclick=e=>{e.stopPropagation();toast('Выход из группы подключим следующим шагом')}; // пока без логики
-    foot.append(b);
-  }
-  t.append(foot);
+  t.append(mk('span','chip',(isL?ROLE_LIST:ROLE_GROUP)[item.role]||(isL?'Список':'Группа')),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
+  if(!isL){const g=ico('users');g.setAttribute('class','ico grp-ico');t.append(g)}
+  const foot=mk('div','tile-foot'),tools=mk('div','tile-tools');
+  foot.append(dueEl(s));
+  if(isL&&own)tools.append(miniBtn('Поделиться',()=>shareList(item)));
+  if(!isL&&!own)tools.append(miniBtn('Выйти',()=>leaveGroup(item),'leave'));
+  if(own)tools.append(iconBtn('edit','Переименовать',()=>renameItem(type,item)),iconBtn('trash','Удалить',()=>deleteItem(type,item),'danger'));
+  foot.append(tools);t.append(foot);
   const open=()=>openSource(type,item.id);
   t.onclick=open;
   t.onkeydown=e=>{if(e.target===t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open()}};
   return t;
 }
 function emptyBox(title,text){const e=mk('div','empty');e.append(mk('b',null,title),mk('span',null,text));return e}
-function renderHub(){
-  const st=stats(),GL=$('gridLists'),GG=$('gridGroups');
+function renderCards(){
+  const st=stats(),GL=$('gridLists'),GG=$('gridGroups'),m=st.m||{total:0,due:0};
   GL.innerHTML='';GG.innerHTML='';
+  $('mainMeta').textContent=nWords(m.total);
+  const d=$('mainDue');d.className=m.total&&m.due?'due':'due zero';d.textContent=m.total===0?'Пока пусто':m.due?m.due+' к повторению':'На сегодня всё';
   if(!DATA.lists.length)GL.append(emptyBox('Пока нет списков','Нажми «+ Создать список», чтобы начать.'));
-  DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,ROLE_LIST[l.role]||'Список',nWords(s.total)))});
+  DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,nWords(s.total)))});
   if(!DATA.groups.length)GG.append(emptyBox('Вы пока не в группах','Подключитесь по коду приглашения от друзей.'));
-  DATA.groups.forEach(g=>{
-    const s=st['g:'+g.id]||{total:0,due:0},n=Number(g.members_count)||0;
-    GG.append(tile('group',g,s,ROLE_GROUP[g.role]||'Группа',nMembers(n)+' · '+nWords(s.total),true));
+  DATA.groups.forEach(g=>{const s=st['g:'+g.id]||{total:0,due:0};GG.append(tile('group',g,s,nMembers(Number(g.members_count)||0)+' · '+nWords(s.total)))});
+}
+$('mainTile').onclick=()=>openSource('main','main');
+$('mainTile').onkeydown=e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openSource('main','main')}};
+
+/* ===== Своё выпадающее меню и окно-форма ===== */
+function makeDD(host,btn,menu,onPick){
+  let items=[],val='';
+  const close=()=>{menu.hidden=true;btn.setAttribute('aria-expanded','false')};
+  const open=()=>{menu.hidden=false;btn.setAttribute('aria-expanded','true');const o=menu.querySelector('[aria-selected="true"]')||menu.querySelector('.opt');if(o){o.focus();o.scrollIntoView({block:'nearest'})}};
+  const pick=v=>{close();btn.focus();if(v!==val){val=v;paint();onPick&&onPick(v)}};
+  function paint(){
+    menu.innerHTML='';
+    items.forEach(it=>{
+      if(it.sep){menu.append(mk('div','menu-sep'));return}
+      if(it.head){menu.append(mk('div','menu-head',it.head));return}
+      const o=mk('div','opt',it.label);o.setAttribute('role','option');o.tabIndex=-1;o.dataset.v=it.value;
+      o.setAttribute('aria-selected',it.value===val);o.onclick=e=>{e.stopPropagation();pick(it.value)};menu.append(o);
+    });
+    const cur=items.find(i=>i.value===val);btn.firstElementChild.textContent=cur?cur.label:'—';
+  }
+  host.addEventListener('click',e=>{if(menu.contains(e.target))return;menu.hidden?open():close()});
+  host.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&!menu.hidden){e.preventDefault();e.stopPropagation();close();btn.focus()}
+    else if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+      e.preventDefault();if(menu.hidden){open();return}
+      const os=[...menu.querySelectorAll('.opt')],i=os.indexOf(document.activeElement);
+      os[(i+(e.key==='ArrowDown'?1:-1)+os.length)%os.length].focus();
+    }else if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('opt')){e.preventDefault();pick(document.activeElement.dataset.v)}
+  });
+  document.addEventListener('click',e=>{if(!host.contains(e.target))close()});
+  return{set(i,v){items=i;val=v;paint()},val:()=>val};
+}
+/* ui({title,text,fields:[{name,label,value,required,multiline,dd:{items,value}}],ok,cancel,danger}) → значения | true | null */
+function ui(o){
+  return new Promise(res=>{
+    const M=$('modal'),F=$('mFields'),refs={};let done=false;
+    $('mTitle').textContent=o.title;$('mText').textContent=o.text||'';$('mText').hidden=!o.text;
+    F.innerHTML='';$('mErr').textContent='';
+    $('mOk').textContent=o.ok||'OK';$('mOk').className='pill solid'+(o.danger?' danger':'');$('mCancel').textContent=o.cancel||'Отмена';
+    (o.fields||[]).forEach(f=>{
+      const w=mk('div','m-field');w.append(mk('span',null,f.label));
+      if(f.dd){
+        const host=mk('div','srcpill m-dd'),btn=mk('button','srcsel'),menu=mk('div','menu');
+        btn.type='button';btn.setAttribute('aria-haspopup','listbox');btn.append(mk('span'));menu.hidden=true;menu.setAttribute('role','listbox');
+        host.append(btn,menu);w.append(host);
+        const d=makeDD(host,btn,menu);d.set(f.dd.items,f.dd.value);refs[f.name]={get:d.val,el:btn};
+      }else{
+        const i=mk(f.multiline?'textarea':'input','field');i.value=f.value||'';i.placeholder=f.placeholder||'';i.autocomplete='off';
+        if(!f.multiline)i.type='text';w.append(i);refs[f.name]={get:()=>i.value.trim(),el:i};
+      }
+      F.append(w);
+    });
+    const fin=v=>{if(done)return;done=true;M.close();res(v)};
+    $('mForm').onsubmit=e=>{
+      e.preventDefault();const v={};
+      for(const f of o.fields||[]){
+        v[f.name]=refs[f.name].get();
+        if(f.required&&!v[f.name]){$('mErr').textContent='Заполните поле «'+f.label+'»';refs[f.name].el.focus();return}
+      }
+      fin(o.fields&&o.fields.length?v:true);
+    };
+    $('mCancel').onclick=()=>fin(null);
+    M.oncancel=e=>{e.preventDefault();fin(null)};
+    M.onclick=e=>{if(e.target===M)fin(null)};
+    M.showModal();
   });
 }
-$('newList').onclick=()=>toast('Создание списков подключим следующим шагом');   // пока без логики
-$('joinGroup').onclick=()=>toast('Подключение по коду подключим следующим шагом'); // пока без логики
+const askName=async(title,label,value,ok,ph)=>{const r=await ui({title,fields:[{name:'v',label,value,placeholder:ph,required:true}],ok});return r&&r.v};
+
+/* --- действия со списками и группами (все запросы — через Worker) --- */
+async function act(fn,ok,notFound){
+  if(readOnly){toast('Офлайн: изменения недоступны');return}
+  try{await fn();await poll(false);if(ok)toast(ok)}
+  catch(e){if(e&&e.status===401)return;toast(e&&e.status===404&&notFound?notFound:(e&&e.message)||'Ошибка',5000)}
+}
+const pathOf=t=>t==='list'?'/lists':'/groups';
+$('newList').onclick=async()=>{const n=await askName('Новый список','Название','','Создать','Например, Английский');if(n)act(()=>api('/lists',{method:'POST',body:{name:n}}),'Список создан')};
+$('joinGroup').onclick=async()=>{const c=await askName('Подключиться по коду','Код приглашения','','Подключиться','XXXXXXXX');if(c)act(()=>api('/groups/join',{method:'POST',body:{invite_code:c}}),'Вы в группе')};
+async function renameItem(t,i){const n=await askName('Переименовать','Название',i.name,'Сохранить');if(n&&n!==i.name)act(()=>api(pathOf(t),{method:'PUT',body:{id:i.id,name:n}}),'Переименовано')}
+async function deleteItem(t,i){if(await ui({title:'Удалить «'+i.name+'»?',text:'Вместе с ним удалятся все слова. Это действие нельзя отменить.',ok:'Удалить',danger:true}))act(()=>api(pathOf(t)+'?id='+encodeURIComponent(i.id),{method:'DELETE'}),'Удалено')}
+async function shareList(i){const u=await askName('Поделиться списком','Ник друга','','Отправить','Логин друга');if(u)act(()=>api('/lists/share',{method:'POST',body:{list_id:i.id,username:u}}),'Список отправлен: '+u)}
+async function leaveGroup(i){if(await ui({title:'Выйти из «'+i.name+'»?',text:'Слова группы пропадут из вашего списка. Вернуться можно по коду приглашения.',ok:'Выйти',danger:true}))act(()=>api('/groups/leave',{method:'POST',body:{id:i.id}}),'Вы вышли из группы')}
 
 /* ===== Источник слов для квиза ===== */
 const itemsOf=k=>k==='list'?DATA.lists:DATA.groups;
-const validSrc=x=>!!x&&itemsOf(x.type).some(i=>i.id===x.id);
+const validSrc=x=>!!x&&(x.type==='main'||x.type==='all'||itemsOf(x.type).some(i=>i.id===x.id));
+const srcVal=x=>!x?'':(x.type==='main'||x.type==='all')?x.type:x.type+':'+x.id;
+function srcName(){
+  if(!src)return '—';if(src.type==='all')return 'все вместе';if(src.type==='main')return 'Основной';
+  const i=itemsOf(src.type).find(x=>x.id===src.id);return i?i.name:'—';
+}
 function ensureSrc(){ // true, если источник пришлось сменить
   if(validSrc(src))return false;
   let x=null;try{x=JSON.parse(localStorage.getItem(SRC_KEY))}catch(e){}
-  if(!validSrc(x))x=DATA.lists[0]?{type:'list',id:DATA.lists[0].id}:DATA.groups[0]?{type:'group',id:DATA.groups[0].id}:null;
-  const changed=!!(src||x);src=x;if(x){kind=x.type;mem[x.type]=x.id}
-  return changed;
+  if(!validSrc(x))x=DATA.lists[0]?{type:'list',id:DATA.lists[0].id}:DATA.groups[0]?{type:'group',id:DATA.groups[0].id}:{type:'main',id:'main'};
+  const changed=!!(src||x);src=x;return changed;
 }
+const SDD=makeDD($('srcPill'),$('srcBtn'),$('srcMenu'),v=>{const i=v.indexOf(':');setSource(i<0?v:v.slice(0,i),i<0?v:v.slice(i+1))});
 function renderSrcBar(){
-  if(src)kind=src.type;
-  $('kList').setAttribute('aria-pressed',kind==='list');$('kGroup').setAttribute('aria-pressed',kind==='group');
-  const sel=$('srcSel'),items=itemsOf(kind);sel.innerHTML='';
-  if(!items.length){sel.add(new Option(kind==='list'?'Списков пока нет':'Групп пока нет',''));sel.disabled=true;return}
-  sel.disabled=false;
-  items.forEach(i=>sel.add(new Option(i.name,i.id)));
-  sel.value=src&&src.type===kind?src.id:items[0].id;
+  const it=[{head:'Мои списки'},{label:'Основной',value:'main'},...DATA.lists.map(l=>({label:l.name,value:'list:'+l.id}))];
+  if(DATA.groups.length)it.push({head:'Общие'},...DATA.groups.map(g=>({label:g.name,value:'group:'+g.id})));
+  it.push({sep:1},{label:'Учить все вместе',value:'all'});
+  SDD.set(it,srcVal(src)||'all');
+  $('qTitle').textContent=src?'Учить: '+srcName():'';
 }
 function setSource(type,id){
-  src={type,id};kind=type;mem[type]=id;
+  src={type,id};
   try{localStorage.setItem(SRC_KEY,JSON.stringify(src))}catch(e){}
   renderSrcBar();rebuild();
 }
 function openSource(type,id){setSource(type,id);tab('quiz')}
-function switchKind(k){
-  const items=itemsOf(k);
-  if(items.length)setSource(k,items.some(i=>i.id===mem[k])?mem[k]:items[0].id);
-  else{kind=k;src=null;renderSrcBar();rebuild()}
-}
-$('kList').onclick=()=>switchKind('list');
-$('kGroup').onclick=()=>switchKind('group');
-$('srcSel').onchange=e=>{if(e.target.value)setSource(kind,e.target.value)};
 function doneText(){
   let t='На сегодня всё!',p='Новые карточки появятся, когда подойдёт их срок.';
-  if(!src){t='Выбери, что учить';p='Открой список или группу — слова появятся здесь.'}
+  if(!src){t='Выбери, что учить';p='Выбери список или группу сверху.'}
   else if(!cards.some(inSrc)){t='Здесь пока пусто';p='В этом наборе ещё нет слов.'}
   $('doneT').textContent=t;$('doneP').textContent=p;
 }
 
+/* ===== Слова: редактор (модалка) и архив ===== */
+const ED=$('editor');let edDirty=false;
+function wordRow(c,btn,fn,label){
+  const r=mk('div','wrow'),w=mk('div','w'),a=mk('div','wrow-actions');
+  w.append(mk('b',null,c.ru||c.en||'—'));
+  const sub=[c.en,c.ipa].filter(Boolean).join(' · ');if(sub)w.append(mk('span',null,sub));
+  if(label)w.append(mk('span',null,label));
+  a.append(miniBtn(btn,fn));r.append(w,a);return r;
+}
+function setWordStatus(c,st){
+  if(readOnly){toast('Офлайн: изменения недоступны');return}
+  if(st==='archive'){c.status='archive';c.due_date=Date.now()+3650*86400000}
+  else{c.status='new';c.interval=0;c.repetitions=0;c.due_date=Date.now()}
+  edDirty=true;queueSave(c);scheduleBackup();renderHub();
+  toast(st==='archive'?'Слово отправлено в архив':'Слово возвращено');
+}
+function renderEditor(){
+  const q=$('edSearch').value.trim().toLowerCase(),L=$('edList');L.innerHTML='';
+  const ws=cards.filter(c=>c.id!=null&&c.status!=='archive'&&inSrc(c)&&(!q||[c.ru,c.en,c.note].join(' ').toLowerCase().includes(q)));
+  if(!ws.length){L.append(emptyBox(q?'Ничего не найдено':'Здесь пока нет слов',q?'Попробуйте другой запрос.':'Слова появятся после добавления.'));return}
+  ws.forEach(c=>L.append(wordRow(c,'В архив',()=>setWordStatus(c,'archive'))));
+}
+function renderArchive(){
+  const A=$('archiveList');A.innerHTML='';
+  const arch=cards.filter(c=>c.id!=null&&c.status==='archive');
+  if(!arch.length){A.append(emptyBox('Архив пуст','Слова, отправленные в архив, появятся здесь.'));return}
+  const nm=c=>c.list_id?(DATA.lists.find(l=>l.id===c.list_id)||{}).name:c.group_id?(DATA.groups.find(g=>g.id===c.group_id)||{}).name:'Основной';
+  arch.forEach(c=>A.append(wordRow(c,'Вернуть',()=>setWordStatus(c,'new'),nm(c))));
+}
+function renderHub(){renderCards();renderArchive();if(ED.open)renderEditor()}
+$('editWords').onclick=()=>{$('edTitle').textContent=srcName();$('edSearch').value='';$('toTop').classList.remove('show');renderEditor();ED.showModal();$('edBody').scrollTop=0};
+$('edClose').onclick=()=>ED.close();
+ED.onclick=e=>{if(e.target===ED)ED.close()};
+ED.addEventListener('close',()=>{$('edSearch').value='';if(edDirty){edDirty=false;rebuild()}});
+$('edSearch').oninput=renderEditor;
+$('edBody').onscroll=e=>$('toTop').classList.toggle('show',e.target.scrollTop>240);
+$('toTop').onclick=()=>$('edBody').scrollTo({top:0,behavior:'smooth'});
+$('edImport').onclick=()=>toast('Импорт подключим следующим шагом'); // пока только визуально
+async function addWords(){
+  if(readOnly){toast('Офлайн: изменения недоступны');return}
+  const L=DATA.lists.filter(l=>l.role==='owner'||l.role==='editor'),G=DATA.groups;
+  if(!L.length&&!G.length){toast('Сначала создайте список на вкладке «Карточки»',4000);return}
+  const items=[];
+  if(L.length)items.push({head:'Мои списки'},...L.map(l=>({label:l.name,value:'list:'+l.id})));
+  if(G.length)items.push({head:'Общие'},...G.map(g=>({label:g.name,value:'group:'+g.id})));
+  let tgt=items.some(i=>i.value===srcVal(src))?srcVal(src):items.find(i=>i.value).value;
+  for(;;){ // окно открывается снова, пока не нажмут «Готово»
+    const r=await ui({title:'Новое слово',ok:'Добавить',cancel:'Готово',fields:[
+      {name:'t',label:'Куда добавить',dd:{items,value:tgt}},
+      {name:'ru',label:'Русский',required:true,placeholder:'слово'},
+      {name:'en',label:'English',required:true,placeholder:'word'},
+      {name:'ipa',label:'Транскрипция (необязательно)',placeholder:'/wɜːd/'},
+      {name:'note',label:'Заметка (необязательно)',multiline:true}]});
+    if(!r)break;
+    tgt=r.t;const k=tgt.indexOf(':'),body={ru:r.ru,en:r.en,ipa:r.ipa||null,note:r.note||null};
+    body[tgt.slice(0,k)==='list'?'list_id':'group_id']=tgt.slice(k+1);
+    try{await api('/words',{method:'POST',body});await poll(false);edDirty=true;toast('Слово добавлено')}
+    catch(e){if(e&&e.status===401)return;toast((e&&e.message)||'Не удалось добавить',5000);break}
+  }
+}
+$('edAdd').onclick=addWords;
+
 /* ===== Вкладки и логотип ===== */
+const TABS={quiz:'quiz',cards:'cardsView',archive:'archiveView'};
 function tab(n){
-  ['lists','groups','quiz'].forEach(t=>{$(t).hidden=t!==n;$('tab-'+t).setAttribute('aria-selected',t===n)});
+  if(ED.open)ED.close();
+  Object.keys(TABS).forEach(t=>{$(TABS[t]).hidden=t!==n;$('tab-'+t).setAttribute('aria-selected',t===n)});
+  $('edSearch').value=''; // поиск очищается при смене вкладки
   if(n==='quiz'){if(curId==null&&!revealed)rebuild();else renderQuiz()}
   else renderHub();
   window.scrollTo(0,0);
 }
-['lists','groups','quiz'].forEach(t=>$('tab-'+t).onclick=()=>tab(t));
+Object.keys(TABS).forEach(t=>$('tab-'+t).onclick=()=>tab(t));
 $('logo').onclick=()=>{
   const l=$('logo');l.classList.add('flip');
   clearTimeout(l._t);l._t=setTimeout(()=>l.classList.remove('flip'),2500);
   if(!getToken()||document.body.className==='auth')return;
-  if($('lists').hidden)tab('lists');
+  if($('quiz').hidden)tab('quiz');
 };
 
 /* ===== Тема ===== */
@@ -769,8 +1102,8 @@ $('authForm').onsubmit=async e=>{
   }
   $('authBtn').disabled=false;
 };
-$('logout').onclick=()=>{
-  if(!confirm('Выйти из аккаунта?'))return;
+$('logout').onclick=async()=>{
+  if(!await ui({title:'Выйти из аккаунта?',ok:'Выйти'}))return;
   setToken(null);resetState();clearBackup();
   showAuth();
 };
