@@ -344,22 +344,34 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 .scope-head h2{flex:1;min-width:0;font-family:var(--serif);font-weight:400;font-size:clamp(30px,5vw,46px);line-height:1;overflow-wrap:anywhere}
 #scopeList{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 
-.qa{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.qa{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
 .qa[hidden],.scope-head[hidden]{display:none}
-.qa-card{display:grid;grid-template-columns:1fr 1fr auto;border-radius:20px;overflow:hidden;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
+.qa-card{display:grid;grid-template-columns:1fr 1fr 136px;align-items:stretch;border-radius:20px;overflow:hidden;background:var(--white);border:1px solid var(--grey);transition:border-color .2s}
 .qa-card:focus-within{border-color:var(--black)}
 .qa-cell{display:flex;flex-direction:column;gap:8px;padding:18px 22px;min-width:0}
 .qa-cell.e{background:var(--black);color:var(--white)}
-.qa-cell label{font-size:12px;opacity:.5}
-.qa-cell textarea,.qa-note{width:100%;resize:none;border:0;background:transparent;outline:0;overflow:hidden;color:inherit}
-.qa-cell textarea{font-family:var(--serif);font-size:25px;line-height:1.15;min-height:29px}
-.qa-cell textarea.p{font-family:var(--sans);font-size:15px;line-height:1.4;min-height:21px;opacity:.75}
+.qa-cell label{font-size:12px;line-height:16px;opacity:.5}
+.qa-cell textarea{display:block;width:100%;margin:0;padding:0;resize:none;border:0;border-radius:0;background:transparent;outline:0;overflow:hidden;color:inherit;-webkit-appearance:none;appearance:none;font-family:var(--serif);font-size:25px;line-height:1.15;min-height:29px}
 .qa-cell textarea::placeholder{opacity:.3}
-.qa-side{display:flex;align-items:center;justify-content:center;padding:14px 18px;background:var(--paper)}
-.qa-note{padding:12px 18px;min-height:44px;border-radius:14px;background:var(--lilac);color:var(--on-lilac);font-size:14px;line-height:1.4}
-.qa-note::placeholder{color:inherit;opacity:.55}
+.qa-cell textarea.p{font-family:var(--sans);font-size:15px;line-height:1.4;min-height:21px;opacity:.75}
+.qa-cell textarea.note{padding:12px 14px;min-height:46px;border-radius:14px;background:var(--lilac);color:var(--on-lilac);font-family:var(--sans);font-size:14px;line-height:1.45}
+.qa-cell textarea.note::placeholder{color:inherit;opacity:.55}
+.qa-side{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px 12px;background:var(--paper)}
+.qa-side .mini{width:100%;text-align:center}
+.wc-icons{display:flex;gap:6px;justify-content:center}
+.wc-icons .icon-btn{opacity:.75;border:1px solid var(--grey)}
 .qa-meta{display:flex;justify-content:space-between;gap:6px 16px;flex-wrap:wrap;padding:0 6px;font-size:13px;opacity:.55}
-@media(max-width:680px){.qa-card{grid-template-columns:1fr}.qa-side{justify-content:flex-end}}
+.sec-sub{font-size:14px;opacity:.55}
+#cardsOverview:not([hidden])+.words-block{margin-top:44px}
+#scopeList{display:grid;gap:14px}
+@media(max-width:680px){
+  .qa-card{grid-template-columns:1fr}
+  .qa-side{flex-direction:row;justify-content:flex-end;padding:0 18px 16px;background:var(--black)}
+  .qa-side .mini{width:auto;background:rgba(127,127,127,.2);border-color:rgba(127,127,127,.35);color:var(--white)}
+  .qa-side .mini:hover{background:var(--wine);border-color:var(--wine);color:var(--white)}
+  .wc-icons .icon-btn{opacity:1;background:rgba(127,127,127,.2);border-color:rgba(127,127,127,.35);color:var(--white)}
+  .qa-side.add{background:var(--paper);padding:14px 18px}
+}
 </style>
 </head>
 <body class="loading">
@@ -384,6 +396,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></symbol>
     <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
     <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
@@ -472,15 +485,6 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
       <h2 id="scopeName"></h2>
       <button class="pill solid" id="scopeLearn" type="button">Учить</button>
     </div>
-    <form class="qa" id="qaForm" autocomplete="off" novalidate>
-      <div class="qa-card">
-        <div class="qa-cell"><label for="qaRu">Русский</label><textarea id="qaRu" rows="1" placeholder="слово или фраза"></textarea></div>
-        <div class="qa-cell e"><label for="qaEn">English</label><textarea id="qaEn" rows="1" placeholder="перевод"></textarea><textarea class="p" id="qaIpa" rows="1" placeholder="[транскрипция]" aria-label="Транскрипция"></textarea></div>
-        <div class="qa-side"><button class="pill solid" id="qaBtn" type="submit">Добавить</button></div>
-      </div>
-      <textarea class="qa-note" id="qaNote" rows="1" placeholder="Заметка: пример, нюанс (необязательно)" aria-label="Заметка"></textarea>
-      <div class="qa-meta"><span id="qaTarget"></span><span>Enter — добавить · Shift+Enter — новая строка</span></div>
-    </form>
     <div id="cardsOverview">
       <div class="grid" id="gridLists"></div>
       <div class="sec" style="margin-top:44px">
@@ -488,9 +492,20 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
         <div class="grid" id="gridGroups"></div>
       </div>
     </div>
-    <div id="cardsScope" hidden>
-      <label class="search"><svg class="ico"><use href="#i-search"/></svg><input id="scopeSearch" type="search" placeholder="Поиск по словам" aria-label="Поиск по словам" autocomplete="off"></label>
-      <div id="scopeList"></div>
+    <div class="words-block">
+      <div class="sec-head" id="wordsHead"><h2>Основной</h2><span class="sec-sub">Слова без группы</span></div>
+      <form class="qa" id="qaForm" autocomplete="off" novalidate>
+        <div class="qa-card">
+          <div class="qa-cell"><label for="qaRu">Русский</label><textarea id="qaRu" rows="1" placeholder="слово или фраза"></textarea></div>
+          <div class="qa-cell e"><label for="qaEn">English</label><textarea id="qaEn" rows="1" placeholder="перевод"></textarea><textarea class="p" id="qaIpa" rows="1" placeholder="[транскрипция]" aria-label="Транскрипция"></textarea><textarea class="note" id="qaNote" rows="1" placeholder="Заметка / примеры (необязательно)" aria-label="Заметка"></textarea></div>
+          <div class="qa-side add"><button class="pill solid" id="qaBtn" type="submit">Добавить</button></div>
+        </div>
+        <div class="qa-meta"><span id="qaTarget"></span><span>Enter — добавить · Shift+Enter — новая строка</span></div>
+      </form>
+      <div id="cardsScope">
+        <label class="search"><svg class="ico"><use href="#i-search"/></svg><input id="scopeSearch" type="search" placeholder="Поиск по словам" aria-label="Поиск по словам" autocomplete="off"></label>
+        <div id="scopeList"></div>
+      </div>
     </div>
   </section>
 
@@ -671,17 +686,19 @@ function setStatus(s,msg){
   $('sync').textContent=s==='ok'?'● синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='bad'?'● не сохранилось: '+(msg||'ошибка сервера'):'● сохраняю…';
 }
 function toast(t,ms){const e=$('toast');([...document.querySelectorAll('dialog[open]')].pop()||document.body).append(e);e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),ms||2200)}
-function queueSave(c,delay=0){
+function queueSave(c,delay=0,text=false){
   if(readOnly)return; // офлайн: на сервер ничего не отправляем
-  c._sdirty=true;clearTimeout(c._t);setStatus('wait');
+  if(text)c._tdirty=true;else c._sdirty=true;
+  clearTimeout(c._t);setStatus('wait');
   c._t=setTimeout(()=>flush(c),delay);
 }
 async function flush(c){
   if(c._busy){c._again=true;return}
-  if(c.id==null||!c._sdirty)return;
-  c._busy=true;c._sdirty=false;c._t=null;
+  if(c.id==null||!(c._sdirty||c._tdirty))return;
+  const needS=c._sdirty,needT=c._tdirty;
+  c._busy=true;c._sdirty=false;c._tdirty=false;c._t=null;
   try{
-    await api('/words',{method:'PUT',body:{id:c.id,...srsBody(c)}});
+    await api('/words',{method:'PUT',body:{id:c.id,...(needS?srsBody(c):{}),...(needT?{ru:c.ru||'',en:c.en||'',ipa:c.ipa||'',note:c.note||''}:{})}});
     setStatus('ok');scheduleBackup();c._fails=0;
   }catch(e){
     if(e instanceof ApiError&&e.status===401){
@@ -689,7 +706,7 @@ async function flush(c){
     }else if(e instanceof ApiError&&e.status>=400&&e.status<500&&e.status!==429){
       setStatus('bad',e.message);toast(e.message,6000); // сервер отказал — повтор не поможет
     }else{
-      c._sdirty=true;
+      c._sdirty=c._sdirty||needS;c._tdirty=c._tdirty||needT;
       if(e instanceof ApiError){
         const why=e.detail||e.message;
         c._fails=(c._fails||0)+1;setStatus('bad',why);console.error('Worker error',e.status,why);
@@ -702,12 +719,13 @@ async function flush(c){
 }
 
 /* ===== Загрузка с сервера: GET /data ===== */
-async function poll(first){
+async function poll(first,bg){
+  if(bg){const ae=document.activeElement;if(ae&&ae.tagName==='TEXTAREA'&&ae.closest('#scopeList'))return} // не мешаем, пока печатаешь в карточке
   const data=await api('/data');
   DATA.lists=data.lists||[];DATA.groups=data.groups||[];
   const rows=(data.words||[]).map((w,i)=>fromWord(w,i));
   const local={};cards.forEach(c=>{if(c.id!=null)local[c.id]=c});
-  const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._sdirty||l._t))?l:r});
+  const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._sdirty||l._tdirty||l._t))?l:r});
   setStatus('ok');
   const srcChanged=ensureSrc();
   const sig=JSON.stringify([DATA,next.map(c=>[c.id,c.list_id,c.group_id,c.ru,c.en,c.ipa,c.note,c.pos,c.interval,c.repetitions,c.ease_factor,c.due_date,c.status])]);
@@ -717,7 +735,7 @@ async function poll(first){
   if(first||srcChanged||(curId==null&&!revealed))rebuild();
   else renderQuiz();
 }
-async function safePoll(){if(readOnly)return;try{await poll(false);if(curId==null&&!revealed&&cards.some(isDue)&&!$('quiz').hidden)rebuild()}catch(e){if(!(e&&e.status===401))setStatus('err')}}
+async function safePoll(){if(readOnly)return;try{await poll(false,true);if(curId==null&&!revealed&&cards.some(isDue)&&!$('quiz').hidden)rebuild()}catch(e){if(!(e&&e.status===401))setStatus('err')}}
 
 /* ===== Квиз ===== */
 const byId=id=>cards.find(c=>c.id===id);
@@ -860,25 +878,42 @@ function emptyBox(title,text){const e=mk('div','empty');e.append(mk('b',null,tit
 /* ===== Вкладка «Карточки»: обзор групп и экран группы ===== */
 let scope=null; // null — обзор; {type:'main'|'list'|'group', id} — открыта группа карточек
 const scopeItem=()=>scope.type==='list'?DATA.lists.find(x=>x.id===scope.id):scope.type==='group'?DATA.groups.find(x=>x.id===scope.id):{name:'Основной',role:'owner'};
-const inScope=c=>!!scope&&(scope.type==='main'?!c.list_id&&!c.group_id:scope.type==='list'?c.list_id===scope.id:c.group_id===scope.id);
+const inScope=c=>{const s=scope||{type:'main'};return s.type==='main'?!c.list_id&&!c.group_id:s.type==='list'?c.list_id===s.id:c.group_id===s.id}
 function openScope(type,id){scope={type,id};$('scopeSearch').value='';renderHub();window.scrollTo(0,0)}
+const targetOf=c=>c.list_id?{list_id:c.list_id}:c.group_id?{group_id:c.group_id}:{}; // без обоих — «Основной»
+const dupWord=c=>act(()=>api('/words',{method:'POST',body:{ru:c.ru,en:c.en,ipa:c.ipa||null,note:c.note||null,...targetOf(c)}}),'Карточка скопирована');
+async function delWord(c){if(await ui({title:'Удалить карточку?',text:'«'+(c.ru||c.en||'без названия')+'» исчезнет навсегда.',ok:'Удалить',danger:true}))act(()=>api('/words?id='+encodeURIComponent(c.id),{method:'DELETE'}),'Карточка удалена')}
+function wordCard(c,canW){ // карточка слова в «старом» стиле: русский | English, транскрипция, заметка, кнопки
+  const r=mk('div','qa-card');
+  const ta=(k,ph,cls)=>{const t=document.createElement('textarea');t.rows=1;t.placeholder=ph;t.value=c[k]||'';t.readOnly=!canW||readOnly;t.setAttribute('aria-label',ph);if(cls)t.className=cls;
+    t.addEventListener('input',()=>{c[k]=t.value;grow(t);queueSave(c,700,true)});return t};
+  const a=mk('div','qa-cell');a.append(mk('label',null,'Русский'),ta('ru','слово или фраза'));
+  const b=mk('div','qa-cell e');b.append(mk('label',null,'English'),ta('en','перевод'),ta('ipa','[транскрипция]','p'),ta('note','Заметка / примеры','note'));
+  const s=mk('div','qa-side');
+  if(canW){
+    const ic=mk('div','wc-icons');ic.append(iconBtn('copy','Дублировать',()=>dupWord(c)),iconBtn('trash','Удалить',()=>delWord(c),'danger'));
+    s.append(miniBtn('В архив',()=>setWordStatus(c,'archive')),ic);
+  }
+  r.append(a,b,s);return r;
+}
 function renderCards(){
-  const st=stats(),GL=$('gridLists'),GG=$('gridGroups'),sm=st.m||{total:0,due:0};
+  const st=stats(),GL=$('gridLists'),GG=$('gridGroups');
   GL.innerHTML='';GG.innerHTML='';
   const it=scope?scopeItem():null;if(scope&&!it)scope=null;
-  GL.append(tile('main',{id:'main',name:'Основной'},sm,nWords(sm.total)));
+  if(!DATA.lists.length)GL.append(emptyBox('Пока нет групп карточек','Создайте группу кнопкой выше или просто добавляйте слова ниже — они попадут в «Основной».'));
   DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,nWords(s.total)))});
   if(!DATA.groups.length)GG.append(emptyBox('Вы пока не в группах','Подключитесь по коду приглашения от друзей.'));
   DATA.groups.forEach(g=>{const s=st['g:'+g.id]||{total:0,due:0};GG.append(tile('group',g,s,nMembers(Number(g.members_count)||0)+' · '+nWords(s.total)))});
   const canW=!scope||scope.type!=='list'||it.role==='owner'||it.role==='editor';
-  $('cardsOverview').hidden=!!scope;$('cardsScope').hidden=!scope;$('scopeHead').hidden=!scope;
+  $('cardsOverview').hidden=!!scope;$('scopeHead').hidden=!scope;$('wordsHead').hidden=!!scope;
   $('qaForm').hidden=!canW;$('qaTarget').textContent='Добавляется в: '+(scope?it.name:'Основной');
-  if(!scope)return;
-  $('scopeName').textContent=it.name;
+  if(scope)$('scopeName').textContent=it.name;
+  if($('cardsView').hidden)return; // слова рисуем только на открытой вкладке
   const q=$('scopeSearch').value.trim().toLowerCase(),L=$('scopeList');L.innerHTML='';
-  const ws=cards.filter(c=>c.id!=null&&c.status!=='archive'&&inScope(c)&&(!q||[c.ru,c.en,c.note].join(' ').toLowerCase().includes(q))).reverse();
+  const ws=cards.filter(c=>c.id!=null&&c.status!=='archive'&&inScope(c)&&(!q||[c.ru,c.en,c.ipa,c.note].join(' ').toLowerCase().includes(q))).reverse();
   if(!ws.length){L.append(emptyBox(q?'Ничего не найдено':'Пока нет карточек',q?'Попробуйте другой запрос.':'Добавьте первое слово в форме выше.'));return}
-  ws.forEach(c=>L.append(wordRow(c,canW?'В архив':null,()=>setWordStatus(c,'archive'))));
+  ws.forEach(c=>L.append(wordCard(c,canW)));
+  requestAnimationFrame(()=>L.querySelectorAll('textarea').forEach(grow));
 }
 $('scopeSearch').oninput=renderCards;
 $('scopeBack').onclick=()=>{scope=null;renderHub();window.scrollTo(0,0)};
