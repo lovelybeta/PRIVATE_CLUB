@@ -12,11 +12,17 @@ document.documentElement.setAttribute('data-theme',t)})();
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" id="themeColor" content="#f7f7f2">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Copure">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Светлая тема */
+/* светлая тема (по умолчанию) */
 :root{
   --black:#000; --white:#fff; --paper:#f7f7f2;
   --lilac:#cfc4d8; --grey:#d4d4d0; --wine:#6b2a25;
@@ -26,17 +32,17 @@ document.documentElement.setAttribute('data-theme',t)})();
   --sans:"Inter Tight",Helvetica,Arial,sans-serif;
   color-scheme:light;
 }
-/* Тёмная тема (мягкий сиреневый) */
+/* тёмная тема: «чёрное» и «белое» меняются местами */
 :root[data-theme="dark"]{
   --black:#f3f2ec; --white:#1e1e1c; --paper:#131312;
-  --lilac:#9b8ebf; --grey:#33332f; --wine:#d8a8a2;
+  --lilac:#4b4360; --grey:#33332f; --wine:#d8a8a2;
   --r-again:#5d3f3c; --r-hard:#5c5237; --r-good:#4a4163; --r-easy:#3a5444;
   --r-ink:#f1efe8; --r-line:#4a4a45;
   color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
-body{background:var(--paper);color:var(--black);font-family:var(--sans);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased; overflow-x:hidden;}
+body{background:var(--paper);color:var(--black);font-family:var(--sans);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 :focus-visible{outline:2px solid var(--wine);outline-offset:3px}
@@ -62,7 +68,7 @@ nav button[aria-selected=true]{background:var(--black);color:var(--white)}
 main{padding:8px clamp(16px,4vw,48px) 64px;max-width:1100px;margin:0 auto}
 section[hidden]{display:none}
 
-/* Загрузка и офлайн */
+/* загрузка и офлайн */
 #loader,#offline{display:none;text-align:center;padding:120px 16px}
 #loader{font-family:var(--serif);font-style:italic;font-size:clamp(28px,4.2vw,46px);line-height:1.2}
 body.loading #loader{display:block;animation:pulse 1.4s ease-in-out infinite}
@@ -71,12 +77,14 @@ body.offline #offline{display:flex;flex-direction:column;align-items:center;just
 #offline p{max-width:560px;margin:0 auto 26px;font-family:var(--serif);font-style:italic;font-size:clamp(30px,5vw,48px);line-height:1.15}
 .robar{display:none;margin:0 auto 18px;max-width:760px;padding:10px 18px;border-radius:14px;background:var(--lilac);font-size:14px;text-align:center}
 body.readonly .robar{display:block}
+body.readonly .side,body.readonly #add,body.readonly #imp,body.readonly .rate.archive{display:none}
+body.readonly .rates{grid-template-columns:repeat(4,1fr)}
 body.loading section,body.offline section{display:none!important}
 
-/* Вход */
+/* вход */
 #auth{display:none;justify-content:center;padding:56px 0 24px}
 body.auth #auth{display:flex}
-body.auth section,body.auth nav,body.auth .theme{display:none!important}
+body.auth section,body.auth nav,body.auth .logout{display:none!important}
 .authcard{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:40px 32px;border-radius:24px;background:var(--white);border:1px solid var(--grey);text-align:center}
 .authcard h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(34px,6vw,46px);line-height:1.1}
 .authcard .authsub{font-size:14px;opacity:.6;margin-top:-6px}
@@ -85,21 +93,16 @@ body.auth section,body.auth nav,body.auth .theme{display:none!important}
 .field:focus{border-color:var(--black)}
 .field::placeholder{opacity:.4}
 .autherr{min-height:20px;font-size:14px;color:var(--wine)}
-.pill{padding:10px 20px;border-radius:999px;border:1px solid var(--black);font-weight:500;transition:background .2s,color .2s; display:inline-flex; align-items:center; justify-content:center; gap:8px;}
-.pill:hover{background:var(--black);color:var(--white)}
-.pill.solid{background:var(--black);color:var(--white)}
-.pill.solid:hover{background:var(--wine);border-color:var(--wine)}
+.authcard .pill:disabled{opacity:.5;cursor:default}
 
-/* Квиз */
+/* quiz */
 .quiz{display:flex;flex-direction:column;align-items:center;gap:18px}
-.quiz-title{font-family:var(--serif); font-size:clamp(24px, 4vw, 32px); text-align:center; margin-bottom:10px;}
-.top-bar{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; width:100%; max-width:760px; align-items:center;}
 .seg{display:flex;gap:4px;background:var(--grey);padding:4px;border-radius:999px}
 .seg button{padding:8px 22px;border-radius:999px;font-weight:600;transition:background .2s,color .2s}
 .seg button[aria-pressed=true]{background:var(--black);color:var(--white)}
-.bar{width:100%;max-width:760px;height:3px;background:var(--grey);border-radius:3px;overflow:hidden; margin-top:10px;}
+.bar{width:100%;max-width:760px;height:3px;background:var(--grey);border-radius:3px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--black);width:0;transition:width .3s}
-.left{font-size:14px;opacity:.55; margin-top:5px;}
+.left{font-size:14px;opacity:.55}
 .stage{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%}
 .stage[hidden]{display:none}
 .scene{perspective:1400px;width:100%;max-width:760px;height:min(420px,54vh);min-height:290px}
@@ -129,66 +132,87 @@ body.auth section,body.auth nav,body.auth .theme{display:none!important}
 .rate.good{background:var(--r-good)}
 .rate.easy{background:var(--r-easy)}
 .rate.archive{background:transparent;border:1px solid var(--r-line)}
-.ctrl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center; margin-top:10px;}
+.ctrl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+.pill{padding:10px 20px;border-radius:999px;border:1px solid var(--black);font-weight:500;transition:background .2s,color .2s}
+.pill:hover{background:var(--black);color:var(--white)}
+.pill.solid{background:var(--black);color:var(--white)}
+.pill.solid:hover{background:var(--wine);border-color:var(--wine)}
 .done{width:100%;max-width:760px;padding:90px 24px;border-radius:24px;background:var(--white);border:1px solid var(--grey);text-align:center}
 .done[hidden]{display:none}
 .done h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6vw,56px)}
 .done p{margin-top:8px;opacity:.55}
 
-/* Списки */
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--black);color:var(--white);padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;transition:.3s;font-size:14px}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ===== хаб: плитки списков и групп ===== */
+:root{--shadow:rgba(0,0,0,.09)}
+:root[data-theme="dark"]{--shadow:rgba(0,0,0,.5)}
 .hub-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:14px 0 28px}
 .hub-head h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,64px);line-height:1}
 .hub-sub{margin-top:10px;font-size:14px;opacity:.55;max-width:460px}
-.section-title{font-family:var(--serif); font-size:28px; margin:20px 0 10px; font-weight:400;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px; margin-bottom:30px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
 .tile{position:relative;display:flex;flex-direction:column;gap:6px;min-height:178px;padding:20px 22px;border-radius:20px;background:var(--white);border:1px solid var(--grey);text-align:left;cursor:pointer;transition:border-color .2s,box-shadow .25s,transform .25s}
 .tile:hover{border-color:var(--black);box-shadow:0 14px 36px var(--shadow);transform:translateY(-3px)}
 .tile:active{transform:translateY(-1px)}
-.chip{align-self:flex-start;font-size:12px;font-weight:500;padding:3px 11px;border-radius:999px;background:var(--paper);border:1px solid var(--grey);opacity:.85; display:flex; align-items:center; gap:6px;}
+.chip{align-self:flex-start;font-size:12px;font-weight:500;padding:3px 11px;border-radius:999px;background:var(--paper);border:1px solid var(--grey);opacity:.85}
+.go{position:absolute;top:16px;right:22px;font-family:var(--serif);font-size:26px;line-height:1;opacity:0;transform:translateX(-8px);transition:opacity .25s,transform .25s}
+.tile:hover .go,.tile:focus-visible .go{opacity:.7;transform:none}
 .tile-name{margin-top:auto;padding-top:18px;font-family:var(--serif);font-weight:400;font-size:31px;line-height:1.06;word-break:break-word}
-.tile-actions {position: absolute; top: 16px; right: 16px; display: flex; gap: 8px;}
-.icon-btn {width: 32px; height: 32px; border-radius: 50%; background: var(--paper); border: 1px solid var(--grey); display: grid; place-items: center; transition: .2s; color: var(--black);}
-.icon-btn:hover {background: var(--black); color: var(--white); border-color: var(--black);}
-.icon-btn svg {width: 14px; height: 14px;}
-
-/* Модальное окно */
-dialog{border:0;border-radius:24px;padding:0;width:min(800px,95vw);height:min(800px,90vh);background:var(--paper);color:var(--black);box-shadow:0 20px 80px rgba(0,0,0,.4); overflow: hidden;}
-dialog[open]{display:flex;flex-direction:column;}
-dialog::backdrop{background:rgba(0,0,0,.6); backdrop-filter: blur(4px);}
-.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--grey);background:var(--white);}
-.dlg-head h2{font-family:var(--serif); font-size:28px; font-weight:400;}
-.dlg-toolbar{display:flex; gap:10px; padding:16px 24px; background:var(--white); border-bottom:1px solid var(--grey); flex-wrap:wrap; align-items:center;}
-.dlg-toolbar input{flex:1; min-width:200px; padding:10px 16px; border-radius:999px; border:1px solid var(--grey); background:var(--paper); outline:none; color:var(--black);}
-.dlg-body{flex:1; overflow-y:auto; padding:24px; position:relative;}
-.editor-list{display:flex; flex-direction:column; gap:12px;}
-.word-row{display:flex; gap:10px; background:var(--white); border:1px solid var(--grey); border-radius:16px; padding:12px; align-items:flex-start;}
-.word-inputs{display:flex; flex-direction:column; gap:8px; flex:1;}
-.word-inputs input, .word-inputs textarea {width:100%; border:1px solid transparent; background:var(--paper); border-radius:8px; padding:8px 12px; outline:none; resize:none; overflow:hidden; min-height:36px; color:var(--black);}
-.word-inputs input:focus, .word-inputs textarea:focus {border-color:var(--black); background:var(--white);}
-.word-inputs .en {font-weight:600;}
-.word-actions{display:flex; flex-direction:column; gap:8px;}
-.scroll-top{position:fixed; bottom:30px; right:30px; width:44px; height:44px; border-radius:50%; background:var(--black); color:var(--white); display:none; place-items:center; box-shadow:0 4px 12px rgba(0,0,0,0.3); z-index:100; transition:opacity .3s;}
-.scroll-top.show{display:grid;}
-
-.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--black);color:var(--white);padding:12px 24px;border-radius:999px;opacity:0;pointer-events:none;transition:.3s;font-size:14px;z-index:999}
-.toast.on{opacity:1;transform:translate(-50%,0)}
+.meta{font-size:14px;opacity:.55}
+.tile-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:30px;margin-top:8px}
+.due{padding:4px 11px;border-radius:999px;background:var(--lilac);font-size:12.5px;font-weight:500;white-space:nowrap}
+.due.zero{background:transparent;border:1px solid var(--grey);opacity:.7}
+.leave{padding:6px 14px;border-radius:999px;border:1px solid var(--grey);font-size:13px;font-weight:500;transition:background .2s,color .2s,border-color .2s}
+.leave:hover{background:var(--wine);border-color:var(--wine);color:var(--white)}
+.empty{grid-column:1/-1;padding:56px 24px;text-align:center;border:1px dashed var(--grey);border-radius:20px;background:var(--white);opacity:.9}
+.empty b{display:block;font-family:var(--serif);font-weight:400;font-size:30px;margin-bottom:6px}
+.empty span{font-size:14px;opacity:.6}
+/* выбор источника в «Учить» */
+.srcbar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;width:100%;max-width:760px}
+.selwrap{position:relative;flex:1;min-width:200px}
+.selwrap::after{content:"";position:absolute;right:22px;top:50%;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-70%) rotate(45deg);pointer-events:none;opacity:.6}
+.sel{width:100%;appearance:none;-webkit-appearance:none;padding:11px 46px 11px 20px;border-radius:999px;border:1px solid var(--grey);background:var(--white);font-weight:500;cursor:pointer;outline:0;text-overflow:ellipsis;transition:border-color .2s}
+.sel:hover,.sel:focus{border-color:var(--black)}
+.sel:disabled{opacity:.5;cursor:default}
+.sync{font-size:13px;opacity:.5}
+@media(hover:none){.go{opacity:.5;transform:none}}
+@media(max-width:680px){.tile{min-height:156px}.tile-name{font-size:28px}.hub-head{margin:6px 0 20px}.srcbar .seg{width:100%}.srcbar .seg button{flex:1}}
 
 @media(max-width:680px){
-  header{display:grid;grid-template-columns:1fr auto auto;grid-template-areas:"logo theme logout" "nav nav nav";gap:10px;padding:14px 16px 4px}
-  nav{grid-area:nav;display:flex;overflow-x:auto}
-  nav button{flex:1;padding:9px 6px;font-size:14px;white-space:nowrap}
-  .logo{grid-area:logo;width:150px;height:30px;margin:0}
+  .face{padding:32px 24px}
+  #loader{font-size:22px;padding:90px 28px}
+  .logo{width:260px}
+  .logo .f{font-size:34px}
+  .logo .b{font-size:16px}
+  .rates{grid-template-columns:repeat(3,1fr)}
+  body.readonly .rates{grid-template-columns:repeat(2,1fr)}
+  nav button{padding:8px 12px}
+}
+@media(max-width:680px){
+  header{display:grid;grid-template-columns:1fr auto auto;grid-template-areas:"logo theme logout" "nav nav nav";gap:10px 12px;padding:14px 16px 4px}
+  nav{grid-area:nav;display:flex}
+  nav button{flex:1;padding:9px 6px;font-size:15px}
+  .logo{grid-area:logo;width:190px;height:30px;margin:0}
   .logo .f{font-size:28px}
-  .logo .b{font-size:14px}
+  .logo .b{font-size:13px}
   .theme{grid-area:theme;width:34px;height:34px}
   .logout{grid-area:logout}
   main{padding:4px 16px 20px}
+  .quiz,.stage{gap:16px}
+  .scene{height:clamp(210px,calc(100vh - 385px),400px);height:clamp(210px,calc(100dvh - 385px),400px);min-height:0}
+  .face{padding:20px 18px}
+  .face .t{font-size:clamp(28px,8vw,40px)}
+  .face .ipa{font-size:17px;margin-top:8px}
+  .face .note{margin-top:14px;padding:10px 14px;font-size:13px}
   .rates{grid-template-columns:repeat(5,1fr);gap:6px}
-  .rate{padding:9px 2px;font-size:12px;border-radius:12px}
-  .rate small{font-size:9px;}
-  .dlg-toolbar{flex-direction:column; align-items:stretch;}
-  .word-row{flex-direction:column;}
-  .word-actions{flex-direction:row; justify-content:flex-end;}
+  body.readonly .rates{grid-template-columns:repeat(4,1fr)}
+  .rate{padding:9px 2px;font-size:13px;border-radius:14px}
+  .rate small{font-size:10.5px;min-height:14px}
+  .pill{padding:8px 16px}
+  .seg button{padding:7px 20px}
+  .done{padding:50px 20px}
+  .authcard{padding:32px 20px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -197,70 +221,62 @@ dialog::backdrop{background:rgba(0,0,0,.6); backdrop-filter: blur(4px);}
 <header>
   <div class="logo" id="logo" title="Copure / beta"><span class="f">Copure</span><span class="b">beta</span></div>
   <nav role="tablist">
-    <button role="tab" id="tab-quiz" aria-selected="true">Учить</button>
-    <button role="tab" id="tab-lists" aria-selected="false">Списки</button>
-    <button role="tab" id="tab-settings" aria-selected="false">Настройки</button>
+    <button role="tab" id="tab-lists" aria-selected="true">Мои списки</button>
+    <button role="tab" id="tab-groups" aria-selected="false">Общие</button>
+    <button role="tab" id="tab-quiz" aria-selected="false">Учить</button>
   </nav>
-  <button class="theme" id="theme" aria-label="Тёмная или светлая тема">
-    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  <button class="theme" id="theme" aria-label="Тёмная или светлая тема" title="Тёмная / светлая тема">
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   </button>
   <button class="theme logout" id="logout" aria-label="Выйти" title="Выйти">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
   </button>
 </header>
 
 <main>
-  <div class="robar" id="roBar">Офлайн · режим чтения</div>
+  <div class="robar" id="roBar">Офлайн · режим чтения: изменения не сохраняются. Когда появится интернет, сайт синхронизируется.</div>
   <div id="loader">You look lovely! Let me connect you...</div>
   <div id="offline">
     <p>Oops! You're offline. Get online for a second and the magic will happen.</p>
-    <button class="pill solid" onclick="location.reload()">Retry</button>
+    <button class="pill solid" id="retry">Retry</button>
   </div>
 
   <div id="auth">
-    <form class="authcard" id="authForm">
+    <form class="authcard" id="authForm" novalidate>
       <h2 id="authTitle">Hi, love</h2>
       <p class="authsub" id="authSub">Войди, чтобы открыть карточки</p>
-      <div class="seg" style="align-self:center;">
+      <div class="seg" role="group" aria-label="Вход или регистрация">
         <button type="button" id="mLogin" aria-pressed="true">Вход</button>
         <button type="button" id="mReg" aria-pressed="false">Регистрация</button>
       </div>
-      <input class="field" id="aUser" type="text" placeholder="Логин" autocomplete="username" maxlength="32">
-      <input class="field" id="aPass" type="password" placeholder="Пароль" autocomplete="current-password">
-      <div class="autherr" id="authErr"></div>
+      <input class="field" id="aUser" type="text" placeholder="Логин" aria-label="Логин" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="32">
+      <input class="field" id="aPass" type="password" placeholder="Пароль" aria-label="Пароль" autocomplete="current-password">
+      <div class="autherr" id="authErr" role="alert"></div>
       <button class="pill solid" id="authBtn" type="submit">Войти</button>
     </form>
   </div>
 
   <section id="quiz" class="quiz" hidden>
-    <div class="quiz-title" id="quizTitle">Учить: Не выбран</div>
-    <div class="top-bar">
-      <div class="seg">
+    <div class="srcbar">
+      <div class="seg" role="group" aria-label="Источник слов">
         <button id="kList" aria-pressed="true">Мой список</button>
         <button id="kGroup" aria-pressed="false">Общая группа</button>
       </div>
-      <div class="selwrap" style="flex:1; max-width:300px; position:relative;">
-         <select class="field" id="srcSel" style="appearance:none; cursor:pointer;"></select>
-      </div>
+      <div class="selwrap"><select class="sel" id="srcSel" aria-label="Что учить"></select></div>
     </div>
-    
-    <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
-      <div class="seg">
-        <button id="langRu" aria-pressed="true">RU</button>
-        <button id="langEn" aria-pressed="false">EN</button>
-      </div>
-      <button class="pill" id="btnEditWords" style="padding:6px 14px; font-size:14px;">Редактировать слова</button>
+    <div class="seg" role="group" aria-label="Язык лицевой стороны">
+      <button id="langRu" aria-pressed="true">RU</button>
+      <button id="langEn" aria-pressed="false">EN</button>
     </div>
-
     <div class="bar"><i id="bar"></i></div>
     <div class="left" id="left"></div>
 
     <div class="stage" id="stage">
       <div class="scene">
-        <div class="card" id="card" tabindex="0">
-          <div class="face light" id="front"><span class="tag" id="frontTag"></span><div class="t" id="frontText"></div><div class="ipa" id="frontIpa"></div><span class="hint">выбери оценку ниже</span></div>
-          <div class="face dark back" id="back"><span class="tag" id="backTag"></span><div class="t" id="backText"></div><div class="ipa" id="backIpa"></div><div class="note" id="noteText" hidden></div><span class="hint">нажми на карточку — дальше</span></div>
+        <div class="card" id="card" tabindex="0" aria-label="Карточка. После оценки нажми, чтобы перейти к следующей">
+          <div class="face light" id="front"><span class="tag" id="frontTag"></span><div class="t" id="frontText"></div><div class="ipa" id="frontIpa"></div><span class="hint">выбери оценку ниже, чтобы увидеть ответ</span></div>
+          <div class="face dark back" id="back"><span class="tag" id="backTag"></span><div class="t" id="backText"></div><div class="ipa" id="backIpa"></div><div class="note" id="noteText" hidden></div><span class="hint" style="color:inherit">нажми на карточку — дальше</span></div>
         </div>
       </div>
       <div class="rates" id="rates">
@@ -268,13 +284,13 @@ dialog::backdrop{background:rgba(0,0,0,.6); backdrop-filter: blur(4px);}
         <button class="rate hard" data-r="hard"><span>Hard</span><small id="sub-hard"></small></button>
         <button class="rate good" data-r="good"><span>Good</span><small id="sub-good"></small></button>
         <button class="rate easy" data-r="easy"><span>Easy</span><small id="sub-easy"></small></button>
-        <button class="rate archive" data-r="archive"><span>Archive</span></button>
+        <button class="rate archive" data-r="archive"><span>Archive</span><small>в архив</small></button>
       </div>
       <div class="ctrl">
         <button class="pill" id="shuffle">Перемешать</button>
         <button class="pill" id="restart">Заново</button>
       </div>
-      <div class="sync" id="sync" style="font-size:13px; opacity:.5; margin-top:10px;"></div>
+      <div class="sync" id="sync"></div>
     </div>
 
     <div class="done" id="done" hidden>
@@ -283,358 +299,532 @@ dialog::backdrop{background:rgba(0,0,0,.6); backdrop-filter: blur(4px);}
     </div>
   </section>
 
-  <section id="listsView" class="hub" hidden>
+  <section id="lists" class="hub">
     <div class="hub-head">
-      <div><h1>Списки</h1><p class="hub-sub">Твои личные и общие наборы слов.</p></div>
-      <button class="pill solid" id="btnNewList">+ Создать список</button>
+      <div><h1>Мои списки</h1><p class="hub-sub">Личные наборы слов. Выбери список — и сразу к карточкам.</p></div>
+      <button class="pill solid" id="newList">+ Создать список</button>
     </div>
-    
-    <h2 class="section-title">Мои списки</h2>
     <div class="grid" id="gridLists"></div>
-    
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:40px;">
-        <h2 class="section-title" style="margin:0;">Общие</h2>
-        <button class="pill" id="btnJoinGroup" style="font-size:14px; padding:8px 16px;">Подключиться по коду</button>
-    </div>
-    <div class="grid" id="gridGroups" style="margin-top:10px;"></div>
   </section>
 
-  <section id="settingsView" class="hub" hidden>
-    <div class="hub-head"><div><h1>Настройки</h1><p class="hub-sub">Скоро здесь появятся настройки обучения.</p></div></div>
-    <div style="text-align:center; padding:60px; border:1px dashed var(--grey); border-radius:20px; opacity:0.5;">
-       <h2 style="font-family:var(--serif); font-size:32px;">В разработке</h2>
+  <section id="groups" class="hub" hidden>
+    <div class="hub-head">
+      <div><h1>Общие</h1><p class="hub-sub">Группы, в которых слова учат вместе. Выбери группу — и к карточкам.</p></div>
+      <button class="pill solid" id="joinGroup">Подключиться по коду</button>
     </div>
+    <div class="grid" id="gridGroups"></div>
   </section>
 </main>
-
-<dialog id="editorDlg">
-  <div class="dlg-head">
-    <h2 id="editorTitle">Редактор слов</h2>
-    <button class="icon-btn" onclick="document.getElementById('editorDlg').close()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-    </button>
-  </div>
-  <div class="dlg-toolbar">
-    <input type="search" id="editorSearch" placeholder="Поиск по словам...">
-    <button class="pill" id="btnAddWord">+ Добавить</button>
-    <button class="pill" id="btnImport">Импорт</button>
-    <button class="pill" id="btnExport">Экспорт</button>
-    <button class="pill" id="btnArchiveToggle">Архив</button>
-  </div>
-  <div class="dlg-body" id="editorBody">
-    <div class="editor-list" id="editorList"></div>
-    <div class="editor-list" id="editorArchive" style="display:none;"></div>
-    <button class="scroll-top" id="scrollTopBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-    </button>
-  </div>
-</dialog>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const WORKER_URL = 'https://test.lizabeta.workers.dev';
-const TOKEN_KEY = 'catcha-token';
+const SRC_KEY = 'copure-src';      // последний выбранный список/группа
+const TOKEN_KEY = 'catcha-token';  // JWT в localStorage
 const LANG_KEY = 'cumshot-lang';
-const SRC_KEY = 'copure-src';
 
-const $=id=>document.getElementById(id);
-const getToken=()=>{try{return localStorage.getItem(TOKEN_KEY)}catch(e){return null}};
-const setToken=t=>{try{if(t)localStorage.setItem(TOKEN_KEY,t);else localStorage.removeItem(TOKEN_KEY)}catch(e){}};
-
-// --- SM-2 ---
+/* ===== Алгоритм интервального повторения (Anki, SM-2 v2) ===== */
 const DAY=86400000, MIN=60000;
-const LEARN_STEPS=[1,10], RELEARN_STEPS=[10], GRAD_IVL=1, EASY_IVL=4;
-const START_EASE=2.5, MIN_EASE=1.3, EASY_BONUS=1.3, HARD_FACTOR=1.2, MAX_IVL=36500, LEARN_AHEAD=20*MIN;
+const LEARN_STEPS=[1,10];      // минуты, новые карточки
+const RELEARN_STEPS=[10];      // минуты, после «Again» на зрелой карточке
+const GRAD_IVL=1, EASY_IVL=4;  // дни
+const START_EASE=2.5, MIN_EASE=1.3, EASY_BONUS=1.3, HARD_FACTOR=1.2, MAX_IVL=36500;
+const LEARN_AHEAD=20*MIN;      // карточки с таким близким сроком вернутся в этот же сеанс
+
+/* card: {status:'new'|'learning'|'review'|'archive', interval (дни), repetitions, ease_factor, due_date (мс)}
+   Пока status='learning', repetitions = номер шага обучения. */
 function applyAnkiSM2(card,rating,now=Date.now()){
   if(rating==='archive'){card.status='archive';card.due_date=now+3650*DAY;return card}
   const r={again:1,hard:2,good:3,easy:4}[rating]||rating;
   if(!(card.ease_factor>0))card.ease_factor=START_EASE;
   if(card.status==='review'){
-    const ivl=Math.max(1,card.interval||1), late=Math.max(0,Math.floor((now-(card.due_date||now))/DAY));
-    if(r===1){card.ease_factor=Math.max(MIN_EASE,card.ease_factor-0.20);card.repetitions=0;card.interval=1;card.status='learning';card.due_date=now+RELEARN_STEPS[0]*MIN;}
-    else{
-      const ease=card.ease_factor, cons=(x,p)=>Math.min(MAX_IVL,Math.max(Math.round(x),p+1));
-      const ivl2=cons((ivl+Math.floor(late/4))*HARD_FACTOR,ivl), ivl3=cons((ivl+Math.floor(late/2))*ease,ivl2), ivl4=cons((ivl+late)*ease*EASY_BONUS,ivl3);
-      if(r===2){card.ease_factor=Math.max(MIN_EASE,ease-0.15);card.interval=ivl2}else if(r===3){card.interval=ivl3}else{card.ease_factor=ease+0.15;card.interval=ivl4}
-      card.ease_factor=Math.round(card.ease_factor*100)/100;card.repetitions=(card.repetitions||0)+1;card.status='review';card.due_date=now+card.interval*DAY;
+    const ivl=Math.max(1,card.interval||1);
+    const late=Math.max(0,Math.floor((now-(card.due_date||now))/DAY));
+    if(r===1){ // провал: ease −0.20, интервал ×0 (минимум 1 день), шаг переобучения
+      card.ease_factor=Math.max(MIN_EASE,card.ease_factor-0.20);
+      card.repetitions=0;card.interval=1;card.status='learning';
+      card.due_date=now+RELEARN_STEPS[0]*MIN;
+    }else{
+      const ease=card.ease_factor;
+      const cons=(x,prev)=>Math.min(MAX_IVL,Math.max(Math.round(x),prev+1));
+      const ivl2=cons((ivl+Math.floor(late/4))*HARD_FACTOR,ivl);
+      const ivl3=cons((ivl+Math.floor(late/2))*ease,ivl2);
+      const ivl4=cons((ivl+late)*ease*EASY_BONUS,ivl3);
+      if(r===2){card.ease_factor=Math.max(MIN_EASE,ease-0.15);card.interval=ivl2}
+      else if(r===3){card.interval=ivl3}
+      else{card.ease_factor=ease+0.15;card.interval=ivl4}
+      card.ease_factor=Math.round(card.ease_factor*100)/100;
+      card.repetitions=(card.repetitions||0)+1;card.status='review';
+      card.due_date=now+card.interval*DAY;
     }
     return card;
   }
-  const relearn=(card.interval||0)>0, steps=relearn?RELEARN_STEPS:LEARN_STEPS;
+  // new / learning
+  const relearn=(card.interval||0)>0;
+  const steps=relearn?RELEARN_STEPS:LEARN_STEPS;
   let step=card.status==='learning'?Math.min(card.repetitions||0,steps.length-1):0;
   const graduate=days=>{card.status='review';card.interval=days;card.repetitions=1;card.due_date=now+days*DAY};
   if(r===1){step=0;card.status='learning';card.repetitions=0;card.due_date=now+steps[0]*MIN}
-  else if(r===2){const m=(step===0&&steps.length>1)?(steps[0]+steps[1])/2:steps[step];card.status='learning';card.repetitions=step;card.due_date=now+m*MIN;}
-  else if(r===3){if(step+1>=steps.length)graduate(relearn?card.interval:GRAD_IVL);else{step++;card.status='learning';card.repetitions=step;card.due_date=now+steps[step]*MIN}}
-  else graduate(relearn?card.interval+1:EASY_IVL);
+  else if(r===2){
+    const m=(step===0&&steps.length>1)?(steps[0]+steps[1])/2:steps[step];
+    card.status='learning';card.repetitions=step;card.due_date=now+m*MIN;
+  }else if(r===3){
+    if(step+1>=steps.length)graduate(relearn?card.interval:GRAD_IVL);
+    else{step++;card.status='learning';card.repetitions=step;card.due_date=now+steps[step]*MIN}
+  }else graduate(relearn?card.interval+1:EASY_IVL);
   return card;
 }
-function fmtIn(ms){const m=ms/MIN;if(m<1)return '<1m';if(m<60)return Math.round(m)+'m';if(m<1440)return Math.round(m/60)+'h';const d=ms/DAY;if(d<31)return Math.round(d)+'d';if(d<365)return (d/30).toFixed(1)+'mo';return (d/365).toFixed(1)+'y';}
+function fmtIn(ms){
+  const m=ms/MIN;
+  if(m<1)return '<1m';
+  if(m<60)return Math.round(m)+'m';
+  if(m<1440)return Math.round(m/60)+'h';
+  const d=ms/DAY;
+  if(d<31)return Math.round(d)+'d';
+  if(d<365)return (d/30).toFixed(1)+'mo';
+  return (d/365).toFixed(1)+'y';
+}
 
-// --- СОСТОЯНИЕ ---
-let cards=[], DATA={lists:[],groups:[]}, src=null, kind='list', lang='ru';
-let curId=null, queue=[], revealed=false, sessionTotal=0;
-let authMode='login';
+/* ===== Резервная копия слов в IndexedDB (используется ТОЛЬКО когда нет связи с сервером) ===== */
+function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('catcha-backup',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbGet(k='cards'){
+  try{const db=await idbOpen();return await new Promise((res,rej)=>{const t=db.transaction('kv').objectStore('kv').get(k);t.onsuccess=()=>res(t.result||null);t.onerror=()=>rej(t.error)})}
+  catch(e){return null}
+}
+async function idbSet(v,k='cards'){
+  try{const db=await idbOpen();await new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+  catch(e){}
+}
+function scheduleBackup(){
+  if(readOnly)return;
+  clearTimeout(bkTimer);
+  bkTimer=setTimeout(()=>{
+    if(readOnly)return;
+    idbSet(cards.filter(c=>c.id!=null).map(c=>({id:c.id,list_id:c.list_id,group_id:c.group_id,ru:c.ru,en:c.en,ipa:c.ipa,note:c.note,pos:c.pos,interval:c.interval,repetitions:c.repetitions,ease_factor:c.ease_factor,due_date:c.due_date,status:c.status})));
+    idbSet({lists:DATA.lists,groups:DATA.groups},'meta');
+  },1000);
+}
 
-class ApiError extends Error{constructor(status,msg){super(msg);this.status=status}}
+/* ===== Состояние ===== */
+let readOnly=false, retryTimer=null, bkTimer=null, advancing=false;
+let cards=[], curId=null, queue=[], revealed=false, sessionTotal=0, lastSig='', lang='ru', q='', pollTimer=null;
+const $=id=>document.getElementById(id);
+let DATA={lists:[],groups:[]}, src=null, kind='list';const mem={};  // src = {type:'list'|'group', id}
+
+/* ===== Токен и запросы к Worker ===== */
+const getToken=()=>{try{return localStorage.getItem(TOKEN_KEY)}catch(e){return null}};
+const setToken=t=>{try{if(t)localStorage.setItem(TOKEN_KEY,t);else localStorage.removeItem(TOKEN_KEY)}catch(e){}};
+
+class ApiError extends Error{constructor(status,msg,detail){super(msg);this.status=status;this.detail=detail||''}}
+
 async function api(path,opt={}){
   const headers={};
   const token=getToken();
   if(opt.body!==undefined)headers['Content-Type']='application/json';
   if(token&&!opt.public)headers['Authorization']='Bearer '+token;
-  const r=await fetch(WORKER_URL+path,{method:opt.method||'GET',headers,body:opt.body!==undefined?JSON.stringify(opt.body):undefined});
+  const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),15000);
+  let r;
+  try{
+    r=await fetch(WORKER_URL+path,{method:opt.method||'GET',headers,body:opt.body!==undefined?JSON.stringify(opt.body):undefined,signal:ctl.signal});
+  }finally{clearTimeout(tm)}
   let data=null;try{data=await r.json()}catch(e){}
   if(!r.ok){
-    if(r.status===401&&!opt.public){setToken(null); showAuth('Сессия истекла');}
-    throw new ApiError(r.status,(data&&data.error)||('Ошибка '+r.status));
+    if(r.status===401&&!opt.public)onUnauthorized(); // токен недействителен или сессии сброшены
+    throw new ApiError(r.status,(data&&data.error)||('Ошибка сервера ('+r.status+')'),data&&data.detail);
   }
   return data;
 }
 
-// --- УТИЛИТЫ ---
-function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2500)}
-function mk(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
-const parseDue=v=>{if(typeof v==='number')return v;if(typeof v==='string'&&v){if(/^\d+$/.test(v))return Number(v);const t=Date.parse(v);return isNaN(t)?0:t}return 0};
-const blank=o=>({id:null,list_id:null,group_id:null,ru:'',en:'',ipa:'',note:'',interval:0,repetitions:0,ease_factor:START_EASE,due_date:0,status:'new',...o});
-
-// --- ЗАГРУЗКА ---
-async function loadData(){
-  const data = await api('/data');
-  DATA.lists = data.lists||[]; DATA.groups = data.groups||[];
-  cards = (data.words||[]).map((w,i)=>blank({...w, due_date: parseDue(w.due_date)}));
-  renderHub(); renderSrcBar(); rebuildQuiz();
+/* ===== Слова: преобразование данных сервера ===== */
+const blank=o=>({id:null,list_id:null,group_id:null,ru:'',en:'',ipa:'',note:'',pos:0,interval:0,repetitions:0,ease_factor:START_EASE,due_date:0,status:'new',...o});
+function parseDue(v){
+  if(typeof v==='number')return v;
+  if(typeof v==='string'&&v){
+    if(/^\d+(\.\d+)?$/.test(v))return Number(v);
+    const t=Date.parse(v);return isNaN(t)?0:t;
+  }
+  return 0;
 }
+const fromWord=(w,i)=>blank({id:w.id,list_id:w.list_id||null,group_id:w.group_id||null,ru:w.ru||'',en:w.en||'',ipa:w.ipa||'',note:w.note||'',pos:i*10,interval:Number(w.interval)||0,repetitions:Number(w.repetitions)||0,ease_factor:Number(w.ease_factor)||START_EASE,due_date:parseDue(w.due_date),status:w.status||'new'});
+const srsBody=c=>({interval:c.interval||0,repetitions:c.repetitions||0,ease_factor:c.ease_factor||START_EASE,due_date:c.due_date||0,status:c.status||'new'});
 
-// --- ВКЛАДКИ ---
-function tab(n){
-  ['quiz','listsView','settingsView'].forEach(t=>$(t).hidden = (t!==n));
-  ['quiz','lists','settings'].forEach(t=>{
-    let id = t==='quiz'?'tab-quiz':t==='lists'?'tab-lists':'tab-settings';
-    $(id).setAttribute('aria-selected', (t===n||(t==='lists'&&n==='listsView')));
-  });
-  if(n==='quiz'){ rebuildQuiz(); $('editorSearch').value=''; }
-  if(n==='listsView') renderHub();
-  window.scrollTo(0,0);
+/* ===== Сохранение прогресса (PUT /words) ===== */
+function setStatus(s,msg){
+  $('sync').textContent=s==='ok'?'● синхронизировано':s==='err'?'● нет связи с сервером — повторю попытку':s==='bad'?'● не сохранилось: '+(msg||'ошибка сервера'):'● сохраняю…';
 }
-$('tab-quiz').onclick=()=>tab('quiz'); $('tab-lists').onclick=()=>tab('listsView'); $('tab-settings').onclick=()=>tab('settingsView');
-
-// --- СПИСКИ И ГРУППЫ ---
-function renderHub(){
-  const GL=$('gridLists'), GG=$('gridGroups'); GL.innerHTML=''; GG.innerHTML='';
-  const stats = {};
-  cards.forEach(c => {
-    const k = c.list_id ? 'l:'+c.list_id : c.group_id ? 'g:'+c.group_id : null; if(!k) return;
-    if(!stats[k]) stats[k] = {total:0, due:0}; stats[k].total++;
-    if(c.status!=='archive' && (c.due_date||0)<=Date.now()) stats[k].due++;
-  });
-  const makeTile = (type, item, isGroup) => {
-    const s = stats[(isGroup?'g:':'l:')+item.id] || {total:0, due:0};
-    const t = mk('div', 'tile');
-    t.onclick = (e) => { if(e.target.closest('.icon-btn')) return; setSource(type, item.id); tab('quiz'); };
-    t.innerHTML = `
-      <div class="chip">${isGroup ? '<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2" style="opacity:0.6"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Группа' : 'Личный'}</div>
-      <div class="tile-actions">
-         <button class="icon-btn act-edit" title="Переименовать"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-         <button class="icon-btn act-del" title="Удалить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-      </div>
-      <div class="tile-name">${item.name}</div>
-      <div style="font-size:13px; opacity:.6; margin-top:10px;">${s.total} слов · ${s.due>0 ? s.due+' к повторению' : 'на сегодня всё'}</div>
-    `;
-    t.querySelector('.act-edit').onclick = async (e) => {
-      e.stopPropagation(); const n = prompt('Новое название:', item.name);
-      if(n && n!==item.name){ await api(isGroup?'/groups':'/lists', {method:'PUT', body:{id:item.id, name:n}}); item.name = n; renderHub(); }
-    };
-    t.querySelector('.act-del').onclick = async (e) => {
-      e.stopPropagation(); if(!confirm('Удалить навсегда?')) return;
-      await api((isGroup?'/groups':'/lists')+'?id='+item.id, {method:'DELETE'});
-      if(isGroup) DATA.groups = DATA.groups.filter(g=>g.id!==item.id);
-      else DATA.lists = DATA.lists.filter(l=>l.id!==item.id);
-      renderHub(); renderSrcBar();
-    };
-    return t;
-  };
-  if(!DATA.lists.length) GL.innerHTML = '<div style="opacity:.5">Нет личных списков</div>';
-  DATA.lists.forEach(l => GL.appendChild(makeTile('list', l, false)));
-  if(!DATA.groups.length) GG.innerHTML = '<div style="opacity:.5">Вы пока не в группах</div>';
-  DATA.groups.forEach(g => GG.appendChild(makeTile('group', g, true)));
+function toast(t,ms){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),ms||2200)}
+function queueSave(c,delay=0){
+  if(readOnly)return; // офлайн: на сервер ничего не отправляем
+  c._sdirty=true;clearTimeout(c._t);setStatus('wait');
+  c._t=setTimeout(()=>flush(c),delay);
 }
-
-$('btnNewList').onclick = async () => {
-  const n = prompt('Название нового списка:'); if(!n) return;
-  try { const res = await api('/lists', {method:'POST', body:{name:n}}); DATA.lists.push(res.list); renderHub(); } catch(e){ toast(e.message); }
-};
-$('btnJoinGroup').onclick = async () => {
-  const code = prompt('Введите код приглашения:'); if(!code) return;
-  try { await api('/groups/join', {method:'POST', body:{invite_code:code}}); toast('Вы вступили!'); await loadData(); } catch(e){ toast(e.message); }
-};
-
-// --- ИСТОЧНИК ---
-function setSource(type, id){
-  src={type, id}; localStorage.setItem(SRC_KEY, JSON.stringify(src));
-  renderSrcBar(); rebuildQuiz();
-}
-function renderSrcBar(){
-  if(!src) src = DATA.lists[0] ? {type:'list', id:DATA.lists[0].id} : DATA.groups[0] ? {type:'group', id:DATA.groups[0].id} : null;
-  if(src && src.type==='list' && !DATA.lists.find(l=>l.id===src.id)) src = DATA.lists[0]?{type:'list',id:DATA.lists[0].id}:null;
-  if(src && src.type==='group' && !DATA.groups.find(g=>g.id===src.id)) src = DATA.groups[0]?{type:'group',id:DATA.groups[0].id}:null;
-  if(!src){ $('quizTitle').textContent = 'Учить: Нет списков'; $('srcSel').innerHTML = '<option>Пусто</option>'; return; }
-  kind = src.type; $('kList').setAttribute('aria-pressed', kind==='list'); $('kGroup').setAttribute('aria-pressed', kind==='group');
-  const items = kind==='list' ? DATA.lists : DATA.groups; const currentItem = items.find(i=>i.id===src.id);
-  if(currentItem) $('quizTitle').textContent = 'Учить: ' + currentItem.name;
-  const sel = $('srcSel'); sel.innerHTML = ''; items.forEach(i => sel.add(new Option(i.name, i.id)));
-  if(currentItem) sel.value = currentItem.id;
-}
-$('kList').onclick = ()=>{ if(DATA.lists.length) setSource('list', DATA.lists[0].id); };
-$('kGroup').onclick = ()=>{ if(DATA.groups.length) setSource('group', DATA.groups[0].id); };
-$('srcSel').onchange = (e) => { if(e.target.value) setSource(kind, e.target.value); };
-
-// --- КВИЗ ---
-const isDue = c => c.id!=null && c.status!=='archive' && (c.due_date||0)<=Date.now() && (src.type==='list' ? c.list_id===src.id : c.group_id===src.id);
-function rebuildQuiz(){
-  if(!src) { $('stage').hidden=true; $('done').hidden=false; $('doneT').textContent='Выберите список'; $('doneP').textContent='Создайте его во вкладке «Списки».'; return; }
-  let dueCards = cards.filter(isDue).sort((a,b)=>(a.due_date-b.due_date));
-  sessionTotal = dueCards.length; curId = dueCards.length ? dueCards[0].id : null; queue = dueCards.slice(1).map(c=>c.id);
-  revealed = false; $('card').classList.remove('open'); renderQuiz();
-}
-function renderQuiz(){
-  const c = curId ? cards.find(x=>x.id===curId) : null;
-  if(!c){ $('stage').hidden=true; $('done').hidden=false; $('doneT').textContent='На сегодня всё!'; $('doneP').textContent='Новые карточки появятся позже.'; $('bar').style.width='100%'; return; }
-  $('stage').hidden=false; $('done').hidden=true;
-  const ruFirst = lang==='ru';
-  $('front').className='face '+(ruFirst?'light':'dark'); $('back').className='face back '+(ruFirst?'dark':'light');
-  $('frontTag').textContent=ruFirst?'RU':'EN'; $('backTag').textContent=ruFirst?'EN':'RU';
-  $('frontText').textContent=(ruFirst?c.ru:c.en)||'—'; $('frontIpa').textContent=ruFirst?'':(c.ipa||'');
-  $('backText').textContent=(ruFirst?c.en:c.ru)||'—'; $('backIpa').textContent=ruFirst?(c.ipa||''):'';
-  $('noteText').hidden=!c.note; $('noteText').textContent=c.note||'';
-  $('left').textContent = 'Осталось: ' + (queue.length+1);
-  $('bar').style.width = ((sessionTotal - (queue.length+1)) / Math.max(sessionTotal,1) * 100) + '%';
-  ['again','hard','good','easy'].forEach(r=>{ const t = applyAnkiSM2({...c}, r, Date.now()); $('sub-'+r).textContent = fmtIn(t.due_date - Date.now()); });
-}
-document.querySelectorAll('.rate').forEach(b => b.onclick = () => {
-  if(revealed) return; const c = cards.find(x=>x.id===curId); if(!c) return;
-  applyAnkiSM2(c, b.dataset.r);
-  api('/words', {method:'PUT', body:{id:c.id, interval:c.interval, repetitions:c.repetitions, ease_factor:c.ease_factor, due_date:c.due_date, status:c.status}}).catch(()=>{});
-  revealed = true; $('card').classList.add('open'); if(b.dataset.r==='archive') toast('В архиве');
-});
-$('card').onclick = () => {
-  if(!revealed) return; $('card').classList.remove('open');
-  setTimeout(()=>{ curId = queue.length ? queue.shift() : null; revealed = false; renderQuiz(); }, 250);
-};
-$('shuffle').onclick = () => { queue.sort(()=>Math.random()-0.5); toast('Перемешано'); };
-$('restart').onclick = () => rebuildQuiz();
-$('langRu').onclick = () => { lang='ru'; $('langRu').setAttribute('aria-pressed','true'); $('langEn').setAttribute('aria-pressed','false'); renderQuiz(); };
-$('langEn').onclick = () => { lang='en'; $('langEn').setAttribute('aria-pressed','true'); $('langRu').setAttribute('aria-pressed','false'); renderQuiz(); };
-
-// --- РЕДАКТОР СЛОВ ---
-let isArchiveView = false;
-$('btnEditWords').onclick = () => {
-  if(!src) return toast('Сначала выберите список');
-  $('editorSearch').value = ''; $('editorDlg').showModal(); isArchiveView = false;
-  $('btnArchiveToggle').textContent = 'Архив'; renderEditor();
-};
-$('editorSearch').oninput = () => renderEditor();
-$('btnArchiveToggle').onclick = () => {
-  isArchiveView = !isArchiveView; $('btnArchiveToggle').textContent = isArchiveView ? 'К словам' : 'Архив';
-  $('editorSearch').value = ''; renderEditor();
-};
-$('btnAddWord').onclick = async () => {
-  if(!src) return;
-  const newWord = {list_id: src.type==='list'?src.id:null, group_id: src.type==='group'?src.id:null, ru:'', en:'', ipa:'', note:'', status:'new', due_date:Date.now()};
-  try {
-    const res = await api('/words', {method:'POST', body:newWord}); cards.push(blank(res.word));
-    renderEditor(); setTimeout(()=>{ const inputs = document.querySelectorAll('.word-row input'); if(inputs.length) inputs[inputs.length-1].focus(); },100);
-  } catch(e){ toast('Ошибка: '+e.message); }
-};
-$('btnExport').onclick = () => {
-  const words = cards.filter(c => src.type==='list' ? c.list_id===src.id : c.group_id===src.id);
-  const text = words.map(c=>`${c.ru} | ${c.en} ${c.ipa?c.ipa:''} | ${c.note||''}`).join('\n');
-  const blob = new Blob([text], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'copure_export.txt'; a.click();
-};
-$('btnImport').onclick = async () => {
-  const text = prompt('Вставьте слова (русский | english | заметка):'); if(!text || !src) return;
-  const lines = text.split('\n'); let count = 0;
-  for(let line of lines){
-    if(!line.trim()) continue;
-    let parts = line.split('|').map(s=>s.trim()); if(parts.length < 2) parts = line.split('\t').map(s=>s.trim());
-    if(parts.length >= 2){
-      let ru = parts[0], en = parts[1], note = parts[2] || ''; let ipa = '';
-      const match = en.match(/(\[.*?\]|\/.*?\/)$/); if(match){ ipa = match[0]; en = en.replace(ipa,'').trim(); }
-      const body = {list_id: src.type==='list'?src.id:null, group_id: src.type==='group'?src.id:null, ru, en, ipa, note, status:'new', due_date:Date.now()};
-      try { const res = await api('/words', {method:'POST', body}); cards.push(blank(res.word)); count++; } catch(e){}
+async function flush(c){
+  if(c._busy){c._again=true;return}
+  if(c.id==null||!c._sdirty)return;
+  c._busy=true;c._sdirty=false;c._t=null;
+  try{
+    await api('/words',{method:'PUT',body:{id:c.id,...srsBody(c)}});
+    setStatus('ok');scheduleBackup();c._fails=0;
+  }catch(e){
+    if(e instanceof ApiError&&e.status===401){
+      /* onUnauthorized уже показал экран входа */
+    }else if(e instanceof ApiError&&e.status>=400&&e.status<500&&e.status!==429){
+      setStatus('bad',e.message);toast(e.message,6000); // сервер отказал — повтор не поможет
+    }else{
+      c._sdirty=true;
+      if(e instanceof ApiError){
+        const why=e.detail||e.message;
+        c._fails=(c._fails||0)+1;setStatus('bad',why);console.error('Worker error',e.status,why);
+        if(c._fails>=3)toast('Сервер вернул ошибку: '+why,7000);else c._t=setTimeout(()=>flush(c),5000);
+      }else{setStatus('err');c._t=setTimeout(()=>flush(c),5000)}
     }
   }
-  toast(`Добавлено: ${count}`); renderEditor();
-};
-$('editorBody').onscroll = (e) => { $('scrollTopBtn').classList.toggle('show', e.target.scrollTop > 200); };
-$('scrollTopBtn').onclick = () => $('editorBody').scrollTo({top:0, behavior:'smooth'});
-
-function renderEditor(){
-  const L = $('editorList'), A = $('editorArchive');
-  L.style.display = isArchiveView ? 'none' : 'flex'; A.style.display = isArchiveView ? 'flex' : 'none';
-  L.innerHTML=''; A.innerHTML='';
-  const q = $('editorSearch').value.toLowerCase();
-  const currentWords = cards.filter(c => (src.type==='list' ? c.list_id===src.id : c.group_id===src.id) && c.ru.toLowerCase().includes(q));
-  const buildRow = (c, isArch) => {
-    const r = mk('div','word-row');
-    r.innerHTML = `
-      <div class="word-inputs">
-        <input class="en" value="${c.en||''}" placeholder="English">
-        <input value="${c.ru||''}" placeholder="Русский">
-        <input value="${c.ipa||''}" placeholder="[транскрипция]">
-        <textarea rows="1" placeholder="Заметка">${c.note||''}</textarea>
-      </div>
-      <div class="word-actions">
-        ${isArch ? `<button class="icon-btn" title="Вернуть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>` : `<button class="icon-btn" title="В архив"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></button>`}
-        <button class="icon-btn" title="Удалить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-      </div>
-    `;
-    const inputs = r.querySelectorAll('input, textarea');
-    inputs.forEach(inp => inp.onblur = async () => {
-      const body = {id:c.id, en:inputs[0].value, ru:inputs[1].value, ipa:inputs[2].value, note:inputs[3].value};
-      Object.assign(c, body); await api('/words', {method:'PUT', body});
-    });
-    r.querySelector('.icon-btn[title="Удалить"]').onclick = async () => {
-      if(!confirm('Удалить слово?')) return; await api('/words?id='+c.id, {method:'DELETE'}); cards = cards.filter(x=>x.id!==c.id); renderEditor();
-    };
-    r.querySelector('.icon-btn[title="В архив"], .icon-btn[title="Вернуть"]').onclick = async () => {
-      const newStat = isArch ? 'new' : 'archive'; await api('/words', {method:'PUT', body:{id:c.id, status:newStat, due_date:isArch?Date.now():c.due_date}}); c.status = newStat; renderEditor();
-    };
-    return r;
-  };
-  const active = currentWords.filter(c=>c.status!=='archive'), arch = currentWords.filter(c=>c.status==='archive');
-  if(!active.length && !isArchiveView) L.innerHTML = '<div style="opacity:.5; text-align:center; padding:40px;">Нет слов</div>';
-  active.forEach(c => L.appendChild(buildRow(c, false)));
-  if(!arch.length && isArchiveView) A.innerHTML = '<div style="opacity:.5; text-align:center; padding:40px;">Архив пуст</div>';
-  arch.forEach(c => A.appendChild(buildRow(c, true)));
+  c._busy=false;
+  if(c._again){c._again=false;flush(c)}
 }
 
-// --- АВТОРИЗАЦИЯ ---
-function showAuth(msg){ document.body.className='auth'; $('authErr').textContent = msg||''; }
-$('mLogin').onclick = () => { authMode='login'; $('mLogin').setAttribute('aria-pressed','true'); $('mReg').setAttribute('aria-pressed','false'); $('authTitle').textContent='Hi, love'; };
-$('mReg').onclick = () => { authMode='reg'; $('mReg').setAttribute('aria-pressed','true'); $('mLogin').setAttribute('aria-pressed','false'); $('authTitle').textContent='Nice to meet you'; };
-$('authForm').onsubmit = async (e) => {
-  e.preventDefault(); const u = $('aUser').value.trim(), p = $('aPass').value; $('authBtn').disabled = true;
-  try {
-    const r = await api(authMode==='login'?'/login':'/register', {method:'POST', body:{username:u, password:p}, public:true});
-    setToken(r.token); document.body.className='loading'; await loadData(); document.body.className='';
-  } catch(e){ $('authErr').textContent = e.message; }
-  $('authBtn').disabled = false;
-};
-$('logout').onclick = () => { if(confirm('Выйти?')){ setToken(null); location.reload(); } };
+/* ===== Загрузка с сервера: GET /data ===== */
+async function poll(first){
+  const data=await api('/data');
+  DATA.lists=data.lists||[];DATA.groups=data.groups||[];
+  const rows=(data.words||[]).map((w,i)=>fromWord(w,i));
+  const local={};cards.forEach(c=>{if(c.id!=null)local[c.id]=c});
+  const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._sdirty||l._t))?l:r});
+  setStatus('ok');
+  const srcChanged=ensureSrc();
+  const sig=JSON.stringify([DATA,next.map(c=>[c.id,c.list_id,c.group_id,c.ru,c.en,c.ipa,c.note,c.pos,c.interval,c.repetitions,c.ease_factor,c.due_date,c.status])]);
+  if(sig===lastSig&&!first)return;
+  lastSig=sig;cards=next;scheduleBackup();
+  renderSrcBar();renderHub();
+  if(first||srcChanged||(curId==null&&!revealed))rebuild();
+  else renderQuiz();
+}
+async function safePoll(){if(readOnly)return;try{await poll(false);if(curId==null&&!revealed&&cards.some(isDue)&&!$('quiz').hidden)rebuild()}catch(e){if(!(e&&e.status===401))setStatus('err')}}
 
-// --- ТЕМА И СТАРТ ---
-$('theme').onclick = () => {
-  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
-  document.documentElement.setAttribute('data-theme', isDark?'light':'dark'); localStorage.setItem('cumshot-theme', isDark?'light':'dark');
+/* ===== Квиз ===== */
+const byId=id=>cards.find(c=>c.id===id);
+const inSrc=c=>!!src&&(src.type==='list'?c.list_id===src.id:c.group_id===src.id);
+const dueBase=c=>c.id!=null&&c.status!=='archive'&&(c.due_date||0)<=Date.now()&&((c.ru||'')+(c.en||'')).trim();
+const isDue=c=>dueBase(c)&&inSrc(c); // в квиз попадают только слова выбранного списка/группы
+function rebuild(shuffle){
+  let ids=cards.filter(isDue).sort((a,b)=>(a.due_date-b.due_date)||(a.pos-b.pos)).map(c=>c.id);
+  if(shuffle)for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
+  sessionTotal=ids.length;
+  revealed=false;$('card').classList.remove('open');
+  curId=ids.length?ids.shift():null;queue=ids;
+  renderQuiz();
+}
+function advance(){
+  // пропускаем карточки, которые за это время удалили или отправили в архив
+  curId=null;
+  while(queue.length){const id=queue.shift();const c=byId(id);if(c&&c.status!=='archive'){curId=id;break}}
+  revealed=false;c_clearPre();
+  renderQuiz();
+}
+function c_clearPre(){cards.forEach(c=>{delete c._pre;delete c._pick})}
+function renderQuiz(){
+  let c=curId!=null?byId(curId):null;
+  if(curId!=null&&!c&&!revealed){advance();return}
+  const total=Math.max(sessionTotal,1);
+  const remaining=queue.length+(curId!=null?1:0);
+  const done=curId==null;if(done)doneText();
+  $('stage').hidden=done;$('done').hidden=!done;
+  $('left').textContent=done?'':'Осталось: '+remaining;
+  $('bar').style.width=done?'100%':(Math.max(0,sessionTotal-remaining)/total*100)+'%';
+  if(done||!c)return;
+  // подсветка выбранной оценки (можно исправить, пока карточка не перелистнута)
+  const pick=revealed?c._pick:null;
+  document.querySelectorAll('.rate').forEach(b=>{
+    b.classList.toggle('picked',!!pick&&b.dataset.r===pick);
+    b.classList.toggle('dim',!!pick&&b.dataset.r!==pick);
+  });
+  const names={again:'Again',hard:'Hard',good:'Good',easy:'Easy',archive:'Archive'};
+  $('left').textContent='Осталось: '+remaining+(pick?(' · выбрано '+names[pick]+' (можно исправить)'):'');
+  const ruFirst=lang==='ru';
+  $('front').className='face '+(ruFirst?'light':'dark');
+  $('back').className='face back '+(ruFirst?'dark':'light');
+  $('frontTag').textContent=ruFirst?'RU':'EN';
+  $('backTag').textContent=ruFirst?'EN':'RU';
+  $('frontText').textContent=(ruFirst?c.ru:c.en)||'—';
+  $('frontIpa').textContent=ruFirst?'':(c.ipa||'');
+  $('backText').textContent=(ruFirst?c.en:c.ru)||'—';
+  $('backIpa').textContent=ruFirst?(c.ipa||''):'';
+  const n=$('noteText');n.hidden=!c.note;n.textContent=c.note||'';
+  // подписи «через сколько вернётся» считаем от состояния до оценки
+  const base=c._pre?{...c,...c._pre}:c;
+  ['again','hard','good','easy'].forEach(r=>{
+    const t=applyAnkiSM2({...base},r,Date.now());
+    $('sub-'+r).textContent=fmtIn(t.due_date-Date.now());
+  });
+}
+function rate(r){
+  if(advancing)return;
+  const c=curId!=null?byId(curId):null;
+  if(!c)return;
+  if(!c._pre)c._pre={status:c.status,interval:c.interval,repetitions:c.repetitions,ease_factor:c.ease_factor,due_date:c.due_date};
+  else Object.assign(c,c._pre); // повторная оценка: сначала откатываем предыдущую
+  queue=queue.filter(id=>id!==c.id);
+  applyAnkiSM2(c,r,Date.now());
+  queueSave(c,0,true); // → PUT /words с новыми interval, repetitions, ease_factor, due_date, status
+  if(r!=='archive'&&c.status!=='archive'&&c.due_date-Date.now()<=LEARN_AHEAD)queue.push(c.id);
+  c._pick=r;
+  revealed=true;$('card').classList.add('open');
+  const pb=document.querySelector('.rate[data-r="'+r+'"]');
+  if(pb){pb.classList.remove('pop');void pb.offsetWidth;pb.classList.add('pop')}
+  renderQuiz();
+  if(r==='archive')toast('Слово отправлено в архив');
+  renderHub();
+}
+function next(){
+  if(!revealed)return;
+  $('card').classList.remove('open');
+  advancing=true;
+  setTimeout(()=>{advancing=false;advance()},250);
+  revealed=false;
+}
+document.querySelectorAll('.rate').forEach(b=>b.onclick=e=>{rate(b.dataset.r);b.blur()});
+$('card').onclick=()=>{if(revealed)next()};
+$('card').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&revealed){e.preventDefault();next()}};
+function setLang(l){
+  lang=l;try{localStorage.setItem(LANG_KEY,l)}catch(e){}
+  $('langRu').setAttribute('aria-pressed',l==='ru');$('langEn').setAttribute('aria-pressed',l==='en');
+  renderQuiz();
+}
+$('langRu').onclick=()=>setLang('ru');$('langEn').onclick=()=>setLang('en');
+$('shuffle').onclick=()=>{
+  if(revealed){toast('Сначала перейди к следующей карточке');return}
+  rebuild(true);
 };
-(async function init(){
-  try{ const l = localStorage.getItem(LANG_KEY); if(l==='en') lang='en'; }catch(e){}
-  if(lang==='en'){ $('langEn').setAttribute('aria-pressed','true'); $('langRu').setAttribute('aria-pressed','false'); }
-  if(!getToken()) { showAuth(); return; }
-  try { await loadData(); document.body.className = ''; } 
-  catch(e) { if(e.status === 401) showAuth('Сессия истекла'); else document.body.className = 'offline'; }
-})();
+$('restart').onclick=()=>{rebuild(false)};
+document.addEventListener('keydown',e=>{
+  if($('quiz').hidden||/INPUT|TEXTAREA|BUTTON/.test(document.activeElement.tagName))return;
+  if(['1','2','3','4'].includes(e.key))rate(['again','hard','good','easy'][+e.key-1]);
+  else if(revealed&&(e.key===' '||e.key==='Enter'||e.key==='ArrowRight')){e.preventDefault();next()}
+});
+
+/* ===== Хаб: плитки списков и групп ===== */
+const plural=(n,f)=>{const a=Math.abs(n)%100,b=a%10;return f[a>10&&a<20?2:b>1&&b<5?1:b===1?0:2]};
+const nWords=n=>n+' '+plural(n,['слово','слова','слов']);
+const nMembers=n=>n+' '+plural(n,['участник','участника','участников']);
+const ROLE_LIST={owner:'Личный',editor:'Доступ: редактор',viewer:'Только чтение'};
+const ROLE_GROUP={admin:'Админ',member:'Участник'};
+function mk(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function clearBackup(){idbSet([]);idbSet(null,'meta')}
+function stats(){ // слов и «к повторению» на каждый список/группу
+  const st={};
+  cards.forEach(c=>{
+    const k=c.list_id?'l:'+c.list_id:c.group_id?'g:'+c.group_id:null;if(!k)return;
+    const o=st[k]||(st[k]={total:0,due:0});o.total++;if(dueBase(c))o.due++;
+  });
+  return st;
+}
+function tile(type,item,s,chip,meta,leave){
+  const t=mk('div','tile');t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',item.name);
+  t.append(mk('span','chip',chip),mk('span','go','→'),mk('h3','tile-name',item.name),mk('div','meta',meta));
+  const foot=mk('div','tile-foot');
+  foot.append(s.total===0?mk('span','due zero','Пока пусто'):s.due===0?mk('span','due zero','На сегодня всё'):mk('span','due',s.due+' к повторению'));
+  if(leave){
+    const b=mk('button','leave','Выйти');b.type='button';
+    b.onclick=e=>{e.stopPropagation();toast('Выход из группы подключим следующим шагом')}; // пока без логики
+    foot.append(b);
+  }
+  t.append(foot);
+  const open=()=>openSource(type,item.id);
+  t.onclick=open;
+  t.onkeydown=e=>{if(e.target===t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open()}};
+  return t;
+}
+function emptyBox(title,text){const e=mk('div','empty');e.append(mk('b',null,title),mk('span',null,text));return e}
+function renderHub(){
+  const st=stats(),GL=$('gridLists'),GG=$('gridGroups');
+  GL.innerHTML='';GG.innerHTML='';
+  if(!DATA.lists.length)GL.append(emptyBox('Пока нет списков','Нажми «+ Создать список», чтобы начать.'));
+  DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,ROLE_LIST[l.role]||'Список',nWords(s.total)))});
+  if(!DATA.groups.length)GG.append(emptyBox('Вы пока не в группах','Подключитесь по коду приглашения от друзей.'));
+  DATA.groups.forEach(g=>{
+    const s=st['g:'+g.id]||{total:0,due:0},n=Number(g.members_count)||0;
+    GG.append(tile('group',g,s,ROLE_GROUP[g.role]||'Группа',nMembers(n)+' · '+nWords(s.total),true));
+  });
+}
+$('newList').onclick=()=>toast('Создание списков подключим следующим шагом');   // пока без логики
+$('joinGroup').onclick=()=>toast('Подключение по коду подключим следующим шагом'); // пока без логики
+
+/* ===== Источник слов для квиза ===== */
+const itemsOf=k=>k==='list'?DATA.lists:DATA.groups;
+const validSrc=x=>!!x&&itemsOf(x.type).some(i=>i.id===x.id);
+function ensureSrc(){ // true, если источник пришлось сменить
+  if(validSrc(src))return false;
+  let x=null;try{x=JSON.parse(localStorage.getItem(SRC_KEY))}catch(e){}
+  if(!validSrc(x))x=DATA.lists[0]?{type:'list',id:DATA.lists[0].id}:DATA.groups[0]?{type:'group',id:DATA.groups[0].id}:null;
+  const changed=!!(src||x);src=x;if(x){kind=x.type;mem[x.type]=x.id}
+  return changed;
+}
+function renderSrcBar(){
+  if(src)kind=src.type;
+  $('kList').setAttribute('aria-pressed',kind==='list');$('kGroup').setAttribute('aria-pressed',kind==='group');
+  const sel=$('srcSel'),items=itemsOf(kind);sel.innerHTML='';
+  if(!items.length){sel.add(new Option(kind==='list'?'Списков пока нет':'Групп пока нет',''));sel.disabled=true;return}
+  sel.disabled=false;
+  items.forEach(i=>sel.add(new Option(i.name,i.id)));
+  sel.value=src&&src.type===kind?src.id:items[0].id;
+}
+function setSource(type,id){
+  src={type,id};kind=type;mem[type]=id;
+  try{localStorage.setItem(SRC_KEY,JSON.stringify(src))}catch(e){}
+  renderSrcBar();rebuild();
+}
+function openSource(type,id){setSource(type,id);tab('quiz')}
+function switchKind(k){
+  const items=itemsOf(k);
+  if(items.length)setSource(k,items.some(i=>i.id===mem[k])?mem[k]:items[0].id);
+  else{kind=k;src=null;renderSrcBar();rebuild()}
+}
+$('kList').onclick=()=>switchKind('list');
+$('kGroup').onclick=()=>switchKind('group');
+$('srcSel').onchange=e=>{if(e.target.value)setSource(kind,e.target.value)};
+function doneText(){
+  let t='На сегодня всё!',p='Новые карточки появятся, когда подойдёт их срок.';
+  if(!src){t='Выбери, что учить';p='Открой список или группу — слова появятся здесь.'}
+  else if(!cards.some(inSrc)){t='Здесь пока пусто';p='В этом наборе ещё нет слов.'}
+  $('doneT').textContent=t;$('doneP').textContent=p;
+}
+
+/* ===== Вкладки и логотип ===== */
+function tab(n){
+  ['lists','groups','quiz'].forEach(t=>{$(t).hidden=t!==n;$('tab-'+t).setAttribute('aria-selected',t===n)});
+  if(n==='quiz'){if(curId==null&&!revealed)rebuild();else renderQuiz()}
+  else renderHub();
+  window.scrollTo(0,0);
+}
+['lists','groups','quiz'].forEach(t=>$('tab-'+t).onclick=()=>tab(t));
+$('logo').onclick=()=>{
+  const l=$('logo');l.classList.add('flip');
+  clearTimeout(l._t);l._t=setTimeout(()=>l.classList.remove('flip'),2500);
+  if(!getToken()||document.body.className==='auth')return;
+  if($('lists').hidden)tab('lists');
+};
+
+/* ===== Тема ===== */
+function applyTheme(t,save){
+  document.documentElement.setAttribute('data-theme',t);
+  const m=$('themeColor');if(m)m.setAttribute('content',t==='dark'?'#131312':'#f7f7f2');
+  if(save){try{localStorage.setItem('cumshot-theme',t)}catch(e){}}
+}
+$('theme').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark',true);
+applyTheme(document.documentElement.getAttribute('data-theme')||'light',false);
+try{
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
+    let saved=null;try{saved=localStorage.getItem('cumshot-theme')}catch(x){}
+    if(!saved)applyTheme(e.matches?'dark':'light',false);
+  });
+}catch(e){}
+
+/* ===== Вход и регистрация ===== */
+let authMode='login';
+function setAuthMode(m){
+  authMode=m;
+  $('mLogin').setAttribute('aria-pressed',m==='login');$('mReg').setAttribute('aria-pressed',m==='reg');
+  $('authTitle').textContent=m==='login'?'Hi, love':'Nice to meet you';
+  $('authSub').textContent=m==='login'?'Войди, чтобы открыть карточки':'Придумай логин и пароль (от 6 символов)';
+  $('authBtn').textContent=m==='login'?'Войти':'Создать аккаунт';
+  $('aPass').setAttribute('autocomplete',m==='login'?'current-password':'new-password');
+  $('authErr').textContent='';
+}
+$('mLogin').onclick=()=>setAuthMode('login');
+$('mReg').onclick=()=>setAuthMode('reg');
+
+function resetState(){
+  cards.forEach(c=>{clearTimeout(c._t);c._deleted=true}); // чтобы отложенные сохранения не ушли без токена
+  cards=[];curId=null;queue=[];revealed=false;lastSig='';sessionTotal=0;
+  clearTimeout(bkTimer);
+  DATA={lists:[],groups:[]};src=null;
+}
+function showAuth(msg){
+  clearInterval(pollTimer);clearInterval(retryTimer);readOnly=false;
+  document.body.className='auth';
+  setAuthMode('login');
+  $('authErr').textContent=msg||'';
+  $('aPass').value='';
+  try{if(matchMedia('(hover:hover)').matches)setTimeout(()=>$('aUser').focus(),50)}catch(e){}
+}
+function onUnauthorized(){
+  if(document.body.className==='auth')return;
+  setToken(null);resetState();clearBackup();
+  showAuth('Сессия закончилась — войди заново');
+}
+$('authForm').onsubmit=async e=>{
+  e.preventDefault();
+  const username=$('aUser').value.trim(),password=$('aPass').value;
+  if(!username||!password){$('authErr').textContent='Введи логин и пароль';return}
+  $('authBtn').disabled=true;$('authErr').textContent='';
+  try{
+    const r=await api(authMode==='login'?'/login':'/register',{method:'POST',body:{username,password},public:true});
+    setToken(r.token);
+    resetState();
+    $('aPass').value='';
+    start(); // сразу делаем GET /data
+  }catch(err){
+    $('authErr').textContent=err instanceof ApiError?err.message:'Нет связи с сервером. Проверь интернет и попробуй ещё раз';
+  }
+  $('authBtn').disabled=false;
+};
+$('logout').onclick=()=>{
+  if(!confirm('Выйти из аккаунта?'))return;
+  setToken(null);resetState();clearBackup();
+  showAuth();
+};
+
+/* ===== Старт ===== */
+function refreshViews(){renderSrcBar();renderHub();renderQuiz()}
+async function start(silent){
+  if(!getToken()){showAuth();return}   // нет токена — форма входа
+  if(!silent)document.body.className='loading';
+  const t0=Date.now();
+  const hold=async()=>{if(silent)return;const w=1500-(Date.now()-t0);if(w>0)await new Promise(r=>setTimeout(r,w))};
+  try{
+    await poll(true);                  // GET /data
+    await hold();
+    if(!getToken())return;             // за это время сессия сбросилась
+    readOnly=false;clearInterval(retryTimer);
+    document.body.className='';
+    clearInterval(pollTimer);pollTimer=setInterval(safePoll,15000);
+    refreshViews();
+  }catch(e){
+    if(e&&e.status===401)return;       // onUnauthorized уже показал форму входа
+    if(silent)return; // тихая попытка не удалась — остаёмся в режиме чтения
+    const bk=await idbGet(),meta=await idbGet('meta');
+    await hold();
+    if(!getToken())return;
+    if((bk&&bk.length)||(meta&&((meta.lists||[]).length||(meta.groups||[]).length))){
+      readOnly=true;clearInterval(pollTimer);
+      cards=(bk||[]).map(blank);if(meta){DATA.lists=meta.lists||[];DATA.groups=meta.groups||[]}ensureSrc();lastSig='';
+      document.body.className='readonly';
+      rebuild();refreshViews();
+      clearInterval(retryTimer);retryTimer=setInterval(()=>start(true),15000);
+    }else{
+      document.body.className='offline';
+    }
+  }
+}
+$('retry').onclick=()=>start();
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)return;
+  const b=document.body.className;
+  if(b==='')safePoll();else if(b==='readonly')start(true);
+});
+window.addEventListener('online',()=>{
+  const b=document.body.className;
+  if(b==='offline')start();else if(b==='readonly')start(true);
+});
+try{const s=localStorage.getItem(LANG_KEY);if(s==='en'||s==='ru')lang=s}catch(e){}
+$('langRu').setAttribute('aria-pressed',lang==='ru');$('langEn').setAttribute('aria-pressed',lang==='en');
+start();
+
+/* офлайн-режим: Service Worker кэширует саму страницу */
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+}
 </script>
 </body>
 </html>
