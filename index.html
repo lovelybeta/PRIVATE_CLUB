@@ -737,7 +737,7 @@ async function poll(first,bg){
   lastSig=sig;cards=next;scheduleBackup();
   renderSrcBar();renderHub();
   if(first||srcChanged||(curId==null&&!revealed))rebuild();
-  else renderQuiz();
+  else{syncQueue();renderQuiz()}
 }
 async function safePoll(){if(readOnly)return;try{await poll(false,true);if(curId==null&&!revealed&&cards.some(isDue)&&!$('quiz').hidden)rebuild()}catch(e){if(!(e&&e.status===401))setStatus('err')}}
 
@@ -762,6 +762,17 @@ function advance(){
   renderQuiz();
 }
 function c_clearPre(){cards.forEach(c=>{delete c._pre;delete c._pick})}
+function syncQueue(){ // подтягиваем изменения во время сеанса: новые слова, удалённые и перенесённые в архив
+  const live=id=>{const c=byId(id);return !!c&&inSrc(c)};
+  if(curId!=null&&!live(curId)){curId=null;revealed=false;$('card').classList.remove('open')}
+  sessionIds=new Set([...sessionIds].filter(live));
+  doneIds=new Set([...doneIds].filter(id=>sessionIds.has(id)));
+  sessionIds.forEach(id=>{if(byId(id).status==='archive')doneIds.add(id)}); // убрано в архив в другом месте — считаем пройденным
+  queue=queue.filter(id=>sessionIds.has(id)&&byId(id).status!=='archive'&&id!==curId);
+  const have=new Set([...queue,...doneIds]);if(curId!=null)have.add(curId);
+  cards.filter(isDue).sort((a,b)=>(a.due_date-b.due_date)||(a.pos-b.pos)).forEach(c=>{if(!have.has(c.id)){queue.push(c.id);sessionIds.add(c.id)}});
+  if(curId==null&&!revealed&&queue.length){curId=queue.shift();c_clearPre()}
+}
 function setTxt(id,t){const e=$(id);if(e.textContent===t)return e;const n=e.cloneNode(false);n.textContent=t;e.replaceWith(n);return n} // новый узел — гарантированная перерисовка
 function renderQuiz(){
   let c=curId!=null?byId(curId):null;
@@ -780,7 +791,7 @@ function renderQuiz(){
     b.classList.toggle('dim',!!pick&&b.dataset.r!==pick);
   });
   const names={again:'Again',hard:'Hard',good:'Good',easy:'Easy',archive:'Archive'};
-  $('left').textContent='Пройдено: '+passed+' из '+sessionIds.size+(pick?(' · выбрано '+names[pick]+' (можно исправить)'):'');
+  $('left').textContent='Пройдено: '+passed+' из '+sessionIds.size+(pick?(' · выбрано '+names[pick]+(queue.includes(c.id)?' · вернётся ещё раз':'')+' (можно исправить)'):'');
   const ruFirst=lang==='ru';
   $('front').className='face '+(ruFirst?'light':'dark');
   $('back').className='face back '+(ruFirst?'dark':'light');
@@ -1131,7 +1142,7 @@ function tab(n){
   scope=null;addOpen=false; // при смене вкладки открытый модуль закрывается
   Object.keys(TABS).forEach(t=>{$(TABS[t]).hidden=t!==n;$('tab-'+t).setAttribute('aria-selected',t===n)});
   $('edSearch').value='';$('scopeSearch').value=''; // поиск очищается при смене вкладки
-  if(n==='quiz'){if(curId==null&&!revealed)rebuild();else renderQuiz()}
+  if(n==='quiz'){if(curId==null&&!revealed)rebuild();else{syncQueue();renderQuiz()}}
   else renderHub();
   window.scrollTo(0,0);
 }
