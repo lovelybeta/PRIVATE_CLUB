@@ -746,8 +746,9 @@ async function flush(c){
 async function poll(first,bg){
   if(bg){const ae=document.activeElement;if(ae&&ae.tagName==='TEXTAREA'&&ae.closest('#scopeList'))return} // не мешаем, пока печатаешь в карточке
   const data=await api('/data');
-  DATA.lists=data.lists||[];DATA.groups=data.groups||[];
-  const rows=(data.words||[]).map((w,i)=>fromWord(w,i));
+  DATA.lists=data.lists||[];
+  DATA.groups=(data.groups||[]).filter(g=>g.id!=='group-catcha'&&g.name!=='Catcha');
+  const rows=(data.words||[]).filter(w=>w.group_id!=='group-catcha').map((w,i)=>fromWord(w,i));
   const local={};cards.forEach(c=>{if(c.id!=null)local[c.id]=c});
   const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._sdirty||l._tdirty||l._t))?l:r});
   setStatus('ok');
