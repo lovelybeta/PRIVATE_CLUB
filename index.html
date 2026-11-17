@@ -396,6 +396,9 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
   .wc-icons .icon-btn{opacity:1;background:rgba(127,127,127,.2);border-color:rgba(127,127,127,.35);color:var(--white)}
   .qa-side.add{padding:0 18px 18px}
 }
+#doneAdd{margin-top:26px}
+#doneAdd[hidden]{display:none}
+#quiz.blank .srcbar,#quiz.blank .seg,#quiz.blank .bar,#quiz.blank .left{display:none}
 </style>
 </head>
 <body class="loading">
@@ -495,6 +498,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
     <div class="done" id="done" hidden>
       <h2 id="doneT">На сегодня всё!</h2>
       <p id="doneP">Новые карточки появятся, когда подойдёт их срок.</p>
+      <button class="pill solid" id="doneAdd" type="button" hidden>Создать свою первую карточку</button>
     </div>
   </section>
 
@@ -577,7 +581,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 <script>
 const WORKER_URL = 'https://test.lizabeta.workers.dev';
 const SRC_KEY = 'copure-src';      // последний выбранный список/группа
-const TOKEN_KEY = 'catcha-token';  // JWT в localStorage
+const TOKEN_KEY = 'copure-token';  // JWT в localStorage
 const LANG_KEY = 'cumshot-lang';
 
 /* ===== Алгоритм интервального повторения (Anki, SM-2 v2) ===== */
@@ -643,7 +647,7 @@ function fmtIn(ms){
 }
 
 /* ===== Резервная копия слов в IndexedDB (используется ТОЛЬКО когда нет связи с сервером) ===== */
-function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('catcha-backup',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('copure-backup',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function idbGet(k='cards'){
   try{const db=await idbOpen();return await new Promise((res,rej)=>{const t=db.transaction('kv').objectStore('kv').get(k);t.onsuccess=()=>res(t.result||null);t.onerror=()=>rej(t.error)})}
   catch(e){return null}
@@ -747,8 +751,8 @@ async function poll(first,bg){
   if(bg){const ae=document.activeElement;if(ae&&ae.tagName==='TEXTAREA'&&ae.closest('#scopeList'))return} // не мешаем, пока печатаешь в карточке
   const data=await api('/data');
   DATA.lists=data.lists||[];
-  DATA.groups=(data.groups||[]).filter(g=>g.id!=='group-catcha'&&g.name!=='Catcha');
-  const rows=(data.words||[]).filter(w=>w.group_id!=='group-catcha').map((w,i)=>fromWord(w,i));
+  DATA.groups=data.groups||[];
+  const rows=(data.words||[]).map((w,i)=>fromWord(w,i));
   const local={};cards.forEach(c=>{if(c.id!=null)local[c.id]=c});
   const next=rows.map(r=>{const l=local[r.id];return(l&&(l._busy||l._sdirty||l._tdirty||l._t))?l:r});
   setStatus('ok');
@@ -1149,11 +1153,14 @@ function setSource(type,id){
   renderSrcBar();rebuild();
 }
 function openSource(type,id){setSource(type,id);tab('quiz')}
+$('doneAdd').onclick=()=>{tab('cards');addOpen=true;renderCards();setTimeout(()=>$('qaRu').focus(),0)}; // «Создать свою первую карточку»
 function doneText(){
   let t='На сегодня всё!',p='Новые карточки появятся, когда подойдёт их срок.';
   if(!src){t='Выбери, что учить';p='Выбери модуль или группу сверху.'}
   else if(!cards.some(inSrc)){t='Здесь пока пусто:';p='добавь свою первую карточку'}
-  $('doneT').textContent=t;$('doneP').textContent=p;
+  const blank=!cards.some(c=>c.id!=null); // у нового пользователя ещё нет ни одной карточки
+  if(blank){t='Hi, lovely!';p='Чтобы начать изучение, добавь первую карточку'}
+  $('doneT').textContent=t;$('doneP').textContent=p;$('doneAdd').hidden=!blank;$('quiz').classList.toggle('blank',blank);
 }
 
 /* ===== Слова: редактор (модалка) и архив ===== */
@@ -1303,6 +1310,7 @@ async function start(silent){
     document.body.className='';
     clearInterval(pollTimer);pollTimer=setInterval(safePoll,15000);
     refreshViews();
+    if(!silent)tab('quiz'); // после входа или регистрации всегда открывается «Учить»
     if(pendingJoin){const c=pendingJoin;pendingJoin=null;askJoin(c)}
   }catch(e){
     if(e&&e.status===401)return;       // onUnauthorized уже показал форму входа
