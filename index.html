@@ -45,7 +45,7 @@ html,body{height:100%}
 body{background:var(--paper);color:var(--black);font-family:var(--sans);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
-:focus-visible{outline:2px solid var(--wine);outline-offset:3px}
+:focus-visible{outline:2px solid var(--lilac);outline-offset:3px}
 
 header{display:flex;align-items:center;gap:12px;padding:20px clamp(16px,4vw,48px);flex-wrap:wrap}
 .logo{margin-right:auto}
@@ -136,7 +136,7 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 .pill{padding:10px 20px;border-radius:999px;border:1px solid var(--black);font-weight:500;transition:background .2s,color .2s}
 .pill:hover{background:var(--black);color:var(--white)}
 .pill.solid{background:var(--black);color:var(--white)}
-.pill.solid:hover{background:var(--wine);border-color:var(--wine)}
+.pill.solid:hover{background:var(--lilac);border-color:var(--lilac);color:var(--on-lilac)}
 .done{width:100%;max-width:760px;padding:90px 24px;border-radius:24px;background:var(--white);border:1px solid var(--grey);text-align:center}
 .done[hidden]{display:none}
 .done h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6vw,56px)}
@@ -165,7 +165,7 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 .due{padding:4px 11px;border-radius:999px;background:var(--lilac);font-size:12.5px;font-weight:500;white-space:nowrap}
 .due.zero{background:transparent;border:1px solid var(--grey);opacity:.7}
 .leave{padding:6px 14px;border-radius:999px;border:1px solid var(--grey);font-size:13px;font-weight:500;transition:background .2s,color .2s,border-color .2s}
-.leave:hover{background:var(--wine);border-color:var(--wine);color:var(--white)}
+.leave:hover{background:var(--lilac);border-color:var(--lilac);color:var(--on-lilac)}
 .empty{grid-column:1/-1;padding:56px 24px;text-align:center;border:1px dashed var(--grey);border-radius:20px;background:var(--white);opacity:.9}
 .empty b{display:block;font-family:var(--serif);font-weight:400;font-size:30px;margin-bottom:6px}
 .empty span{font-size:14px;opacity:.6}
@@ -227,7 +227,7 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 .ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .icon-btn{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;opacity:.55;transition:opacity .2s,background .2s,color .2s}
 .icon-btn:hover{opacity:1;background:var(--paper)}
-.icon-btn.danger:hover{background:var(--wine);color:var(--white)}
+.icon-btn.danger:hover{background:var(--lilac);color:var(--on-lilac)}
 
 /* --- вкладка «Учить»: плашка выбора источника --- */
 .srcbar{display:flex;justify-content:center;width:100%;max-width:760px}
@@ -237,7 +237,7 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 .srccap{font-size:13px;opacity:.5;white-space:nowrap}
 .srcsel{min-width:0;max-width:320px;height:100%;appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;font-weight:500;cursor:pointer;text-overflow:ellipsis}
 .srcsel:focus-visible{outline:0}
-.srcpill:has(.srcsel:focus-visible){outline:2px solid var(--wine);outline-offset:3px}
+.srcpill:has(.srcsel:focus-visible){outline:2px solid var(--lilac);outline-offset:3px}
 
 /* --- плашка синхронизации --- */
 .sync{display:inline-block;align-self:center;padding:4px 14px;border-radius:999px;border:1px solid var(--grey);font-size:12.5px;opacity:.6}
@@ -334,7 +334,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 .m-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
 .pill.solid.danger{background:var(--wine);border-color:var(--wine);color:var(--white)}
 .pill.solid.danger:hover{opacity:.85}
-@media(max-width:680px){.modal{overflow:visible}.modal form{padding:22px 18px 20px}}
+@media(max-width:680px){dialog.modal{width:100%;max-width:100%;margin:auto 0 0;left:0;right:0;border-radius:24px 24px 0 0;overflow:visible}.modal form{padding:22px 18px calc(20px + env(safe-area-inset-bottom))}}
 
 /* --- логотип: капсом, «beta» по центру --- */
 .logo{width:max-content;justify-self:start;align-self:center;display:inline-flex;align-items:center}
@@ -353,7 +353,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 .qa-cell.e{background:var(--black);color:var(--white)}
 .qa-cell label{font-size:12px;line-height:16px;opacity:.5}
 .qa-cell textarea{display:block;width:100%;margin:0;padding:0;resize:none;border:0;border-radius:0;background:transparent;outline:0;overflow:hidden;color:inherit;-webkit-appearance:none;appearance:none;font-family:var(--serif);font-size:25px;line-height:1.15;min-height:29px}
-.qa-cell textarea::placeholder{opacity:.3}
+.qa-cell textarea::placeholder{color:inherit;opacity:.35}
 .qa-cell textarea.p{font-family:var(--sans);font-size:15px;line-height:1.4;min-height:21px;opacity:.75}
 .qa-cell textarea.note{padding:12px 14px;min-height:46px;border-radius:14px;background:var(--lilac);color:var(--on-lilac);font-family:var(--sans);font-size:14px;line-height:1.45}
 .qa-cell textarea.note::placeholder{color:inherit;opacity:.55}
@@ -363,15 +363,21 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 .wc-icons .icon-btn{opacity:.75;border:1px solid var(--grey)}
 .qa-meta{display:flex;justify-content:space-between;gap:6px 16px;flex-wrap:wrap;padding:0 6px;font-size:13px;opacity:.55}
 .sec-sub{font-size:14px;opacity:.55}
+.qa-side.add{background:var(--black)}
+.qa-side.add .pill{background:var(--white);color:var(--black);border-color:var(--white)}
+.qa-side.add .pill:hover{background:var(--lilac);border-color:var(--lilac);color:var(--on-lilac)}
+.qa-to{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.qa-meta select{appearance:none;-webkit-appearance:none;border:0;border-bottom:1px dotted currentColor;border-radius:0;background:transparent;font:inherit;font-weight:600;color:inherit;padding:0 2px;max-width:60vw;cursor:pointer}
+.qa-meta select[hidden]{display:none}
 #cardsOverview:not([hidden])+.words-block{margin-top:44px}
 #scopeList{display:grid;gap:14px}
 @media(max-width:680px){
   .qa-card{grid-template-columns:1fr}
   .qa-side{flex-direction:row;justify-content:flex-end;padding:0 18px 16px;background:var(--black)}
   .qa-side .mini{width:auto;background:rgba(127,127,127,.2);border-color:rgba(127,127,127,.35);color:var(--white)}
-  .qa-side .mini:hover{background:var(--wine);border-color:var(--wine);color:var(--white)}
+  .qa-side .mini:hover{background:var(--lilac);border-color:var(--lilac);color:var(--on-lilac)}
   .wc-icons .icon-btn{opacity:1;background:rgba(127,127,127,.2);border-color:rgba(127,127,127,.35);color:var(--white)}
-  .qa-side.add{background:var(--paper);padding:14px 18px}
+  .qa-side.add{padding:0 18px 18px}
 }
 </style>
 </head>
@@ -477,7 +483,6 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
   <!-- ============ КАРТОЧКИ ============ -->
   <section id="cardsView" class="hub" hidden>
     <div class="hub-head">
-      <div><h1>Карточки</h1><p class="hub-sub">Добавляй слова в «Основной» или собирай их в свои модули.</p></div>
       <div class="hub-actions"><button class="pill" id="addCard" type="button">+ Добавить карточку</button><button class="pill solid" id="newList" type="button">+ Создать модуль</button></div>
     </div>
     <div class="scope-head" id="scopeHead" hidden>
@@ -485,6 +490,14 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
       <h2 id="scopeName"></h2>
       <button class="pill solid" id="scopeLearn" type="button">Учить</button>
     </div>
+      <form class="qa" id="qaForm" autocomplete="off" novalidate hidden>
+        <div class="qa-card">
+          <div class="qa-cell"><label for="qaRu">Русский</label><textarea id="qaRu" rows="1" placeholder="слово или фраза"></textarea></div>
+          <div class="qa-cell e"><label for="qaEn">English</label><textarea id="qaEn" rows="1" placeholder="перевод"></textarea><textarea class="p" id="qaIpa" rows="1" placeholder="[транскрипция]" aria-label="Транскрипция"></textarea><textarea class="note" id="qaNote" rows="1" placeholder="Заметка / примеры (необязательно)" aria-label="Заметка"></textarea></div>
+          <div class="qa-side add"><button class="pill solid" id="qaBtn" type="submit">Добавить</button></div>
+        </div>
+        <div class="qa-meta"><span class="qa-to"><span id="qaTarget"></span><select id="qaTargetSel" aria-label="Куда добавить"></select></span><span>Enter — добавить · Shift+Enter — новая строка</span></div>
+      </form>
     <div id="cardsOverview">
       <div class="grid" id="gridLists"></div>
       <div class="sec" style="margin-top:44px">
@@ -493,14 +506,6 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
       </div>
     </div>
     <div class="words-block" id="wordsBlock">
-      <form class="qa" id="qaForm" autocomplete="off" novalidate>
-        <div class="qa-card">
-          <div class="qa-cell"><label for="qaRu">Русский</label><textarea id="qaRu" rows="1" placeholder="слово или фраза"></textarea></div>
-          <div class="qa-cell e"><label for="qaEn">English</label><textarea id="qaEn" rows="1" placeholder="перевод"></textarea><textarea class="p" id="qaIpa" rows="1" placeholder="[транскрипция]" aria-label="Транскрипция"></textarea><textarea class="note" id="qaNote" rows="1" placeholder="Заметка / примеры (необязательно)" aria-label="Заметка"></textarea></div>
-          <div class="qa-side add"><button class="pill solid" id="qaBtn" type="submit">Добавить</button></div>
-        </div>
-        <div class="qa-meta"><span id="qaTarget"></span><span>Enter — добавить · Shift+Enter — новая строка</span></div>
-      </form>
       <div id="cardsScope">
         <label class="search"><svg class="ico"><use href="#i-search"/></svg><input id="scopeSearch" type="search" placeholder="Поиск по словам" aria-label="Поиск по словам" autocomplete="off"></label>
         <div id="scopeList"></div>
@@ -639,7 +644,7 @@ function scheduleBackup(){
 
 /* ===== Состояние ===== */
 let readOnly=false, retryTimer=null, bkTimer=null, advancing=false;
-let cards=[], curId=null, queue=[], revealed=false, sessionTotal=0, lastSig='', lang='ru', q='', pollTimer=null;
+let cards=[], curId=null, queue=[], revealed=false, sessionTotal=0, sessionIds=new Set(), doneIds=new Set(), lastSig='', lang='ru', q='', pollTimer=null;
 const $=id=>document.getElementById(id);
 let DATA={lists:[],groups:[]}, src=null, kind='list';const mem={};  // src = {type:'list'|'group', id}
 
@@ -744,7 +749,7 @@ const isDue=c=>dueBase(c)&&inSrc(c); // в квиз попадают тольк�
 function rebuild(shuffle){
   let ids=cards.filter(isDue).sort((a,b)=>(a.due_date-b.due_date)||(a.pos-b.pos)).map(c=>c.id);
   if(shuffle)for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
-  sessionTotal=ids.length;
+  sessionTotal=ids.length;sessionIds=new Set(ids);doneIds=new Set();
   revealed=false;$('card').classList.remove('open');
   curId=ids.length?ids.shift():null;queue=ids;
   renderQuiz();
@@ -752,20 +757,21 @@ function rebuild(shuffle){
 function advance(){
   // пропускаем карточки, которые за это время удалили или отправили в архив
   curId=null;
-  while(queue.length){const id=queue.shift();const c=byId(id);if(c&&c.status!=='archive'){curId=id;break}}
+  while(queue.length){const id=queue.shift();const c=byId(id);if(c&&c.status!=='archive'){curId=id;break}doneIds.add(id)}
   revealed=false;c_clearPre();
   renderQuiz();
 }
 function c_clearPre(){cards.forEach(c=>{delete c._pre;delete c._pick})}
+function setTxt(id,t){const e=$(id);if(e.textContent===t)return e;const n=e.cloneNode(false);n.textContent=t;e.replaceWith(n);return n} // новый узел — гарантированная перерисовка
 function renderQuiz(){
   let c=curId!=null?byId(curId):null;
   if(curId!=null&&!c&&!revealed){advance();return}
-  const total=Math.max(sessionTotal,1);
-  const remaining=queue.length+(curId!=null?1:0);
+  const total=Math.max(sessionIds.size,1);
+  const passed=Math.min(doneIds.size,sessionIds.size); // карточка считается пройденной, когда она ушла из очереди (не вернётся в этом сеансе)
   const done=curId==null;if(done)doneText();
   $('stage').hidden=done;$('done').hidden=!done;
-  $('left').textContent=done?'':'Осталось: '+remaining;
-  $('bar').style.width=done?'100%':(Math.max(0,sessionTotal-remaining)/total*100)+'%';
+  $('left').textContent=done?'':'Пройдено: '+passed+' из '+sessionIds.size;
+  $('bar').style.width=done?'100%':(passed/total*100)+'%';
   if(done||!c)return;
   // подсветка выбранной оценки (можно исправить, пока карточка не перелистнута)
   const pick=revealed?c._pick:null;
@@ -774,17 +780,17 @@ function renderQuiz(){
     b.classList.toggle('dim',!!pick&&b.dataset.r!==pick);
   });
   const names={again:'Again',hard:'Hard',good:'Good',easy:'Easy',archive:'Archive'};
-  $('left').textContent='Осталось: '+remaining+(pick?(' · выбрано '+names[pick]+' (можно исправить)'):'');
+  $('left').textContent='Пройдено: '+passed+' из '+sessionIds.size+(pick?(' · выбрано '+names[pick]+' (можно исправить)'):'');
   const ruFirst=lang==='ru';
   $('front').className='face '+(ruFirst?'light':'dark');
   $('back').className='face back '+(ruFirst?'dark':'light');
   $('frontTag').textContent=ruFirst?'RU':'EN';
   $('backTag').textContent=ruFirst?'EN':'RU';
-  $('frontText').textContent=(ruFirst?c.ru:c.en)||'—';
-  $('frontIpa').textContent=ruFirst?'':(c.ipa||'');
-  $('backText').textContent=(ruFirst?c.en:c.ru)||'—';
-  $('backIpa').textContent=ruFirst?(c.ipa||''):'';
-  const n=$('noteText');n.hidden=!c.note;n.textContent=c.note||'';
+  setTxt('frontText',(ruFirst?c.ru:c.en)||'—');
+  setTxt('frontIpa',ruFirst?'':(c.ipa||''));
+  setTxt('backText',(ruFirst?c.en:c.ru)||'—');
+  setTxt('backIpa',ruFirst?(c.ipa||''):'');
+  const n=setTxt('noteText',c.note||'');n.hidden=!c.note;
   // подписи «через сколько вернётся» считаем от состояния до оценки
   const base=c._pre?{...c,...c._pre}:c;
   ['again','hard','good','easy'].forEach(r=>{
@@ -801,7 +807,8 @@ function rate(r){
   queue=queue.filter(id=>id!==c.id);
   applyAnkiSM2(c,r,Date.now());
   queueSave(c,0,true); // → PUT /words с новыми interval, repetitions, ease_factor, due_date, status
-  if(r!=='archive'&&c.status!=='archive'&&c.due_date-Date.now()<=LEARN_AHEAD)queue.push(c.id);
+  const again=r!=='archive'&&c.status!=='archive'&&c.due_date-Date.now()<=LEARN_AHEAD; // вернётся в этом сеансе
+  if(again){queue.push(c.id);doneIds.delete(c.id)}else doneIds.add(c.id);
   c._pick=r;
   revealed=true;$('card').classList.add('open');
   const pb=document.querySelector('.rate[data-r="'+r+'"]');
@@ -866,6 +873,7 @@ function tile(type,item,s,meta){
   foot.append(dueEl(s));
   if(isL&&own)tools.append(miniBtn('Поделиться',()=>shareList(item)));
   if(!isL&&!isM&&!own)tools.append(miniBtn('Выйти',()=>leaveGroup(item),'leave'));
+  if(isM)tools.append(iconBtn('edit','Переименовать',renameMain));
   if(own&&!isM)tools.append(iconBtn('edit','Переименовать',()=>renameItem(type,item)),iconBtn('trash','Удалить',()=>deleteItem(type,item),'danger'));
   foot.append(tools);t.append(foot);
   const open=()=>openScope(type,item.id);
@@ -875,8 +883,12 @@ function tile(type,item,s,meta){
 }
 function emptyBox(title,text){const e=mk('div','empty');e.append(mk('b',null,title),mk('span',null,text));return e}
 /* ===== Вкладка «Карточки»: обзор групп и экран группы ===== */
+const MAIN_KEY='copure-main-name';
+const mainName=()=>{try{return localStorage.getItem(MAIN_KEY)||'Основной'}catch(e){return 'Основной'}};
+async function renameMain(){const n=await askName('Переименовать модуль','Название',mainName(),'Сохранить');if(n&&n!==mainName()){try{localStorage.setItem(MAIN_KEY,n)}catch(e){}renderHub();renderSrcBar();toast('Переименовано')}}
+let addOpen=false;
 let scope=null; // null — обзор; {type:'main'|'list'|'group', id} — открыта группа карточек
-const scopeItem=()=>scope.type==='list'?DATA.lists.find(x=>x.id===scope.id):scope.type==='group'?DATA.groups.find(x=>x.id===scope.id):{name:'Основной',role:'owner'};
+const scopeItem=()=>scope.type==='list'?DATA.lists.find(x=>x.id===scope.id):scope.type==='group'?DATA.groups.find(x=>x.id===scope.id):{name:mainName(),role:'owner'};
 const inScope=c=>{const s=scope||{type:'main'};return s.type==='main'?!c.list_id&&!c.group_id:s.type==='list'?c.list_id===s.id:c.group_id===s.id}
 function openScope(type,id){scope={type,id};$('scopeSearch').value='';renderHub();window.scrollTo(0,0)}
 const targetOf=c=>c.list_id?{list_id:c.list_id}:c.group_id?{group_id:c.group_id}:{}; // без обоих — «Основной»
@@ -899,13 +911,23 @@ function renderCards(){
   const st=stats(),GL=$('gridLists'),GG=$('gridGroups');
   GL.innerHTML='';GG.innerHTML='';
   const it=scope?scopeItem():null;if(scope&&!it)scope=null;
-  GL.append(tile('main',{id:'main',name:'Основной'},st.m||{total:0,due:0},nWords((st.m||{total:0}).total)));
+  GL.append(tile('main',{id:'main',name:mainName()},st.m||{total:0,due:0},nWords((st.m||{total:0}).total)));
   DATA.lists.forEach(l=>{const s=st['l:'+l.id]||{total:0,due:0};GL.append(tile('list',l,s,nWords(s.total)))});
   if(!DATA.groups.length)GG.append(emptyBox('Вы пока не в группах','Подключитесь по коду приглашения от друзей.'));
   DATA.groups.forEach(g=>{const s=st['g:'+g.id]||{total:0,due:0};GG.append(tile('group',g,s,nMembers(Number(g.members_count)||0)+' · '+nWords(s.total)))});
   const canW=!scope||scope.type!=='list'||it.role==='owner'||it.role==='editor';
   $('cardsOverview').hidden=!!scope;$('scopeHead').hidden=!scope;$('wordsBlock').hidden=!scope;
-  $('qaForm').hidden=!canW;$('qaTarget').textContent='Добавляется в: '+(scope?it.name:'Основной');
+  $('qaForm').hidden=!(scope?canW:addOpen);
+  $('qaTarget').textContent='Добавляется в:'+(scope?' '+it.name:'');
+  const sel=$('qaTargetSel');sel.hidden=!!scope;
+  if(!scope){ // в обзоре можно выбрать, куда добавить (по умолчанию «Основной»)
+    const keep=sel.value||'main';sel.innerHTML='';
+    const opt=(v,l,par)=>{const o=document.createElement('option');o.value=v;o.textContent=l;(par||sel).append(o)};
+    opt('main',mainName());
+    DATA.lists.filter(l=>l.role==='owner'||l.role==='editor').forEach(l=>opt('list:'+l.id,l.name));
+    if(DATA.groups.length){const g=document.createElement('optgroup');g.label='Общие';DATA.groups.forEach(x=>opt('group:'+x.id,x.name,g));sel.append(g)}
+    sel.value=[...sel.options].some(o=>o.value===keep)?keep:'main';
+  }
   if(!scope)return;
   $('scopeName').textContent=it.name;
   if($('cardsView').hidden)return; // слова рисуем только на открытой вкладке
@@ -932,13 +954,16 @@ $('qaForm').onsubmit=async e=>{ // Enter в «русском» переходи�
   if(!ru){$('qaRu').focus();return}
   if(!en){$('qaEn').focus();return}
   const body={ru,en,ipa:$('qaIpa').value.trim()||null,note:$('qaNote').value.trim()||null};
-  if(scope&&scope.type==='list')body.list_id=scope.id;else if(scope&&scope.type==='group')body.group_id=scope.id; // без обоих — «Основной»
+  const tv=scope?(scope.type==='main'?'main':scope.type+':'+scope.id):($('qaTargetSel').value||'main'); // без list_id и group_id — «Основной»
+  const tl=!scope&&$('qaTargetSel').selectedOptions[0]?$('qaTargetSel').selectedOptions[0].textContent:'';
+  if(tv.indexOf('list:')===0)body.list_id=tv.slice(5);else if(tv.indexOf('group:')===0)body.group_id=tv.slice(6);
   $('qaBtn').disabled=true;
   try{
     const r=await api('/words',{method:'POST',body});
     cards.push(fromWord(r.word,cards.length));scheduleBackup();renderHub();
     ['qaRu','qaEn','qaIpa','qaNote'].forEach(k=>{$(k).value='';grow($(k))});
     $('qaRu').focus();
+    if(tl)toast('Добавлено в «'+tl+'»');
   }catch(err){if(!(err&&err.status===401))toast(errText(err),6000)}
   $('qaBtn').disabled=false;
 };
@@ -1027,7 +1052,7 @@ const itemsOf=k=>k==='list'?DATA.lists:DATA.groups;
 const validSrc=x=>!!x&&(x.type==='main'||x.type==='all'||itemsOf(x.type).some(i=>i.id===x.id));
 const srcVal=x=>!x?'':(x.type==='main'||x.type==='all')?x.type:x.type+':'+x.id;
 function srcName(){
-  if(!src)return '—';if(src.type==='all')return 'все вместе';if(src.type==='main')return 'Основной';
+  if(!src)return '—';if(src.type==='all')return 'все вместе';if(src.type==='main')return mainName();
   const i=itemsOf(src.type).find(x=>x.id===src.id);return i?i.name:'—';
 }
 function ensureSrc(){ // true, если источник пришлось сменить
@@ -1038,7 +1063,7 @@ function ensureSrc(){ // true, если источник пришлось сме
 }
 const SDD=makeDD($('srcPill'),$('srcBtn'),$('srcMenu'),v=>{const i=v.indexOf(':');setSource(i<0?v:v.slice(0,i),i<0?v:v.slice(i+1))});
 function renderSrcBar(){
-  const it=[{label:'Основной',value:'main'},...DATA.lists.map(l=>({label:l.name,value:'list:'+l.id}))];
+  const it=[{label:mainName(),value:'main'},...DATA.lists.map(l=>({label:l.name,value:'list:'+l.id}))];
   if(DATA.groups.length)it.push({head:'Общие'},...DATA.groups.map(g=>({label:g.name,value:'group:'+g.id})));
   it.push({sep:1},{label:'Учить все вместе',value:'all'});
   SDD.set(it,srcVal(src)||'all');
@@ -1082,7 +1107,7 @@ function renderArchive(){
   const A=$('archiveList');A.innerHTML='';
   const arch=cards.filter(c=>c.id!=null&&c.status==='archive');
   if(!arch.length){A.append(emptyBox('Архив пуст','Слова, отправленные в архив, появятся здесь.'));return}
-  const nm=c=>c.list_id?(DATA.lists.find(l=>l.id===c.list_id)||{}).name:c.group_id?(DATA.groups.find(g=>g.id===c.group_id)||{}).name:'Основной';
+  const nm=c=>c.list_id?(DATA.lists.find(l=>l.id===c.list_id)||{}).name:c.group_id?(DATA.groups.find(g=>g.id===c.group_id)||{}).name:mainName();
   arch.forEach(c=>A.append(wordRow(c,'Вернуть',()=>setWordStatus(c,'new'),nm(c))));
 }
 function renderHub(){renderCards();renderArchive();if(ED.open)renderEditor()}
@@ -1093,35 +1118,17 @@ $('edSearch').oninput=renderEditor;
 $('edBody').onscroll=e=>$('toTop').classList.toggle('show',e.target.scrollTop>240);
 $('toTop').onclick=()=>$('edBody').scrollTo({top:0,behavior:'smooth'});
 $('edImport').onclick=()=>toast('Импорт подключим следующим шагом'); // пока только визуально
-async function addWords(pref){
-  if(readOnly){toast('Офлайн: изменения недоступны');return}
-  const L=DATA.lists.filter(l=>l.role==='owner'||l.role==='editor'),G=DATA.groups;
-  const items=[{label:'Основной',value:'main'},...L.map(l=>({label:l.name,value:'list:'+l.id}))];
-  if(G.length)items.push({head:'Общие'},...G.map(g=>({label:g.name,value:'group:'+g.id})));
-  const want=typeof pref==='string'?pref:'main';
-  let tgt=items.some(i=>i.value===want)?want:'main';
-  for(;;){ // окно открывается снова, пока не нажмут «Готово»
-    const r=await ui({title:'Новая карточка',ok:'Добавить',cancel:'Готово',fields:[
-      {name:'t',label:'Куда добавить',dd:{items,value:tgt}},
-      {name:'ru',label:'Русский',required:true,placeholder:'слово'},
-      {name:'en',label:'English',required:true,placeholder:'word'},
-      {name:'ipa',label:'Транскрипция (необязательно)',placeholder:'/wɜːd/'},
-      {name:'note',label:'Заметка (необязательно)',multiline:true}]});
-    if(!r)break;
-    tgt=r.t;const k=tgt.indexOf(':'),body={ru:r.ru,en:r.en,ipa:r.ipa||null,note:r.note||null};
-    if(k>=0)body[tgt.slice(0,k)==='list'?'list_id':'group_id']=tgt.slice(k+1);
-    try{await api('/words',{method:'POST',body});await poll(false);edDirty=true;toast('Слово добавлено')}
-    catch(e){if(e&&e.status===401)return;toast(errText(e),6000);break}
-  }
-}
-$('edAdd').onclick=()=>addWords();
-$('addCard').onclick=()=>addWords(scope&&scope.type!=='main'?scope.type+':'+scope.id:'main');
+$('addCard').onclick=()=>{ // форма добавления — как внутри модуля; по умолчанию в «Основной»
+  if(scope){$('qaRu').focus();return}
+  addOpen=!addOpen;renderCards();
+  if(addOpen)$('qaRu').focus();
+};
 
 /* ===== Вкладки и логотип ===== */
 const TABS={quiz:'quiz',cards:'cardsView',archive:'archiveView'};
 function tab(n){
   if(ED.open)ED.close();
-  if(n==='cards'&&!$('cardsView').hidden)scope=null; // повторный клик по вкладке — к обзору
+  scope=null;addOpen=false; // при смене вкладки открытый модуль закрывается
   Object.keys(TABS).forEach(t=>{$(TABS[t]).hidden=t!==n;$('tab-'+t).setAttribute('aria-selected',t===n)});
   $('edSearch').value='';$('scopeSearch').value=''; // поиск очищается при смене вкладки
   if(n==='quiz'){if(curId==null&&!revealed)rebuild();else renderQuiz()}
