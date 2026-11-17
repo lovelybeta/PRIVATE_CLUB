@@ -399,6 +399,11 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 #doneAdd{margin-top:26px}
 #doneAdd[hidden]{display:none}
 #quiz.blank .srcbar,#quiz.blank .seg,#quiz.blank .bar,#quiz.blank .left{display:none}
+#scopeList:not(.editing) .qa-card:not(.open) .qa-side{display:none}
+#scopeList:not(.editing) .qa-card:not(.open){grid-template-columns:1fr 1fr}
+@media(max-width:680px){#scopeList:not(.editing) .qa-card:not(.open){grid-template-columns:1fr}}
+#doneAgain{margin-top:26px}
+#doneAgain[hidden]{display:none}
 </style>
 </head>
 <body class="loading">
@@ -499,6 +504,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
       <h2 id="doneT">На сегодня всё!</h2>
       <p id="doneP">Новые карточки появятся, когда подойдёт их срок.</p>
       <button class="pill solid" id="doneAdd" type="button" hidden>Создать свою первую карточку</button>
+      <button class="pill solid" id="doneAgain" type="button" hidden>Пройти заново</button>
     </div>
   </section>
 
@@ -515,7 +521,6 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
     <div class="scope-sub" id="scopeSub" hidden>
       <button class="pill" id="scopeEdit" type="button">Редактировать</button>
       <button class="pill" id="scopeInvite" type="button" hidden>Добавить пользователя</button>
-      <button class="icon-btn plus" id="scopePlus" type="button" aria-label="Добавить слово" title="Добавить слово" hidden><svg class="ico"><use href="#i-plus"/></svg></button>
     </div>
     <div class="members" id="scopeMembers" hidden></div>
       <form class="qa" id="qaForm" autocomplete="off" novalidate hidden>
@@ -771,8 +776,10 @@ const byId=id=>cards.find(c=>c.id===id);
 const inSrc=c=>!!src&&(src.type==='all'||(src.type==='main'?!c.list_id&&!c.group_id:src.type==='list'?c.list_id===src.id:c.group_id===src.id));
 const dueBase=c=>c.id!=null&&c.status!=='archive'&&(c.due_date||0)<=Date.now()&&((c.ru||'')+(c.en||'')).trim();
 const isDue=c=>dueBase(c)&&inSrc(c); // в квиз попадают только слова выбранного списка/группы
-function rebuild(shuffle){
-  let ids=cards.filter(isDue).sort((a,b)=>(a.due_date-b.due_date)||(a.pos-b.pos)).map(c=>c.id);
+let allMode=false; // true — сеанс по всем словам набора (после «Заново»)
+function rebuild(shuffle,all){
+  allMode=!!all;
+  let ids=(all?cards.filter(c=>c.id!=null&&c.status!=='archive'&&inSrc(c)&&((c.ru||'')+(c.en||'')).trim()):cards.filter(isDue)).sort((a,b)=>(a.due_date-b.due_date)||(a.pos-b.pos)).map(c=>c.id);
   if(shuffle)for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
   sessionTotal=ids.length;sessionIds=new Set(ids);doneIds=new Set();
   revealed=false;$('card').classList.remove('open');
@@ -871,9 +878,9 @@ function setLang(l){
 }
 $('langRu').onclick=()=>setLang('ru');$('langEn').onclick=()=>setLang('en');
 $('shuffle').onclick=()=>{
-  rebuild(true);
+  rebuild(true,allMode);
 };
-$('restart').onclick=()=>{rebuild(false)};
+$('restart').onclick=()=>{rebuild(false,true)};
 document.addEventListener('keydown',e=>{
   if($('quiz').hidden||/INPUT|TEXTAREA|BUTTON/.test(document.activeElement.tagName))return;
   if(['1','2','3','4'].includes(e.key))rate(['again','hard','good','easy'][+e.key-1]);
@@ -932,6 +939,8 @@ const dupWord=c=>act(()=>api('/words',{method:'POST',body:{ru:c.ru,en:c.en,ipa:c
 async function delWord(c){if(await ui({title:'Удалить карточку?',text:'«'+(c.ru||c.en||'без названия')+'» исчезнет навсегда.',ok:'Удалить',danger:true}))act(()=>api('/words?id='+encodeURIComponent(c.id),{method:'DELETE'}),'Карточка удалена')}
 function wordCard(c,canW){ // карточка слова в «старом» стиле: русский | English, транскрипция, заметка, кнопки
   const r=mk('div','qa-card'+(canW?'':' ro'));
+  r.addEventListener('focusin',()=>{clearTimeout(r._h);r.classList.add('open')}); // клик по карточке — правка и кнопки
+  r.addEventListener('focusout',()=>{r._h=setTimeout(()=>r.classList.remove('open'),300)});
   const ta=(k,ph,cls)=>{const t=document.createElement('textarea');t.rows=1;t.placeholder=ph;t.value=c[k]||'';t.readOnly=!canW||readOnly;t.setAttribute('aria-label',ph);if(cls)t.className=cls;
     t.addEventListener('input',()=>{c[k]=t.value;grow(t);queueSave(c,700,true)});return t};
   const a=mk('div','qa-cell');a.append(mk('label',null,'Русский'),ta('ru','слово или фраза'));
@@ -963,8 +972,8 @@ function renderCards(){
     ml.forEach(m=>mem.append(mk('span','mchip'+(m.role==='owner'?' owner':''),m.username+(m.role==='owner'?' · владелец':''))));
     if(ml.length<2)mem.append(mk('span','hint','Пока только вы. Нажмите «Добавить пользователя» и отправьте другу код или ссылку.'));
   }
-  $('scopeSub').hidden=!canEdit;$('scopeEdit').textContent=editMode?'Готово':'Редактировать';$('scopePlus').hidden=!(canEdit&&editMode);
-  $('qaForm').hidden=!(scope?(canEdit&&editMode&&plusOpen):addOpen);
+  $('scopeSub').hidden=!canEdit;$('scopeEdit').textContent=editMode?'Готово':'Редактировать';
+  $('qaForm').hidden=!(scope?(canEdit&&plusOpen):addOpen);
   $('qaTarget').textContent='Добавляется в: '+(scope?it.name:mainName());
   $('qaToWrap').hidden=!!scope;
   if(!scope){ // в обзоре: «Внести в модуль» — выбор модуля, куда добавить карточку
@@ -978,10 +987,12 @@ function renderCards(){
   if(!scope)return;
   $('scopeName').textContent=it.name;
   if($('cardsView').hidden)return; // слова рисуем только на открытой вкладке
+  $('scopeList').classList.toggle('editing',editMode); // «Редактировать» показывает кнопки у всех карточек сразу
+  const ae=document.activeElement;if(ae&&ae.tagName==='TEXTAREA'&&ae.closest&&ae.closest('#scopeList'))return; // не мешаем набору текста
   const q=$('scopeSearch').value.trim().toLowerCase(),L=$('scopeList');L.innerHTML='';
   const ws=cards.filter(c=>c.id!=null&&c.status!=='archive'&&inScope(c)&&(!q||[c.ru,c.en,c.ipa,c.note].join(' ').toLowerCase().includes(q))).reverse();
-  if(!ws.length){L.append(emptyBox(q?'Ничего не найдено':'Пока нет карточек',q?'Попробуйте другой запрос.':'Нажмите «Редактировать», затем «+», чтобы добавить первое слово.'));return}
-  ws.forEach(c=>L.append(wordCard(c,canW&&(editMode||!scope))));
+  if(!ws.length){L.append(emptyBox(q?'Ничего не найдено':'Пока нет карточек',q?'Попробуйте другой запрос.':'Нажмите «+ Добавить карточку» вверху, чтобы добавить первое слово.'));return}
+  ws.forEach(c=>L.append(wordCard(c,canW)));
   requestAnimationFrame(()=>L.querySelectorAll('textarea').forEach(grow));
 }
 $('scopeSearch').oninput=renderCards;
@@ -1000,7 +1011,6 @@ $('qaTargetSel').onchange=e=>{ // «Внести в модуль»: выбрал
   pickedTarget=s.value;pickedLabel=s.selectedOptions[0].textContent;$('qaForm').requestSubmit();
 };
 $('scopeEdit').onclick=()=>{editMode=!editMode;if(!editMode)plusOpen=false;renderCards()};
-$('scopePlus').onclick=()=>{plusOpen=!plusOpen;renderCards();if(plusOpen)$('qaRu').focus()};
 $('qaForm').onsubmit=async e=>{ // Enter в «русском» переходит к переводу, Enter в переводе — добавляет
   e.preventDefault();
   const picked=pickedTarget,pickedLbl=pickedLabel;pickedTarget=null;$('qaTargetSel').value='';
@@ -1153,14 +1163,15 @@ function setSource(type,id){
   renderSrcBar();rebuild();
 }
 function openSource(type,id){setSource(type,id);tab('quiz')}
+$('doneAgain').onclick=()=>rebuild(false,true); // «Пройти заново» — все слова набора
 $('doneAdd').onclick=()=>{tab('cards');addOpen=true;renderCards();setTimeout(()=>$('qaRu').focus(),0)}; // «Создать свою первую карточку»
 function doneText(){
-  let t='На сегодня всё!',p='Новые карточки появятся, когда подойдёт их срок.';
+  let t='Love it!',p='Ты сделал достаточно на сегодня. Проверь себя через время';
   if(!src){t='Выбери, что учить';p='Выбери модуль или группу сверху.'}
   else if(!cards.some(inSrc)){t='Здесь пока пусто:';p='добавь свою первую карточку'}
   const blank=!cards.some(c=>c.id!=null); // у нового пользователя ещё нет ни одной карточки
   if(blank){t='Hi, lovely!';p='Чтобы начать изучение, добавь первую карточку'}
-  $('doneT').textContent=t;$('doneP').textContent=p;$('doneAdd').hidden=!blank;$('quiz').classList.toggle('blank',blank);
+  $('doneT').textContent=t;$('doneP').textContent=p;$('doneAdd').hidden=!blank;$('doneAgain').hidden=blank||!src||!cards.some(c=>c.id!=null&&c.status!=='archive'&&inSrc(c));$('quiz').classList.toggle('blank',blank);
 }
 
 /* ===== Слова: редактор (модалка) и архив ===== */
@@ -1201,7 +1212,7 @@ $('edBody').onscroll=e=>$('toTop').classList.toggle('show',e.target.scrollTop>24
 $('toTop').onclick=()=>$('edBody').scrollTo({top:0,behavior:'smooth'});
 $('edImport').onclick=()=>toast('Импорт подключим следующим шагом'); // пока только визуально
 $('addCard').onclick=()=>{ // форма добавления — как внутри модуля; по умолчанию в «Основной»
-  if(scope){const it=scopeItem();if(scope.type==='list'&&it.role!=='owner'&&it.role!=='editor'){toast('В этот модуль нельзя добавлять слова');return}editMode=true;plusOpen=true;renderCards();$('qaRu').focus();return}
+  if(scope){const it=scopeItem();if(scope.type==='list'&&it.role!=='owner'&&it.role!=='editor'){toast('В этот модуль нельзя добавлять слова');return}plusOpen=!plusOpen;renderCards();$('qaRu').focus();return}
   addOpen=!addOpen;renderCards();
   if(addOpen)$('qaRu').focus();
 };
