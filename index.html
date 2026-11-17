@@ -791,7 +791,7 @@ function renderQuiz(){
     b.classList.toggle('dim',!!pick&&b.dataset.r!==pick);
   });
   const names={again:'Again',hard:'Hard',good:'Good',easy:'Easy',archive:'Archive'};
-  $('left').textContent='Пройдено: '+passed+' из '+sessionIds.size+(pick?(' · выбрано '+names[pick]+(queue.includes(c.id)?' · вернётся ещё раз':'')+' (можно исправить)'):'');
+  $('left').textContent='Пройдено: '+passed+' из '+sessionIds.size+(pick?(' · выбрано '+names[pick]+' (можно исправить)'):'');
   const ruFirst=lang==='ru';
   $('front').className='face '+(ruFirst?'light':'dark');
   $('back').className='face back '+(ruFirst?'dark':'light');
@@ -819,7 +819,8 @@ function rate(r){
   applyAnkiSM2(c,r,Date.now());
   queueSave(c,0,true); // → PUT /words с новыми interval, repetitions, ease_factor, due_date, status
   const again=r!=='archive'&&c.status!=='archive'&&c.due_date-Date.now()<=LEARN_AHEAD; // вернётся в этом сеансе
-  if(again){queue.push(c.id);doneIds.delete(c.id)}else doneIds.add(c.id);
+  if(again)queue.push(c.id);
+  doneIds.add(c.id); // «пройдено» — карточка, на которую ответили хотя бы раз за этот сеанс
   c._pick=r;
   revealed=true;$('card').classList.add('open');
   const pb=document.querySelector('.rate[data-r="'+r+'"]');
