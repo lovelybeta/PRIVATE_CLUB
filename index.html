@@ -866,7 +866,6 @@ function setLang(l){
 }
 $('langRu').onclick=()=>setLang('ru');$('langEn').onclick=()=>setLang('en');
 $('shuffle').onclick=()=>{
-  if(revealed){toast('Сначала перейди к следующей карточке');return}
   rebuild(true);
 };
 $('restart').onclick=()=>{rebuild(false)};
