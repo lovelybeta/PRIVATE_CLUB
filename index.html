@@ -182,7 +182,8 @@ body.auth section,body.auth nav,body.auth .logout{display:none!important}
 
 @media(max-width:680px){
   .face{padding:32px 24px}
-  #loader{font-size:22px;padding:90px 28px}
+  #loader{font-size:48px;line-height:1.05;padding:90px 20px}
+  #loader span{display:block}
   .logo{width:260px}
   .logo .f{font-size:34px}
   .logo .b{font-size:16px}
@@ -375,11 +376,6 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 .scope-sub[hidden]{display:none}
 .qa-card.ro{grid-template-columns:1fr 1fr}
 .qa-side.add{flex-wrap:wrap}
-.to-mod{position:relative;overflow:hidden;cursor:pointer;text-align:center}
-.to-mod[hidden]{display:none}
-.to-mod select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px}
-.qa-side.add .pill.to-mod{background:transparent;color:var(--white);border-color:rgba(127,127,127,.55)}
-.qa-side.add .pill.to-mod:hover{background:var(--lilac);border-color:var(--lilac);color:var(--on-lilac)}
 .qa-side.add{background:var(--black)}
 .qa-side.add .pill{background:var(--white);color:var(--black);border-color:var(--white)}
 .qa-side.add .pill:hover{background:var(--lilac);border-color:var(--lilac);color:var(--on-lilac)}
@@ -404,6 +400,22 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
 @media(max-width:680px){#scopeList:not(.editing) .qa-card:not(.open){grid-template-columns:1fr}}
 #doneAgain{margin-top:26px}
 #doneAgain[hidden]{display:none}
+/* --- iOS: без приближения при фокусе в поле --- */
+textarea.p,textarea.note,.field,.search input{font-size:16px!important}
+/* --- закрыть форму добавления карточки --- */
+#qaForm .qa-card{position:relative}
+.qa-x{position:absolute;top:12px;right:12px;z-index:2;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--black);color:var(--white);transition:transform .2s,background .2s,color .2s}
+.qa-x:hover{background:var(--lilac);color:var(--on-lilac);transform:rotate(90deg)}
+.qa-x .ico{width:14px;height:14px;stroke-width:2.4}
+/* --- меню: блок «Общие» --- */
+.menu-box{margin:6px 0;padding:4px;border:1px solid var(--grey);border-radius:14px}
+.menu-head.plain{padding:8px 14px 4px;font-family:inherit;font-style:normal;font-size:15px;font-weight:500;opacity:.5}
+#loader span{display:inline}
+/* --- выбор модуля при добавлении --- */
+.pick-list{display:flex;flex-direction:column;gap:8px;max-height:min(52vh,380px);overflow-y:auto;margin:0 -4px;padding:2px 4px}
+.pick-opt{width:100%;padding:14px 18px;border-radius:16px;border:1px solid var(--grey);background:var(--white);text-align:left;font-size:16px;font-weight:500;overflow-wrap:anywhere;transition:border-color .2s,background .2s}
+.pick-opt:hover,.pick-opt:focus-visible{border-color:var(--black);background:var(--paper);outline:0}
+.pick-head{padding:8px 4px 0;font-size:13px;opacity:.5}
 </style>
 </head>
 <body class="loading">
@@ -440,7 +452,7 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
   </svg>
 
   <div class="robar" id="roBar">Офлайн · режим чтения: изменения не сохраняются. Когда появится интернет, сайт синхронизируется.</div>
-  <div id="loader">You look lovely! Let me connect you...</div>
+  <div id="loader"><span>You look lovely!</span> <span>Connecting...</span></div>
   <div id="offline">
     <p>Oops! You're offline. Get online for a second and the magic will happen.</p>
     <button class="pill solid" id="retry">Retry</button>
@@ -525,9 +537,10 @@ textarea.field{border-radius:20px;resize:vertical;min-height:84px;line-height:1.
     <div class="members" id="scopeMembers" hidden></div>
       <form class="qa" id="qaForm" autocomplete="off" novalidate hidden>
         <div class="qa-card">
+          <button class="qa-x" id="qaClose" type="button" aria-label="Закрыть форму" title="Закрыть"><svg class="ico"><use href="#i-close"/></svg></button>
           <div class="qa-cell"><label for="qaRu">Русский</label><textarea id="qaRu" rows="1" placeholder="слово или фраза"></textarea></div>
           <div class="qa-cell e"><label for="qaEn">English</label><textarea id="qaEn" rows="1" placeholder="перевод"></textarea><textarea class="p" id="qaIpa" rows="1" placeholder="[транскрипция]" aria-label="Транскрипция"></textarea><textarea class="note" id="qaNote" rows="1" placeholder="Заметка / примеры (необязательно)" aria-label="Заметка"></textarea></div>
-          <div class="qa-side add"><button class="pill solid" id="qaBtn" type="submit">Добавить</button><label class="pill to-mod" id="qaToWrap">Внести в модуль<select id="qaTargetSel" aria-label="Внести в модуль"></select></label></div>
+          <div class="qa-side add"><button class="pill solid" id="qaBtn" type="submit">Добавить</button></div>
         </div>
         <div class="qa-meta"><span class="qa-to"><span id="qaTarget"></span></span><span>Enter — добавить · Shift+Enter — новая строка</span></div>
       </form>
@@ -929,7 +942,7 @@ function emptyBox(title,text){const e=mk('div','empty');e.append(mk('b',null,tit
 const MAIN_KEY='copure-main-name';
 const mainName=()=>{try{return localStorage.getItem(MAIN_KEY)||'Основной'}catch(e){return 'Основной'}};
 async function renameMain(){const n=await askName('Переименовать модуль','Название',mainName(),'Сохранить');if(n&&n!==mainName()){try{localStorage.setItem(MAIN_KEY,n)}catch(e){}renderHub();renderSrcBar();toast('Переименовано')}}
-let addOpen=false,editMode=false,plusOpen=false,pickedTarget=null,pickedLabel='';
+let addOpen=false,editMode=false,plusOpen=false;
 let scope=null; // null — обзор; {type:'main'|'list'|'group', id} — открыта группа карточек
 const scopeItem=()=>scope.type==='list'?DATA.lists.find(x=>x.id===scope.id):scope.type==='group'?DATA.groups.find(x=>x.id===scope.id):{name:mainName(),role:'owner'};
 const inScope=c=>{const s=scope||{type:'main'};return s.type==='main'?!c.list_id&&!c.group_id:s.type==='list'?c.list_id===s.id:c.group_id===s.id}
@@ -975,15 +988,6 @@ function renderCards(){
   $('scopeSub').hidden=!canEdit;$('scopeEdit').textContent=editMode?'Готово':'Редактировать';
   $('qaForm').hidden=!(scope?(canEdit&&plusOpen):addOpen);
   $('qaTarget').textContent='Добавляется в: '+(scope?it.name:mainName());
-  $('qaToWrap').hidden=!!scope;
-  if(!scope){ // в обзоре: «Внести в модуль» — выбор модуля, куда добавить карточку
-    const sel=$('qaTargetSel');sel.innerHTML='';
-    const opt=(v,l,par)=>{const o=document.createElement('option');o.value=v;o.textContent=l;(par||sel).append(o)};
-    const ph=document.createElement('option');ph.value='';ph.textContent='Выбери модуль';ph.disabled=true;ph.selected=true;sel.append(ph);
-    opt('main',mainName());
-    DATA.lists.filter(l=>l.role==='owner'||l.role==='editor').forEach(l=>opt('list:'+l.id,l.name));
-    if(DATA.groups.length){const g=document.createElement('optgroup');g.label='Общие модули';DATA.groups.forEach(x=>opt('group:'+x.id,x.name,g));sel.append(g)}
-  }
   if(!scope)return;
   $('scopeName').textContent=it.name;
   if($('cardsView').hidden)return; // слова рисуем только на открытой вкладке
@@ -1005,22 +1009,41 @@ $('qaForm').addEventListener('keydown',e=>{ // Enter — дальше/добав
   if(e.key!=='Enter'||e.shiftKey||e.isComposing)return;
   e.preventDefault();$('qaForm').requestSubmit();
 });
-$('qaTargetSel').onchange=e=>{ // «Внести в модуль»: выбрали модуль — слово сразу уходит в него
-  const s=e.target;if(!s.value)return;
-  if(!$('qaRu').value.trim()||!$('qaEn').value.trim()){s.value='';toast('Сначала впиши слово и перевод');return}
-  pickedTarget=s.value;pickedLabel=s.selectedOptions[0].textContent;$('qaForm').requestSubmit();
-};
+$('qaClose').onclick=()=>{addOpen=false;plusOpen=false;renderCards()}; // выйти из режима добавления
 $('scopeEdit').onclick=()=>{editMode=!editMode;if(!editMode)plusOpen=false;renderCards()};
+const pickOptions=()=>[{label:mainName(),value:'main'},...DATA.lists.filter(l=>l.role==='owner'||l.role==='editor').map(l=>({label:l.name,value:'list:'+l.id})),...DATA.groups.map(g=>({label:g.name,value:'group:'+g.id,shared:true}))];
+function pickModule(opts){ // окно «Выберите модуль» в стиле приложения
+  return new Promise(res=>{
+    const M=$('modal'),F=$('mFields');let done=false;
+    $('mTitle').textContent='Выберите модуль';$('mText').textContent='Куда внести эту карточку?';$('mText').hidden=false;
+    $('mErr').textContent='';F.innerHTML='';$('mOk').style.display='none';$('mCancel').textContent='Отмена';
+    const fin=v=>{if(done)return;done=true;$('mOk').style.display='';M.close();res(v)};
+    const list=mk('div','pick-list');let sh=false;
+    opts.forEach(o=>{
+      if(o.shared&&!sh){sh=true;list.append(mk('div','pick-head','Общие модули'))}
+      const b=mk('button','pick-opt',o.label);b.type='button';b.onclick=()=>fin(o);list.append(b);
+    });
+    F.append(list);
+    $('mForm').onsubmit=e=>e.preventDefault();
+    $('mCancel').onclick=()=>fin(null);
+    M.oncancel=e=>{e.preventDefault();fin(null)};
+    M.onclick=e=>{if(e.target===M)fin(null)};
+    M.showModal();
+  });
+}
 $('qaForm').onsubmit=async e=>{ // Enter в «русском» переходит к переводу, Enter в переводе — добавляет
   e.preventDefault();
-  const picked=pickedTarget,pickedLbl=pickedLabel;pickedTarget=null;$('qaTargetSel').value='';
   if(readOnly){toast('Офлайн: изменения недоступны');return}
   const ru=$('qaRu').value.trim(),en=$('qaEn').value.trim();
   if(!ru){$('qaRu').focus();return}
   if(!en){$('qaEn').focus();return}
   const body={ru,en,ipa:$('qaIpa').value.trim()||null,note:$('qaNote').value.trim()||null};
-  const tv=scope?(scope.type==='main'?'main':scope.type+':'+scope.id):(picked||'main'); // без list_id и group_id — «Основной»
-  const tl=!scope?(picked?pickedLbl:mainName()):'';
+  let tv,tl='';
+  if(scope)tv=scope.type==='main'?'main':scope.type+':'+scope.id;
+  else{ // из обзора: если есть из чего выбирать — спрашиваем, в какой модуль внести
+    const opts=pickOptions();
+    if(opts.length>1){const r=await pickModule(opts);if(!r)return;tv=r.value;tl=r.label}else tv='main';
+  }
   if(tv.indexOf('list:')===0)body.list_id=tv.slice(5);else if(tv.indexOf('group:')===0)body.group_id=tv.slice(6);
   $('qaBtn').disabled=true;
   try{
@@ -1040,12 +1063,12 @@ function makeDD(host,btn,menu,onPick){
   const open=()=>{menu.hidden=false;btn.setAttribute('aria-expanded','true');const o=menu.querySelector('[aria-selected="true"]')||menu.querySelector('.opt');if(o){o.focus();o.scrollIntoView({block:'nearest'})}};
   const pick=v=>{close();btn.focus();if(v!==val){val=v;paint();onPick&&onPick(v)}};
   function paint(){
-    menu.innerHTML='';
+    menu.innerHTML='';let box=menu;
     items.forEach(it=>{
-      if(it.sep){menu.append(mk('div','menu-sep'));return}
-      if(it.head){menu.append(mk('div','menu-head',it.head));return}
+      if(it.sep){box=menu;menu.append(mk('div','menu-sep'));return}
+      if(it.head){if(it.box){box=mk('div','menu-box');box.append(mk('div','menu-head plain',it.head));menu.append(box)}else{box=menu;menu.append(mk('div','menu-head',it.head))}return}
       const o=mk('div','opt',it.label);o.setAttribute('role','option');o.tabIndex=-1;o.dataset.v=it.value;
-      o.setAttribute('aria-selected',it.value===val);o.onclick=e=>{e.stopPropagation();pick(it.value)};menu.append(o);
+      o.setAttribute('aria-selected',it.value===val);o.onclick=e=>{e.stopPropagation();pick(it.value)};box.append(o);
     });
     const cur=items.find(i=>i.value===val);btn.firstElementChild.textContent=cur?cur.label:'—';
   }
@@ -1153,8 +1176,9 @@ function ensureSrc(){ // true, если источник пришлось сме
 const SDD=makeDD($('srcPill'),$('srcBtn'),$('srcMenu'),v=>{const i=v.indexOf(':');setSource(i<0?v:v.slice(0,i),i<0?v:v.slice(i+1))});
 function renderSrcBar(){
   const it=[{label:mainName(),value:'main'},...DATA.lists.map(l=>({label:l.name,value:'list:'+l.id}))];
-  if(DATA.groups.length)it.push({head:'Общие'},...DATA.groups.map(g=>({label:g.name,value:'group:'+g.id})));
-  it.push({sep:1},{label:'Учить все вместе',value:'all'});
+  if(DATA.groups.length)it.push({head:'Общие',box:true},...DATA.groups.map(g=>({label:g.name,value:'group:'+g.id})));
+  else it.push({sep:1});
+  it.push({label:'Учить все вместе',value:'all'});
   SDD.set(it,srcVal(src)||'all');
 }
 function setSource(type,id){
